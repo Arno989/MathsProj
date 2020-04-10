@@ -5,7 +5,7 @@ from queue import Queue
 from threading import Thread
 from tkinter import *
 
-from data.stopafstand import StopafstandServer
+from server import StopafstandServer
 
 
 class ServerWindow(Frame):
