@@ -4,14 +4,12 @@ from queue import Queue
 from threading import Thread
 from tkinter import *
 
-<<<<<<< HEAD
-from server import StopafstandServer
-=======
-import sys
+import os
+print(os.getcwd())
 
-sys.path.insert(0, "./")
+import sys
+sys.path.insert(0, "../")
 from server import Movies_Server
->>>>>>> f8d4e0852dd85c0aef9d489e38021ace4978a61b
 
 
 class ServerWindow(Frame):

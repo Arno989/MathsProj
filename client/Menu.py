@@ -1,18 +1,16 @@
-from tkinter import *
-
-import tkinter as tk
-
 import logging
-import socket
 import pickle
-
-
-
+import socket
+import tkinter as tk
+from tkinter import *
 from tkinter import messagebox
 
+import os
+print(os.getcwd())
 
-from stopafstand import Stopafstand
-
+import sys
+sys.path.insert(0, "../")
+from .data.movie import Stopafstand
 
 LARGE_FONT= ("Verdana", 12)
 
