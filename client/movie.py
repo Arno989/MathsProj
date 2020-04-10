@@ -19,5 +19,5 @@ class ByGenre:
     def __str__(self):
         return f"Genre: {self.genre}"
 
-    #def __eq__(self, other):
+   # def __eq__(self, other):
     #    return (self.genre == other.genre) 

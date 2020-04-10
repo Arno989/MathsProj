@@ -4,13 +4,16 @@ import socket
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
+import pandas as pd
+#import os
+#print(os.getcwd())
 
-import os
-print(os.getcwd())
+#import sys
+#sys.path.insert(0, "../")
+#from .data.movie import Stopafstand, ByGenre
 
-import sys
-sys.path.insert(0, "../")
-from .data.movie import Stopafstand
+from movie import Stopafstand
+from movie import ByGenre
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -30,7 +33,7 @@ class Movies(tk.Tk):
         self.frames = {}
 
         # Voeg elke pagina hieraan toe 
-        for F in (StartPage, PageOne, PageTwo):
+        for F in (HomePage, PageOne, PageTwo):
 
             frame = F(container, self)
 
@@ -38,7 +41,7 @@ class Movies(tk.Tk):
 
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(StartPage)
+        self.show_frame(HomePage)
         
         
 
@@ -48,7 +51,7 @@ class Movies(tk.Tk):
         frame.tkraise()
 
         
-class StartPage(tk.Frame):
+class HomePage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
@@ -71,14 +74,18 @@ class PageOne(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        # Make connection
+        self.makeConnnectionWithServer()
+
         Title = tk.Label(self, text="Search By Genre", font=LARGE_FONT)
         Title.pack(pady=10,padx=10)
 
         label = tk.Label(self, text="Genre:")
         label.pack()
 
-        entry_genre = tk.Entry(self, width=40)
-        entry_genre.pack()
+        self.entry_genre = tk.Entry(self, width=40)
+        self.entry_genre.pack()
     
 
         btnSearch = tk.Button(self, text="Search",
@@ -86,20 +93,71 @@ class PageOne(tk.Frame):
         btnSearch.pack()
 
         btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
+                            command=lambda: controller.show_frame(HomePage))
         btnHome.pack()
 
+    
 
-        labelResultaat = tk.Label(self, text="resultaat")
-        labelResultaat.pack()
+        
 
-        self.label_resultaat = tk.Label(self, anchor='w')
-        self.label_resultaat.pack()
+        #self.label_resultaat = tk.Combobox(self)
+        #self.label_resultaat.pack()
 
 
+    def __del__(self):
+        self.close_connection()
+    
+    def makeConnnectionWithServer(self):
+        try:
+            logging.info("Making connection with server...")
+            # get local machine name
+            host = socket.gethostname()
+            port = 9999
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
+            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            logging.info("Open connection with server succesfully")
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
+    
     def searchByGenre(self):
+        try:
+            pickle.dump("BYGENRE", self.my_writer_obj)
 
-        self.label_resultaat['text'] = "Gelukt !!!"
+            
+            genre = str(self.entry_genre.get())
+            print(genre)
+            
+            search = ByGenre(genre)
+            pickle.dump(search, self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            search = pickle.load(self.my_writer_obj)
+            print(search.resultaat)
+            #dataset= pd.DataFrame(search.resultaat,columns=search.resultaat)
+            #print(dataset)
+
+
+
+            ##self.label_resultaat['values'] = list(search.resultaat)
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("byGenre", "Something has gone wrong...")
+
+    def close_connection(self):
+        try:
+            logging.info("Close connection with server...")
+            pickle.dump("C", self.my_writer_obj)
+        
+            self.my_writer_obj.flush()
+            self.socket_to_server.close()
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("byGenre", "Something has gone wrong...")
 
 
 
@@ -126,7 +184,7 @@ class PageTwo(tk.Frame):
 
 
         button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
+                            command=lambda: controller.show_frame(HomePage))
         button1.pack()
 
         button2 = tk.Button(self, text="Bereken",

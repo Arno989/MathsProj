@@ -4,11 +4,11 @@ from queue import Queue
 from threading import Thread
 from tkinter import *
 
-import os
-print(os.getcwd())
+#import os
+#print(os.getcwd())
 
-import sys
-sys.path.insert(0, "../")
+#import sys
+#sys.path.insert(0, "../")
 from server import Movies_Server
 
 

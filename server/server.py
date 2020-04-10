@@ -5,14 +5,14 @@ import threading
 import pandas as pd
 import numpy as np
 
-import sys
+#import sys
 
-sys.path.insert(0, "./")
+#sys.path.insert(0, "./")
 from clienthandler import ClientHandler
 
-df = pd.read_csv(
-    "C:\\Users\\Arno\\source\\MathsProj\\server\\movies.csv", encoding="ISO-8859-1"
-)
+#df = pd.read_csv(
+#    "C:\\Users\\Arno\\source\\MathsProj\\server\\movies.csv", encoding="ISO-8859-1"
+#)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -45,6 +45,7 @@ class Movies_Server(threading.Thread):
 
     # thread-klasse!
     def run(self):
+        
         try:
             while True:
                 self.print_gui_message("waiting for clients...")
