@@ -6,7 +6,7 @@ from gui_server import ServerWindow
 
 def callback():
     print("callback")
-    gui_server.afsluiten_server()
+    gui_server.close()
     root.destroy()
 
 root = Tk()
