@@ -7,56 +7,32 @@ class ClientHandler(threading.Thread):
 
     numbers_clienthandlers = 0
 
-    def __init__(self, socketclient,messages_queue):
+    def __init__(self, socketclient, messages_queue):
         threading.Thread.__init__(self)
-        #connectie with client
         self.socket_to_client = socketclient
-        #message queue -> link to gui server
         self.messages_queue = messages_queue
-        #id clienthandler
         self.id = ClientHandler.numbers_clienthandlers
         ClientHandler.numbers_clienthandlers += 1
 
     def run(self):
-        my_writer_obj = self.socket_to_client.makefile(mode='rwb')
+        writer_obj = self.socket_to_client.makefile(mode="rwb")
 
-        self.print_bericht_gui_server("Waiting for inputs...")
-        whatTodo = pickle.load(my_writer_obj)
-        print(whatTodo)
+        self.print_gui_message("Waiting for inputs...")
+        operation = pickle.load(writer_obj)
+        print(operation)
 
-        while (whatTodo != "C"):
-            berekening = pickle.load(my_writer_obj)
-            print(berekening)
-          
-      
-            
+        while operation != "C":
+            berekening = pickle.load(writer_obj)
 
-            # omzeting naar int
-            snelheid = int(berekening.snelheid)
-            reactietijd = int(berekening.reactietijd)
+            pickle.dump(berekening, writer_obj)
+            writer_obj.flush()
 
-            #Omzetting van Km/u naar m/s
-            snelheid = (snelheid / 3.6) 
+            self.print_gui_message(f"Sending operation results")
 
-            #remvertraging berekenen
-            if berekening.wegdek == "Droog wegdek":
-                remvertraging = 8
-            if berekening.wegdek == "Nat wegdek":
-                remvertraging = 5
+            operation = pickle.load(writer_obj)
 
-            #Berekening
-            berekening.stopafstand = snelheid * reactietijd + (snelheid*snelheid) / (2*remvertraging)
-            
-            pickle.dump(berekening, my_writer_obj)
-            my_writer_obj.flush()
-
-            self.print_bericht_gui_server("Sending stopafstand %d back" % berekening.stopafstand)
-
-            whatTodo = pickle.load(my_writer_obj)
-
-        self.print_bericht_gui_server("Connection closed with client")
+        self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()
 
-    def print_bericht_gui_server(self, message):
-        self.messages_queue.put("CLH %d:> %s" % (self.id, message))
-
+    def print_gui_message(self, message):
+        self.messages_queue.put(f"CLH {self.id}:> {message}")
