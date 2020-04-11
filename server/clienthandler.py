@@ -9,7 +9,7 @@ import sys
 
 #sys.path.insert(0, "./")
 
-dataset = pd.read_csv('./server/movies.csv', encoding='ISO-8859-1')
+dataset = pd.read_csv('./data/movies.csv', encoding='ISO-8859-1')
 print(dataset)
 
 #df = pd.read_csv(
@@ -67,11 +67,13 @@ class ClientHandler(threading.Thread):
             # je krijgt de genre binnen
             genre = pickle.load(writer_obj)
 
+            search = str(genre.genre)
+
             ##########Fout ligt aan genre hierboven !!
             #genre.resultaat = dataset[dataset.genre == genre]
 
             #result(.-> vind je terug in map data -> movie -> opzoek naar element waar None bij staat  ))
-            genre.resultaat = dataset[dataset.genre == "Comedy"]
+            genre.resultaat = dataset[dataset.genre == search]
             self.print_gui_message(f"{genre.resultaat}")
 
             #stuur genre door

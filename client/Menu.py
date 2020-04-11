@@ -5,18 +5,20 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 import pandas as pd
+from tkinter import ttk 
+import numpy as np
+
 #import os
 #print(os.getcwd())
 
 #import sys
 #sys.path.insert(0, "../")
-#from .data.movie import Stopafstand, ByGenre
+#from data.movie import Stopafstand, ByGenre
 
 from movie import Stopafstand
 from movie import ByGenre
 
 LARGE_FONT= ("Verdana", 12)
-
 
 class Movies(tk.Tk):
 
@@ -50,7 +52,7 @@ class Movies(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-        
+    
 class HomePage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -66,25 +68,28 @@ class HomePage(tk.Frame):
                             command=lambda: controller.show_frame(PageTwo))
         btnByCountry.pack()
 
+
     
 
 
 
 class PageOne(tk.Frame):
+    
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
 
         # Make connection
         self.makeConnnectionWithServer()
 
         Title = tk.Label(self, text="Search By Genre", font=LARGE_FONT)
-        Title.pack(pady=10,padx=10)
+        Title.pack()
 
         label = tk.Label(self, text="Genre:")
         label.pack()
 
-        self.entry_genre = tk.Entry(self, width=40)
+        self.entry_genre = tk.Entry(self)
         self.entry_genre.pack()
     
 
@@ -92,20 +97,40 @@ class PageOne(tk.Frame):
                             command=self.searchByGenre)
         btnSearch.pack()
 
+        btnClear = tk.Button(self, text="Clear",
+                            command=self.clearTreeview)
+        btnClear.pack()
+
         btnHome = tk.Button(self, text="Back to Home",
                             command=lambda: controller.show_frame(HomePage))
         btnHome.pack()
 
-    
+        #Show treeview na het klikken op de knop
+        self.tk_table = ttk.Treeview(self)
+        self.tk_table.pack()
 
-        
+        #Scroll Horizontal -> treeview
+        scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
+        scroll.pack(fill = 'x')
 
-        #self.label_resultaat = tk.Combobox(self)
-        #self.label_resultaat.pack()
+        self.tk_table.configure(xscrollcommand=scroll.set)         
+
 
 
     def __del__(self):
         self.close_connection()
+
+    def clearTreeview(self):
+        try:
+            for i in self.tk_table.get_children():
+                self.tk_table.delete(i)
+
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
+    
+        
     
     def makeConnnectionWithServer(self):
         try:
@@ -124,25 +149,39 @@ class PageOne(tk.Frame):
     
     def searchByGenre(self):
         try:
+            #send BYGENRE to clienthandler
             pickle.dump("BYGENRE", self.my_writer_obj)
 
             
             genre = str(self.entry_genre.get())
             print(genre)
-            
+           
+            #Voef genre toe aan klasse 
             search = ByGenre(genre)
             pickle.dump(search, self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
             search = pickle.load(self.my_writer_obj)
-            print(search.resultaat)
-            #dataset= pd.DataFrame(search.resultaat,columns=search.resultaat)
-            #print(dataset)
+            print(search.resultaat.columns)
 
+            self.tk_table['height'] = 20
+            
+            ## display columns
+            self.tk_table['columns'] = search.resultaat.columns
 
+            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            for col in search.resultaat.columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1  
 
-            ##self.label_resultaat['values'] = list(search.resultaat)
+        
+            # Display rows 
+            for each_rec in range(len(search.resultaat.columns)):
+                self.tk_table.insert("", tk.END, values=list(search.resultaat.values[each_rec]))
+
+                  
+            
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
