@@ -5,19 +5,12 @@ import threading
 import pandas as pd
 import numpy as np
 
-#import sys
-
-#sys.path.insert(0, "./")
 from clienthandler import ClientHandler
-
-#df = pd.read_csv(
-#    "C:\\Users\\Arno\\source\\MathsProj\\server\\movies.csv", encoding="ISO-8859-1"
-#)
 
 logging.basicConfig(level=logging.INFO)
 
 
-class Movies_Server(threading.Thread):
+class Movie_thread(threading.Thread):
     def __init__(self, host, port, messages_queue):
         threading.Thread.__init__(self)
         self.__is_connected = False

@@ -21,3 +21,40 @@ class ByGenre:
 
     #def __eq__(self, other):
     #    return (self.genre == other.genre) 
+
+
+class Movie:
+    def __init__(
+        self,
+        budget,
+        company,
+        country,
+        director,
+        genre,
+        gross,
+        name,
+        rating,
+        released,
+        runtime,
+        score,
+        star,
+        votes,
+        writer,
+        year,
+    ):
+
+        self.budget = budget
+        self.company = company
+        self.country = country
+        self.director = director
+        self.genre = genre
+        self.gross = gross
+        self.name = name
+        self.rating = rating
+        self.released = released
+        self.runtime = runtime
+        self.score = score
+        self.star = star
+        self.votes = votes
+        self.writer = writer
+        self.year = year

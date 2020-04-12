@@ -4,12 +4,7 @@ from queue import Queue
 from threading import Thread
 from tkinter import *
 
-#import os
-#print(os.getcwd())
-
-#import sys
-#sys.path.insert(0, "../")
-from server import Movies_Server
+from multitreader import Movie_thread
 
 
 class ServerWindow(Frame):
@@ -50,7 +45,7 @@ class ServerWindow(Frame):
         Grid.columnconfigure(self, 0, weight=1)
 
     def init_server(self):
-        self.server = Movies_Server(socket.gethostname(), 9999, self.messages_queue)
+        self.server = Movie_thread(socket.gethostname(), 9999, self.messages_queue)
 
     def close(self):
         if self.server != None:

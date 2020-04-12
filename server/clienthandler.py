@@ -4,21 +4,11 @@ import pickle
 import pandas as pd
 import numpy as np
 
+dataset = pd.read_csv("server/movies.csv", encoding="ISO-8859-1")
 
-import sys
-
-#sys.path.insert(0, "./")
-
-dataset = pd.read_csv('./data/movies.csv', encoding='ISO-8859-1')
-print(dataset)
-
-#df = pd.read_csv(
-#    "C:\Users\Ouassim Boutalliss\OneDrive - Hogeschool West-Vlaanderen\2deJaar\S4\Advanced Programming Maths\Project\MathsProj\server\movies.csv", encoding="ISO-8859-1"
-#)
 
 class ClientHandler(threading.Thread):
-
-    numbers_clienthandlers = 0
+    clienthandlerCount = 0
 
     def __init__(self, socketclient, messages_queue):
         threading.Thread.__init__(self)
@@ -42,18 +32,19 @@ class ClientHandler(threading.Thread):
             snelheid = int(berekening.snelheid)
             reactietijd = int(berekening.reactietijd)
 
-            #Omzetting van Km/u naar m/s
-            snelheid = (snelheid / 3.6) 
+            # Omzetting van Km/u naar m/s
+            snelheid = snelheid / 3.6
 
-            #remvertraging berekenen
+            # remvertraging berekenen
             if berekening.wegdek == "Droog wegdek":
                 remvertraging = 8
             if berekening.wegdek == "Nat wegdek":
                 remvertraging = 5
 
-            #Berekening
-            berekening.stopafstand = snelheid * reactietijd + (snelheid*snelheid) / (2*remvertraging)
-            
+            # Berekening
+            berekening.stopafstand = snelheid * reactietijd + (snelheid * snelheid) / (
+                2 * remvertraging
+            )
 
             pickle.dump(berekening, writer_obj)
             writer_obj.flush()
@@ -70,13 +61,13 @@ class ClientHandler(threading.Thread):
             search = str(genre.genre)
 
             ##########Fout ligt aan genre hierboven !!
-            #genre.resultaat = dataset[dataset.genre == genre]
+            # genre.resultaat = dataset[dataset.genre == genre]
 
-            #result(.-> vind je terug in map data -> movie -> opzoek naar element waar None bij staat  ))
+            # result(.-> vind je terug in map data -> movie -> opzoek naar element waar None bij staat  ))
             genre.resultaat = dataset[dataset.genre == search]
             self.print_gui_message(f"{genre.resultaat}")
 
-            #stuur genre door
+            # stuur genre door
             pickle.dump(genre, writer_obj)
             writer_obj.flush()
 
