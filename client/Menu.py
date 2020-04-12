@@ -163,22 +163,22 @@ class PageOne(tk.Frame):
 
             # waiting for answer
             search = pickle.load(self.my_writer_obj)
-            print(search.resultaat.columns)
+            print(search.result.columns)
 
             self.tk_table['height'] = 20
             
             ## display columns
-            self.tk_table['columns'] = search.resultaat.columns
+            self.tk_table['columns'] = search.result.columns
 
             indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
-            for col in search.resultaat.columns:
+            for col in search.result.columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1  
 
         
             # Display rows 
-            for each_rec in range(len(search.resultaat.columns)):
-                self.tk_table.insert("", tk.END, values=list(search.resultaat.values[each_rec]))
+            for each_rec in range(len(search.result.columns)):
+                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
 
                   
             
@@ -230,8 +230,8 @@ class PageTwo(tk.Frame):
                             command=self.calculateStopafstand)
         button2.pack()
 
-        self.label_resultaat = tk.Label(self, anchor='w')
-        self.label_resultaat.pack()
+        self.label_result = tk.Label(self, anchor='w')
+        self.label_result.pack()
 
     
     def __del__(self):
@@ -267,7 +267,7 @@ class PageTwo(tk.Frame):
 
             # waiting for answer
             berekening = pickle.load(self.my_writer_obj)
-            self.label_resultaat['text'] = "{0}".format(berekening.stopafstand)
+            self.label_result['text'] = "{0}".format(berekening.stopafstand)
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("Stopafstand", "Something has gone wrong...")

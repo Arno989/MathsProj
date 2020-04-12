@@ -6,10 +6,12 @@ print(os.getcwd())
 
 from server_gui import ServerWindow
 
+
 def callback():
     print("callback")
     gui.close()
     root.destroy()
+
 
 root = Tk()
 root.geometry("600x500")

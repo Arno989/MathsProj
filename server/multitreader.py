@@ -38,7 +38,7 @@ class Movie_thread(threading.Thread):
 
     # thread-klasse!
     def run(self):
-        
+
         try:
             while True:
                 self.print_gui_message("waiting for clients...")
