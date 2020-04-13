@@ -15,7 +15,7 @@ import numpy as np
 #sys.path.insert(0, "../")
 #from data.movie import Stopafstand, ByGenre
 
-from movie import Stopafstand, ByCompany, ByGenre
+from movie import ByCompany, ByGenre, ByName, BetweenYears
  
 
 LARGE_FONT= ("Verdana", 12)
@@ -35,7 +35,7 @@ class Movies(tk.Tk):
         self.frames = {}
 
         # Voeg elke pagina hieraan toe 
-        for F in (HomePage, pageByGenre, pageByName,pageByCompany):
+        for F in (HomePage, pageByGenre, pageByName,pageByCompany, pageBetweenYears):
 
             frame = F(container, self)
 
@@ -71,6 +71,12 @@ class HomePage(tk.Frame):
         btnByCompany = tk.Button(self, text="By Company",
                             command=lambda: controller.show_frame(pageByCompany))
         btnByCompany.pack(side=LEFT)
+
+        btnBetweenYears = tk.Button(self, text="Between Years",
+                            command=lambda: controller.show_frame(pageBetweenYears))
+        btnBetweenYears.pack(side=LEFT)
+
+
 
         
 
@@ -339,7 +345,6 @@ class pageByCompany(tk.Frame):
 
 class pageByName(tk.Frame):
     
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -463,6 +468,148 @@ class pageByName(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName", "Something has gone wrong...")
+
+class pageBetweenYears(tk.Frame):
+    
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+        # Make connection
+        self.makeConnnectionWithServer()
+
+        Title = tk.Label(self, text="Search Between Years", font=LARGE_FONT)
+        Title.pack()
+
+        label = tk.Label(self, text="year:")
+        label.pack()
+
+        
+
+        self.entry_year1 = tk.Entry(self)
+        self.entry_year1.pack()
+
+        label2 = tk.Label(self, text="year:")
+        label2.pack()
+
+        self.entry_year2 = tk.Entry(self)
+        self.entry_year2.pack()
+    
+
+        btnSearch = tk.Button(self, text="Search",
+                            command=self.searchBetweenYears)
+        btnSearch.pack()
+
+        btnClear = tk.Button(self, text="Clear",
+                            command=self.clearTreeview)
+        btnClear.pack()
+
+        btnHome = tk.Button(self, text="Back to Home",
+                            command=lambda: controller.show_frame(HomePage))
+        btnHome.pack()
+
+        #Show treeview na het klikken op de knop
+        self.tk_table = ttk.Treeview(self)
+        self.tk_table.pack()
+
+        #Scroll Vertical   
+        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+        scrolly.pack(fill = 'y',side=RIGHT)
+        self.tk_table.configure(yscrollcommand=scrolly.set)  
+
+        #Scroll Horizontal -> treeview
+        scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
+        scroll.pack(fill = 'x')
+        self.tk_table.configure(xscrollcommand=scroll.set)  
+
+      
+    
+
+
+
+    def __del__(self):
+        self.close_connection()
+
+    def clearTreeview(self):
+        try:
+            for i in self.tk_table.get_children():
+                self.tk_table.delete(i)
+
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("betweenYears - foutmelding", "Something has gone wrong...")
+    
+        
+    
+    def makeConnnectionWithServer(self):
+        try:
+            logging.info("Making connection with server...")
+            # get local machine name
+            host = socket.gethostname()
+            port = 9999
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
+            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            logging.info("Open connection with server succesfully")
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("betweenYears - foutmelding", "Something has gone wrong...")
+    
+    def searchBetweenYears(self):
+        try:
+            #send BYNAME to clienthandler
+            pickle.dump("BETWEENYEARS", self.my_writer_obj)
+
+            
+            year1 = int(self.entry_year1.get())
+            year2 = int(self.entry_year2.get())
+           
+            #Voeg name toe aan klasse 
+            search = BetweenYears(year1,year2)
+            pickle.dump(search, self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            search = pickle.load(self.my_writer_obj)
+            print(search.result.columns)
+
+            self.tk_table['height'] = 10
+
+            self.tk_table['show'] = 'headings'
+
+
+            ## display columns
+            self.tk_table['columns'] = search.result.columns
+            
+            #For each col make colum
+            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            for col in search.result.columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1  
+
+
+        
+            # Display rows 
+            for each_rec in range(len(search.result.values)):
+                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
+
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("betweenYears", "Something has gone wrong...")
+
+    def close_connection(self):
+        try:
+            logging.info("Close connection with server...")
+            pickle.dump("C", self.my_writer_obj)
+        
+            self.my_writer_obj.flush()
+            self.socket_to_server.close()
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("betweenYears", "Something has gone wrong...")
 
 
 logging.basicConfig(level=logging.INFO)

@@ -40,7 +40,7 @@ class ClientHandler(threading.Thread):
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(byGenre.result)
-                print(byGenre.result)
+                
 
                 # stuur genre door
                 pickle.dump(byGenre, writer_obj)
@@ -83,17 +83,19 @@ class ClientHandler(threading.Thread):
 
                 operation = pickle.load(writer_obj)
 
-            while operation == "BYYEAR":
-                byYear = pickle.load(writer_obj)
-                search = str(byYear.year)
+            while operation == "BETWEENYEARS":
+                betweenYears = pickle.load(writer_obj)
+                year1 = int(betweenYears.year1)
+                year2 = int(betweenYears.year2)
                 try:
-                    byYear.result = dataset.loc[dataset["year"] == search]
+                    
+                    betweenYears.result = dataset.loc[(dataset["year"] >=year1) & (dataset["year"] <= year2)]
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
-                self.print_gui_message(f"{byYear.result}")
+                self.print_gui_message(f"{betweenYears.result}")
 
                 # stuur resultaat door
-                pickle.dump(byYear, writer_obj)
+                pickle.dump(betweenYears, writer_obj)
                 writer_obj.flush()
                 self.print_gui_message(f"Sending operation results")
 

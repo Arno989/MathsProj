@@ -1,25 +1,3 @@
-class Stopafstand:
-    def __init__(self, snelheid, reactietijd, wegdek):
-        self.snelheid = snelheid
-        self.reactietijd = reactietijd
-        self.wegdek = wegdek
-        self.stopafstand = None
-
-    def __str__(self):
-        return "Stopafstand berekenen snelheid: %d en reactietijd: %d en wegdek: %s" % (
-            self.snelheid,
-            self.reactietijd,
-            self.wegdek,
-        )
-
-    def __eq__(self, other):
-        return (
-            (self.snelheid == other.snelheid)
-            and (self.reactietijd == other.reactietijd)
-            and (self.wegdek == other.wegdek)
-        )
-
-
 class ByGenre:
     def __init__(self, genre):
         self.genre = genre
@@ -37,4 +15,21 @@ class ByCompany:
         self.result = None
 
     def __str__(self):
-        return f"Genre: {self.company}"
+        return f"Company: {self.company}"
+
+class ByName:
+    def __init__(self, name):
+        self.name = name
+        self.result = None
+
+    def __str__(self):
+        return f"Name: {self.name}"
+
+class BetweenYears:
+    def __init__(self, year1,year2):
+        self.year1 = year1
+        self.year2 = year2
+        self.result = None
+
+    def __str__(self):
+        return f"between: {self.year1} and {self.year2}"
