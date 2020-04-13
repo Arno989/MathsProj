@@ -4,11 +4,12 @@ import pickle
 import pandas as pd
 import numpy as np
 
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', 15)
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", 15)
 pd.set_option("display.width", None)
 
 dataset = pd.read_csv("server/movies.csv", encoding="ISO-8859-1")
+
 
 class ClientHandler(threading.Thread):
     numbers_clienthandlers = 0
@@ -33,7 +34,9 @@ class ClientHandler(threading.Thread):
                 byGenre = pickle.load(writer_obj)
                 search = str(byGenre.genre).capitalize()
                 try:
-                    byGenre.result = dataset.loc[dataset['genre'] == search]  # dataset[dataset.genre == search]
+                    byGenre.result = dataset.loc[
+                        dataset["genre"] == search
+                    ]  # dataset[dataset.genre == search]
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(byGenre.result)
@@ -50,7 +53,9 @@ class ClientHandler(threading.Thread):
                 byCompany = pickle.load(writer_obj)
                 search = str(byCompany.genre)
                 try:
-                    byCompany.result = dataset.loc[dataset['company'] == search]  # dataset[dataset.genre == search]    .lower()*2
+                    byCompany.result = dataset.loc[
+                        dataset["company"] == search
+                    ]  # dataset[dataset.genre == search]    .lower()*2
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(f"{byCompany.result}")
@@ -61,18 +66,34 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
-                
+
             while operation == "BYNAME":
                 byName = pickle.load(writer_obj)
                 search = str(byName.name)
                 try:
-                    byName.result = dataset.loc[dataset['name'] == search]
+                    byName.result = dataset.loc[dataset["name"] == search]
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(f"{byName.result}")
 
                 # stuur resultaat door
                 pickle.dump(byName, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+
+                operation = pickle.load(writer_obj)
+
+            while operation == "BYYEAR":
+                byYear = pickle.load(writer_obj)
+                search = str(byYear.year)
+                try:
+                    byYear.result = dataset.loc[dataset["year"] == search]
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{byYear.result}")
+
+                # stuur resultaat door
+                pickle.dump(byYear, writer_obj)
                 writer_obj.flush()
                 self.print_gui_message(f"Sending operation results")
 
