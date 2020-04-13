@@ -4,11 +4,11 @@ import pickle
 import pandas as pd
 import numpy as np
 
-debug = True
-print(__name__)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', 15)
+pd.set_option("display.width", None)
 
 dataset = pd.read_csv("server/movies.csv", encoding="ISO-8859-1")
-
 
 class ClientHandler(threading.Thread):
     numbers_clienthandlers = 0
@@ -31,15 +31,16 @@ class ClientHandler(threading.Thread):
         while operation != "C":
             while operation == "BYGENRE":
                 byGenre = pickle.load(writer_obj)
-                search = str(byGenre.genre).capitalize
+                search = str(byGenre.genre).capitalize()
                 try:
-                    byGenre.result = dataset[search]
+                    byGenre.result = dataset.loc[dataset['genre'] == search]  # dataset[dataset.genre == search]
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
-                self.print_gui_message(f"{byGenre.result}")
+                self.print_gui_message(byGenre.result)
+                print(byGenre.result)
 
                 # stuur genre door
-                pickle.dump(byGenre.result, writer_obj)
+                pickle.dump(byGenre, writer_obj)
                 writer_obj.flush()
                 self.print_gui_message(f"Sending operation results")
 
@@ -47,15 +48,15 @@ class ClientHandler(threading.Thread):
 
             while operation == "BYCOMPANY":
                 byCompany = pickle.load(writer_obj)
-                search = str(byCompany.genre).capitalize
+                search = str(byCompany.genre)
                 try:
-                    result = dataset[search]
+                    byCompany.result = dataset.loc[dataset['company'] == search]  # dataset[dataset.genre == search]    .lower()*2
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(f"{byCompany.result}")
 
                 # stuur resultaat door
-                pickle.dump(byCompany.result, writer_obj)
+                pickle.dump(byCompany, writer_obj)
                 writer_obj.flush()
                 self.print_gui_message(f"Sending operation results")
 

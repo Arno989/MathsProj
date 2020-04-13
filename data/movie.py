@@ -30,3 +30,11 @@ class ByGenre:
 
     # def __eq__(self, other):
     #    return (self.genre == other.genre)
+
+class ByCompany:
+    def __init__(self, company):
+        self.company = company
+        self.result = None
+
+    def __str__(self):
+        return f"Genre: {self.company}"
