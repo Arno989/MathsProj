@@ -101,9 +101,8 @@ class pageByGenre(tk.Frame):
         label = tk.Label(self, text="Genre:")
         label.pack()
 
-        self.entry_genre = tk.Entry(self)
-        self.entry_genre.pack()
-    
+        #Find genres
+        self.findGenres()
 
         btnSearch = tk.Button(self, text="Search",
                             command=self.searchByGenre)
@@ -117,16 +116,27 @@ class pageByGenre(tk.Frame):
                             command=lambda: controller.show_frame(HomePage))
         btnHome.pack()
 
+        
+
+        #bind with return key 
+        #self.entry_genre.bind("<Return>", (lambda event: self.searchByGenre()))
+
         #Show treeview na het klikken op de knop
         self.tk_table = ttk.Treeview(self)
-        self.tk_table.pack()
+       
+
+        #Scroll Vertical   
+        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+        scrolly.pack(side=RIGHT, fill="y")
+        self.tk_table.configure(yscrollcommand=scrolly.set)
 
         #Scroll Horizontal -> treeview
         scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(fill = 'x')
+        scroll.pack(side=BOTTOM, fill = 'x')
 
         self.tk_table.configure(xscrollcommand=scroll.set)         
-
+        
+        self.tk_table.pack()
 
 
     def __del__(self):
@@ -159,13 +169,49 @@ class pageByGenre(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
     
+    def findGenres(self):
+        try:
+            #get values for combobox
+            pickle.dump("BYGENRE-Genre", self.my_writer_obj)
+           
+            #push random data
+            search = "d"
+            pickle.dump(search, self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            self.genres = pickle.load(self.my_writer_obj)
+            
+            #lijst = self.genres.strip().replace({'[', ']','\'' }).split(' ')
+
+            choices =[]
+            for each_genre in self.genres:
+                choices.append(each_genre)
+
+            print(choices)
+                
+
+            
+            self.cbo_genre = ttk.Combobox(self,state = "readonly", width=40)
+            self.cbo_genre['values'] = choices
+            self.cbo_genre.pack()
+
+            #self.cbo_genre.bind("<<ComboboxSelected>>", (lambda event: self.searchByGenre())
+            
+            
+      
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
+
     def searchByGenre(self):
         try:
             #send BYGENRE to clienthandler
             pickle.dump("BYGENRE", self.my_writer_obj)
 
             
-            genre = str(self.entry_genre.get())
+            genre = str(self.cbo_genre.get())
             print(genre)
            
             #Voef genre toe aan klasse 
@@ -195,7 +241,7 @@ class pageByGenre(tk.Frame):
                 
         
             # Display rows 
-            for each_rec in range(len(search.result.columns)):
+            for each_rec in range(len(search.result.values)):
                 self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
 
                   
@@ -508,21 +554,12 @@ class pageBetweenYears(tk.Frame):
                             command=lambda: controller.show_frame(HomePage))
         btnHome.pack()
 
-        #Show treeview na het klikken op de knop
-        self.tk_table = ttk.Treeview(self)
-        self.tk_table.pack()
-
-        #Scroll Vertical   
-        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-        scrolly.pack(fill = 'y',side=RIGHT)
-        self.tk_table.configure(yscrollcommand=scrolly.set)  
-
-        #Scroll Horizontal -> treeview
-        scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(fill = 'x')
-        self.tk_table.configure(xscrollcommand=scroll.set)  
+       
 
       
+        
+       
+        
     
 
 
@@ -575,9 +612,29 @@ class pageBetweenYears(tk.Frame):
             search = pickle.load(self.my_writer_obj)
             print(search.result.columns)
 
+            #Show treeview na het klikken op de knop
+            self.tk_table = ttk.Treeview(self)
+            
+            #Scroll Vertical   
+            scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+            scrolly.pack(side=RIGHT,ipady=80)
+            self.tk_table.configure(yscrollcommand=scrolly.set)  
+            
+            #Scroll Horizontal -> treeview
+            scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
+            scroll.pack(side = BOTTOM, fill = 'x')
+            self.tk_table.configure(xscrollcommand=scroll.set) 
+
+            
+
+            
+        
+
             self.tk_table['height'] = 10
 
             self.tk_table['show'] = 'headings'
+
+            
 
 
             ## display columns
@@ -595,6 +652,8 @@ class pageBetweenYears(tk.Frame):
             for each_rec in range(len(search.result.values)):
                 self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
 
+
+            self.tk_table.pack(padx=10, side = LEFT)
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
