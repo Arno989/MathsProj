@@ -61,6 +61,22 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
+                
+            while operation == "BYNAME":
+                byName = pickle.load(writer_obj)
+                search = str(byName.name)
+                try:
+                    byName.result = dataset.loc[dataset['name'] == search]
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{byName.result}")
+
+                # stuur resultaat door
+                pickle.dump(byName, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+
+                operation = pickle.load(writer_obj)
 
         self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()
