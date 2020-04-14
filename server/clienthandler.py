@@ -50,6 +50,7 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
+            
 
             while operation == "BYCOMPANY":
                 byCompany = pickle.load(writer_obj)
@@ -127,6 +128,22 @@ class ClientHandler(threading.Thread):
                 while l:
                     self.socketclient.send(l)
                     l = f.read(1024)
+            while operation == "BYGENRE-Genre":
+                try:
+                    #Unique genres
+                    genres = dataset.genre.unique()
+
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{genres}")
+
+                # stuur resultaat door
+                pickle.dump(genres, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+                
+                operation = pickle.load(writer_obj)
+
 
         self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()
