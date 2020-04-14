@@ -7,6 +7,8 @@ import os
 import math
 import matplotlib.pyplot as plt
 import seaborn as sns
+from PIL import Image
+
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", 15)
@@ -54,7 +56,7 @@ class ClientHandler(threading.Thread):
 
             while operation == "BYCOMPANY":
                 byCompany = pickle.load(writer_obj)
-                search = str(byCompany.genre)
+                search = str(byCompany.company)
                 try:
                     byCompany.result = dataset.loc[
                         dataset["company"] == search
@@ -109,12 +111,23 @@ class ClientHandler(threading.Thread):
             while operation == "GRAPH-SCORE":
 
                 # pandas en patplotlib shit
+                plt.rcParams.update({'figure.max_open_warning': 0}) #Max open -> important to avoid a crash
                 plt.figure(figsize=(8, 8))
                 sns.countplot("score", data=dataset)
 
-                # save en open file
+                # save
                 filename = "graph.jpg"
                 plt.savefig(filename)
+
+                #Scale size off image
+                basewidth = 600
+                img = Image.open(filename)
+                wpercent = (basewidth/float(img.size[0]))
+                hsize = int((float(img.size[1])*float(wpercent)))
+                img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+                
+                #Save and open file
+                img.save(filename) 
                 f = open(filename, "rb")
 
                 # filezise
