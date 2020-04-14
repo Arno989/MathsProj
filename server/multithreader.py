@@ -1,6 +1,7 @@
 import logging
 import socket
 import threading
+import sys
 
 import pandas as pd
 import numpy as np
@@ -49,7 +50,11 @@ class Movie_thread(threading.Thread):
 
                 # initiate thread
                 clh = ClientHandler(socket_to_client, self.messages_queue)
-                clh.start()
+                try:
+                    clh.start()
+                except(KeyboardInterrupt, SystemExit):
+                    clh.stop()
+                    sys.kill()
 
                 self.print_gui_message(f"Current thread count: {threading.active_count()}")
         except Exception as ex:

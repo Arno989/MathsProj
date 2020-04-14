@@ -3,6 +3,9 @@ import logging
 import pickle
 import pandas as pd
 import numpy as np
+import os
+import math
+import matplotlib.pyplot as plt
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", 15)
@@ -40,7 +43,6 @@ class ClientHandler(threading.Thread):
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(byGenre.result)
-                
 
                 # stuur genre door
                 pickle.dump(byGenre, writer_obj)
@@ -88,8 +90,10 @@ class ClientHandler(threading.Thread):
                 year1 = int(betweenYears.year1)
                 year2 = int(betweenYears.year2)
                 try:
-                    
-                    betweenYears.result = dataset.loc[(dataset["year"] >=year1) & (dataset["year"] <= year2)]
+
+                    betweenYears.result = dataset.loc[
+                        (dataset["year"] >= year1) & (dataset["year"] <= year2)
+                    ]
                 except Exception as e:
                     self.print_gui_message(f"Error from query: {e}")
                 self.print_gui_message(f"{betweenYears.result}")
@@ -100,6 +104,29 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
+
+            while operation == "GRAPH-SCORE":
+
+                # pandas en patplotlib shit
+
+                # save en open file
+                filename = "graph.jpg"
+                plt.savefig(filename)
+                f = open(filename, "rb")
+
+                # filezise
+                size_in_bytes = os.path.getsize(filename)
+                number = math.ceil(size_in_bytes / 1024)
+
+                # notify client
+                pickle.dump("%d" % number, self.in_out_clh)
+                self.in_out_clh.flush()
+
+                # send graph
+                l = f.read(1024)
+                while l:
+                    self.socketclient.send(l)
+                    l = f.read(1024)
 
         self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()

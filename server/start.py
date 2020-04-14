@@ -9,13 +9,9 @@ from server_gui import ServerWindow
 def Stop():
     logging.info("Deleting window")
     try:
-        print("1")
         root.destroy()
-        print("2")
-        sys.exit()  # stop code run after window deletion
-        print("3")
+        sys.exit()  # stop code run after window deletion ----- threads moeten gestopt worden
         logging.info("Deleted window, this should not show up")
-        print("4")
     except Exception as ex:
         logging.info("Start.py: " + str(ex))
 
