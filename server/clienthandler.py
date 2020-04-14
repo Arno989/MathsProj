@@ -103,10 +103,8 @@ class ClientHandler(threading.Thread):
                 operation = pickle.load(writer_obj)
 
             while operation == "BYGENRE-Genre":
-                #thiss need to be called 
-                byGenre = pickle.load(writer_obj)
                 try:
-                   
+                    #Unique genres
                     genres = dataset.genre.unique()
 
                 except Exception as e:
