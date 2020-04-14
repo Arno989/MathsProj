@@ -6,6 +6,7 @@ import numpy as np
 import os
 import math
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", 15)
@@ -50,7 +51,6 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
-            
 
             while operation == "BYCOMPANY":
                 byCompany = pickle.load(writer_obj)
@@ -109,6 +109,8 @@ class ClientHandler(threading.Thread):
             while operation == "GRAPH-SCORE":
 
                 # pandas en patplotlib shit
+                plt.figure(figsize=(8, 8))
+                sns.countplot("score", data=dataset)
 
                 # save en open file
                 filename = "graph.jpg"
@@ -120,17 +122,20 @@ class ClientHandler(threading.Thread):
                 number = math.ceil(size_in_bytes / 1024)
 
                 # notify client
-                pickle.dump("%d" % number, self.in_out_clh)
-                self.in_out_clh.flush()
+                pickle.dump("%d" % number, writer_obj)
+                writer_obj.flush()
 
                 # send graph
                 l = f.read(1024)
                 while l:
-                    self.socketclient.send(l)
+                    pickle.dump(l, writer_obj)
+                    writer_obj.flush()
+                    # self.socketclient.send(l)
                     l = f.read(1024)
+
             while operation == "BYGENRE-Genre":
                 try:
-                    #Unique genres
+                    # Unique genres
                     genres = dataset.genre.unique()
 
                 except Exception as e:
@@ -141,9 +146,8 @@ class ClientHandler(threading.Thread):
                 pickle.dump(genres, writer_obj)
                 writer_obj.flush()
                 self.print_gui_message(f"Sending operation results")
-                
-                operation = pickle.load(writer_obj)
 
+                operation = pickle.load(writer_obj)
 
         self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()

@@ -5,39 +5,46 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 import pandas as pd
-from tkinter import ttk 
+from tkinter import ttk
 import numpy as np
 
 from PIL import ImageTk, Image
 
-#import os
-#print(os.getcwd())
+# import os
+# print(os.getcwd())
 
-#import sys
-#sys.path.insert(0, "../")
-#from data.movie import Stopafstand, ByGenre
+# import sys
+# sys.path.insert(0, "../")
+# from data.movie import Stopafstand, ByGenre
 
 from movie import ByCompany, ByGenre, ByName, BetweenYears
- 
 
-LARGE_FONT= ("Verdana", 12)
+
+LARGE_FONT = ("Verdana", 12)
+
 
 class Movies(tk.Tk):
-
     def __init__(self, *args, **kwargs):
-        
+
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
 
-        container.pack(side="top", fill="both", expand = True)
+        container.pack(side="top", fill="both", expand=True)
 
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
 
-        # Voeg elke pagina hieraan toe 
-        for F in (HomePage, pageByGenre, pageByName,pageByCompany, pageBetweenYears,pageGraphScore):
+        # Voeg elke pagina hieraan toe
+        for F in (
+            HomePage,
+            pageByGenre,
+            pageByName,
+            pageByCompany,
+            pageBetweenYears,
+            pageGraphScore,
+        ):
 
             frame = F(container, self)
 
@@ -46,60 +53,54 @@ class Movies(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(HomePage)
-        
-        
 
     def show_frame(self, cont):
 
         frame = self.frames[cont]
         frame.tkraise()
 
-    
+
 class HomePage(tk.Frame):
-
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self,parent)
+        tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="HOME", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
+        label.pack(pady=10, padx=10)
 
-        btnByGenre = tk.Button(self, text="By Genre",
-                            command=lambda: controller.show_frame(pageByGenre))
-        btnByGenre.pack(side=LEFT,padx=(30,5))
+        btnByGenre = tk.Button(
+            self, text="By Genre", command=lambda: controller.show_frame(pageByGenre)
+        )
+        btnByGenre.pack(side=LEFT, padx=(30, 5))
 
-        btnByName = tk.Button(self, text="By Name",
-                            command=lambda: controller.show_frame(pageByName))
+        btnByName = tk.Button(
+            self, text="By Name", command=lambda: controller.show_frame(pageByName)
+        )
         btnByName.pack(side=LEFT)
 
-        btnByCompany = tk.Button(self, text="By Company",
-                            command=lambda: controller.show_frame(pageByCompany))
+        btnByCompany = tk.Button(
+            self,
+            text="By Company",
+            command=lambda: controller.show_frame(pageByCompany),
+        )
         btnByCompany.pack(side=LEFT)
 
-        btnBetweenYears = tk.Button(self, text="Between Years",
-                            command=lambda: controller.show_frame(pageBetweenYears))
+        btnBetweenYears = tk.Button(
+            self,
+            text="Between Years",
+            command=lambda: controller.show_frame(pageBetweenYears),
+        )
         btnBetweenYears.pack(side=LEFT)
 
-        
-        btnGraphScore = tk.Button(self, text="Graph Off Score",
-                            command=lambda: controller.show_frame(pageGraphScore))
+        btnGraphScore = tk.Button(
+            self,
+            text="Graph Off Score",
+            command=lambda: controller.show_frame(pageGraphScore),
+        )
         btnGraphScore.pack(side=LEFT)
-
-        
-
-
-
-        
-
-
-    
-
 
 
 class pageByGenre(tk.Frame):
-    
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         # Make connection
         self.makeConnnectionWithServer()
@@ -110,42 +111,37 @@ class pageByGenre(tk.Frame):
         label = tk.Label(self, text="Genre:")
         label.pack()
 
-        #Find genres
+        # Find genres
         self.findGenres()
 
-        btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByGenre)
+        btnSearch = tk.Button(self, text="Search", command=self.searchByGenre)
         btnSearch.pack()
 
-        btnClear = tk.Button(self, text="Clear",
-                            command=self.clearTreeview)
+        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
         btnClear.pack()
 
-        btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(HomePage))
+        btnHome = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+        )
         btnHome.pack()
 
-        
+        # bind with return key
+        # self.entry_genre.bind("<Return>", (lambda event: self.searchByGenre()))
 
-        #bind with return key 
-        #self.entry_genre.bind("<Return>", (lambda event: self.searchByGenre()))
-
-        
-        #Show treeview
+        # Show treeview
         self.tk_table = ttk.Treeview(self)
 
-        #Scroll Vertical   
+        # Scroll Vertical
         scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
         scrolly.pack(side=RIGHT, fill="y")
         self.tk_table.configure(yscrollcommand=scrolly.set)
 
-        #Scroll Horizontal -> treeview
+        # Scroll Horizontal -> treeview
         scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(side=BOTTOM, fill = 'x')
-        self.tk_table.configure(xscrollcommand=scroll.set)      
+        scroll.pack(side=BOTTOM, fill="x")
+        self.tk_table.configure(xscrollcommand=scroll.set)
 
         self.tk_table.pack()
-
 
     def __del__(self):
         self.close_connection()
@@ -155,13 +151,10 @@ class pageByGenre(tk.Frame):
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
 
-
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
-    
-        
-    
+
     def makeConnnectionWithServer(self):
         try:
             logging.info("Making connection with server...")
@@ -171,15 +164,15 @@ class pageByGenre(tk.Frame):
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
             self.socket_to_server.connect((host, port))
-            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.my_writer_obj = self.socket_to_server.makefile(mode="rwb")
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
-    
+
     def findGenres(self):
         try:
-            #get values for combobox
+            # get values for combobox
             pickle.dump("BYGENRE-Genre", self.my_writer_obj)
             self.my_writer_obj.flush()
 
@@ -187,31 +180,30 @@ class pageByGenre(tk.Frame):
             self.genres = pickle.load(self.my_writer_obj)
 
             # Each genre go in list choices
-            choices =[]
+            choices = []
             for each_genre in self.genres:
                 choices.append(each_genre)
-                
-            #Create combobox
-            self.cbo_genre = ttk.Combobox(self,state = "readonly", width=40)
-            self.cbo_genre['values'] = choices
+
+            # Create combobox
+            self.cbo_genre = ttk.Combobox(self, state="readonly", width=40)
+            self.cbo_genre["values"] = choices
             self.cbo_genre.pack()
 
-            #self.cbo_genre.bind("<<ComboboxSelected>>", (lambda event: self.searchByGenre())
-       
+            # self.cbo_genre.bind("<<ComboboxSelected>>", (lambda event: self.searchByGenre())
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
 
     def searchByGenre(self):
         try:
-            #send BYGENRE to clienthandler
+            # send BYGENRE to clienthandler
             pickle.dump("BYGENRE", self.my_writer_obj)
 
-            
             genre = str(self.cbo_genre.get())
             print(genre)
-           
-            #Voef genre toe aan klasse 
+
+            # Voef genre toe aan klasse
             search = ByGenre(genre)
             pickle.dump(search, self.my_writer_obj)
             self.my_writer_obj.flush()
@@ -219,27 +211,24 @@ class pageByGenre(tk.Frame):
             # waiting for answer
             search = pickle.load(self.my_writer_obj)
             print(search.result.columns)
-   
-            
-            self.tk_table['height'] = 17
 
-            self.tk_table['show'] = 'headings'
-            
+            self.tk_table["height"] = 17
+
+            self.tk_table["show"] = "headings"
+
             ## display columns
-            self.tk_table['columns'] = search.result.columns
+            self.tk_table["columns"] = search.result.columns
 
-            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
             for col in search.result.columns.values:
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
-                
-        
-            # Display rows 
-            for each_rec in range(len(search.result.values)):
-                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
 
-                  
-          
+            # Display rows
+            for each_rec in range(len(search.result.values)):
+                self.tk_table.insert(
+                    "", tk.END, values=list(search.result.values[each_rec])
+                )
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -249,7 +238,7 @@ class pageByGenre(tk.Frame):
         try:
             logging.info("Close connection with server...")
             pickle.dump("C", self.my_writer_obj)
-        
+
             self.my_writer_obj.flush()
             self.socket_to_server.close()
         except Exception as ex:
@@ -257,13 +246,9 @@ class pageByGenre(tk.Frame):
             messagebox.showinfo("byGenre", "Something has gone wrong...")
 
 
-
 class pageByCompany(tk.Frame):
-    
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         # Make connection
         self.makeConnnectionWithServer()
@@ -276,30 +261,27 @@ class pageByCompany(tk.Frame):
 
         self.entry_company = tk.Entry(self)
         self.entry_company.pack()
-    
 
-        btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByCompany)
+        btnSearch = tk.Button(self, text="Search", command=self.searchByCompany)
         btnSearch.pack()
 
-        btnClear = tk.Button(self, text="Clear",
-                            command=self.clearTreeview)
+        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
         btnClear.pack()
 
-        btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(HomePage))
+        btnHome = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+        )
         btnHome.pack()
 
-        #Show treeview na het klikken op de knop
+        # Show treeview na het klikken op de knop
         self.tk_table = ttk.Treeview(self)
         self.tk_table.pack()
 
-        #Scroll Horizontal -> treeview
+        # Scroll Horizontal -> treeview
         scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(fill = 'x')
+        scroll.pack(fill="x")
 
-        self.tk_table.configure(xscrollcommand=scroll.set)         
-
+        self.tk_table.configure(xscrollcommand=scroll.set)
 
 
     def __del__(self):
@@ -309,14 +291,12 @@ class pageByCompany(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
-
-
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("byCompany - foutmelding", "Something has gone wrong...")
-    
-        
-    
+            messagebox.showinfo(
+                "byCompany - foutmelding", "Something has gone wrong..."
+            )
+
     def makeConnnectionWithServer(self):
         try:
             logging.info("Making connection with server...")
@@ -326,22 +306,23 @@ class pageByCompany(tk.Frame):
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
             self.socket_to_server.connect((host, port))
-            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.my_writer_obj = self.socket_to_server.makefile(mode="rwb")
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("byCompany - foutmelding", "Something has gone wrong...")
-    
+            messagebox.showinfo(
+                "byCompany - foutmelding", "Something has gone wrong..."
+            )
+
     def searchByCompany(self):
         try:
-            #send BYCOMPANY to clienthandler
+            # send BYCOMPANY to clienthandler
             pickle.dump("BYCOMPANY", self.my_writer_obj)
 
-            
             company = str(self.entry_company.get())
             print(company)
-           
-            #add to  klasse 
+
+            # add to  klasse
             search = ByCompany(company)
             pickle.dump(search, self.my_writer_obj)
             self.my_writer_obj.flush()
@@ -351,22 +332,23 @@ class pageByCompany(tk.Frame):
             print(search)
             print(search.result.values)
 
-            self.tk_table['height'] = 20
+            self.tk_table["height"] = 20
 
-            self.tk_table['show'] = 'headings'
-            
+            self.tk_table["show"] = "headings"
+
             ## display columns
-            self.tk_table['columns'] = search.result.columns
+            self.tk_table["columns"] = search.result.columns
 
-            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
             for col in search.result.columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
-                indexx += 1  
+                indexx += 1
 
-        
-            # Display rows 
+            # Display rows
             for each_rec in range(len(search.result.columns)):
-                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
+                self.tk_table.insert(
+                    "", tk.END, values=list(search.result.values[each_rec])
+                )
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -376,18 +358,17 @@ class pageByCompany(tk.Frame):
         try:
             logging.info("Close connection with server...")
             pickle.dump("C", self.my_writer_obj)
-        
+
             self.my_writer_obj.flush()
             self.socket_to_server.close()
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byCompany", "Something has gone wrong...")
 
+
 class pageByName(tk.Frame):
-    
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         # Make connection
         self.makeConnnectionWithServer()
@@ -400,30 +381,27 @@ class pageByName(tk.Frame):
 
         self.entry_name = tk.Entry(self)
         self.entry_name.pack()
-    
 
-        btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByName)
+        btnSearch = tk.Button(self, text="Search", command=self.searchByName)
         btnSearch.pack()
 
-        btnClear = tk.Button(self, text="Clear",
-                            command=self.clearTreeview)
+        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
         btnClear.pack()
 
-        btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(HomePage))
+        btnHome = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+        )
         btnHome.pack()
 
-        #Show treeview na het klikken op de knop
+        # Show treeview na het klikken op de knop
         self.tk_table = ttk.Treeview(self)
         self.tk_table.pack()
 
-        #Scroll Horizontal -> treeview
+        # Scroll Horizontal -> treeview
         scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(fill = 'x')
+        scroll.pack(fill="x")
 
-        self.tk_table.configure(xscrollcommand=scroll.set)         
-
+        self.tk_table.configure(xscrollcommand=scroll.set)
 
 
     def __del__(self):
@@ -434,13 +412,10 @@ class pageByName(tk.Frame):
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
 
-
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName - foutmelding", "Something has gone wrong...")
-    
-        
-    
+
     def makeConnnectionWithServer(self):
         try:
             logging.info("Making connection with server...")
@@ -450,22 +425,21 @@ class pageByName(tk.Frame):
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
             self.socket_to_server.connect((host, port))
-            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.my_writer_obj = self.socket_to_server.makefile(mode="rwb")
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName - foutmelding", "Something has gone wrong...")
-    
+
     def searchByName(self):
         try:
-            #send BYNAME to clienthandler
+            # send BYNAME to clienthandler
             pickle.dump("BYNAME", self.my_writer_obj)
 
-            
             name = str(self.entry_name.get())
             print(name)
-           
-            #Voeg name toe aan klasse 
+
+            # Voeg name toe aan klasse
             search = ByName(name)
             pickle.dump(search, self.my_writer_obj)
             self.my_writer_obj.flush()
@@ -474,25 +448,23 @@ class pageByName(tk.Frame):
             search = pickle.load(self.my_writer_obj)
             print(search.result.columns)
 
-            self.tk_table['height'] = 20
+            self.tk_table["height"] = 20
 
-            self.tk_table['show'] = 'headings'
-            
+            self.tk_table["show"] = "headings"
+
             ## display columns
-            self.tk_table['columns'] = search.result.columns
+            self.tk_table["columns"] = search.result.columns
 
-            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
             for col in search.result.columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
-                indexx += 1  
+                indexx += 1
 
-        
-            # Display rows 
+            # Display rows
             for each_rec in range(len(search.result.columns)):
-                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
-
-                  
-            
+                self.tk_table.insert(
+                    "", tk.END, values=list(search.result.values[each_rec])
+                )
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -502,18 +474,17 @@ class pageByName(tk.Frame):
         try:
             logging.info("Close connection with server...")
             pickle.dump("C", self.my_writer_obj)
-        
+
             self.my_writer_obj.flush()
             self.socket_to_server.close()
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName", "Something has gone wrong...")
 
+
 class pageBetweenYears(tk.Frame):
-    
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         # Make connection
         self.makeConnnectionWithServer()
@@ -524,8 +495,6 @@ class pageBetweenYears(tk.Frame):
         label = tk.Label(self, text="year:")
         label.pack()
 
-        
-
         self.entry_year1 = tk.Entry(self)
         self.entry_year1.pack()
 
@@ -534,28 +503,17 @@ class pageBetweenYears(tk.Frame):
 
         self.entry_year2 = tk.Entry(self)
         self.entry_year2.pack()
-    
 
-        btnSearch = tk.Button(self, text="Search",
-                            command=self.searchBetweenYears)
+        btnSearch = tk.Button(self, text="Search", command=self.searchBetweenYears)
         btnSearch.pack()
 
-        btnClear = tk.Button(self, text="Clear",
-                            command=self.clearTreeview)
+        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
         btnClear.pack()
 
-        btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(HomePage))
+        btnHome = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+        )
         btnHome.pack()
-
-       
-
-      
-        
-       
-        
-    
-
 
 
     def __del__(self):
@@ -565,14 +523,12 @@ class pageBetweenYears(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
-
-
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("betweenYears - foutmelding", "Something has gone wrong...")
-    
-        
-    
+            messagebox.showinfo(
+                "betweenYears - foutmelding", "Something has gone wrong..."
+            )
+
     def makeConnnectionWithServer(self):
         try:
             logging.info("Making connection with server...")
@@ -582,23 +538,24 @@ class pageBetweenYears(tk.Frame):
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
             self.socket_to_server.connect((host, port))
-            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.my_writer_obj = self.socket_to_server.makefile(mode="rwb")
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("betweenYears - foutmelding", "Something has gone wrong...")
-    
+            messagebox.showinfo(
+                "betweenYears - foutmelding", "Something has gone wrong..."
+            )
+
     def searchBetweenYears(self):
         try:
-            #send BYNAME to clienthandler
+            # send BYNAME to clienthandler
             pickle.dump("BETWEENYEARS", self.my_writer_obj)
 
-            
             year1 = int(self.entry_year1.get())
             year2 = int(self.entry_year2.get())
-           
-            #Voeg name toe aan klasse 
-            search = BetweenYears(year1,year2)
+
+            # Voeg name toe aan klasse
+            search = BetweenYears(year1, year2)
             pickle.dump(search, self.my_writer_obj)
             self.my_writer_obj.flush()
 
@@ -606,45 +563,39 @@ class pageBetweenYears(tk.Frame):
             search = pickle.load(self.my_writer_obj)
             print(search.result.columns)
 
-            #Show treeview na het klikken op de knop
+            # Show treeview na het klikken op de knop
             self.tk_table = ttk.Treeview(self)
-            
-            #Scroll Vertical   
+
+            # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT,ipady=80)
-            self.tk_table.configure(yscrollcommand=scrolly.set)  
-            
-            #Scroll Horizontal -> treeview
+            scrolly.pack(side=RIGHT, ipady=80)
+            self.tk_table.configure(yscrollcommand=scrolly.set)
+
+            # Scroll Horizontal -> treeview
             scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-            scroll.pack(side = BOTTOM, fill = 'x')
-            self.tk_table.configure(xscrollcommand=scroll.set) 
+            scroll.pack(side=BOTTOM, fill="x")
+            self.tk_table.configure(xscrollcommand=scroll.set)
 
-        
+            self.tk_table["height"] = 10
 
-            self.tk_table['height'] = 10
-
-            self.tk_table['show'] = 'headings'
-
-            
-
+            self.tk_table["show"] = "headings"
 
             ## display columns
-            self.tk_table['columns'] = search.result.columns
-            
-            #For each col make colum
-            indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
+            self.tk_table["columns"] = search.result.columns
+
+            # For each col make colum
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
             for col in search.result.columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
-                indexx += 1  
+                indexx += 1
 
-
-        
-            # Display rows 
+            # Display rows
             for each_rec in range(len(search.result.values)):
-                self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
+                self.tk_table.insert(
+                    "", tk.END, values=list(search.result.values[each_rec])
+                )
 
-
-            self.tk_table.pack(padx=10, side = LEFT)
+            self.tk_table.pack(padx=10, side=LEFT)
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -654,7 +605,7 @@ class pageBetweenYears(tk.Frame):
         try:
             logging.info("Close connection with server...")
             pickle.dump("C", self.my_writer_obj)
-        
+
             self.my_writer_obj.flush()
             self.socket_to_server.close()
         except Exception as ex:
@@ -663,7 +614,6 @@ class pageBetweenYears(tk.Frame):
 
 
 class pageGraphScore(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -672,26 +622,23 @@ class pageGraphScore(tk.Frame):
 
         Title = tk.Label(self, text="Show Graph Off Score ", font=LARGE_FONT)
         Title.pack()
-
-
-        btnShowGraph = tk.Button(self, text="Show Graph",
-                            command=self.showGraph)
+        btnShowGraph = tk.Button(self, text="Show Graph", command=self.showGraph)
         btnShowGraph.pack()
 
-        btnHome = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(HomePage))
+        btnHome = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+        )
         btnHome.pack()
 
-        #bind with return key 
+        # bind with return key
         btnShowGraph.bind("<Return>", (lambda event: self.showGraph()))
 
         self.image = tk.Label(self)
-        self.image.pack(pady=(0,5),padx=(5,5))
-            
+        self.image.pack(pady=(0, 5), padx=(5, 5))
+
     def __del__(self):
         self.close_connection()
-        
-    
+
     def makeConnnectionWithServer(self):
         try:
             logging.info("Making connection with server...")
@@ -701,52 +648,55 @@ class pageGraphScore(tk.Frame):
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
             self.socket_to_server.connect((host, port))
-            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.my_writer_obj = self.socket_to_server.makefile(mode="rwb")
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("graphScore - foutmelding", "Something has gone wrong...")
-    
+            messagebox.showinfo(
+                "graphScore - foutmelding", "Something has gone wrong..."
+            )
+
     def showGraph(self):
         try:
-            #get values for combobox
+            # get values for combobox
             pickle.dump("GRAPH-SCORE", self.my_writer_obj)
             self.my_writer_obj.flush()
-            
-            #get image
+
+            # get image
             answer = pickle.load(self.my_writer_obj)
             number_of_sends = int(answer)
 
-            with open('received_file', 'wb+') as f:
+            with open("received_file", "wb+") as f:
                 for i in range(0, number_of_sends):
-                    data = self.s.recv(1024)
+                    data = pickle.load(self.my_writer_obj)
                     f.write(data)
 
-            logging.info('Successfully get the image')
-           
-            #showing image
-            im = Image.open('received_file')
+            logging.info("Successfully get the image")
+
+            # showing image
+            im = Image.open("received_file")
             self.img = ImageTk.PhotoImage(Image.open("received_file"))
-            self.image['image'] = self.img
-            #change size window
-            #width, height = im.size
-            #self.parent.geometry("%dx%d" %(width, height))
-        
+            self.image["image"] = self.img
+            # change size window
+            # width, height = im.size
+            # self.parent.geometry("%dx%d" %(width, height))
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("graphScore - foutmelding", "Something has gone wrong...")
+            messagebox.showinfo(
+                "graphScore - foutmelding", "Something has gone wrong..."
+            )
 
     def close_connection(self):
         try:
             logging.info("Close connection with server...")
             pickle.dump("C", self.my_writer_obj)
-        
+
             self.my_writer_obj.flush()
             self.socket_to_server.close()
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("graphScore", "Something has gone wrong...")
-
 
 
 logging.basicConfig(level=logging.INFO)
