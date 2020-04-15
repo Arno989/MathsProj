@@ -145,8 +145,9 @@ class ClientHandler(threading.Thread):
                     writer_obj.flush()
                     # self.socketclient.send(l)
                     l = f.read(1024)
-
-            while operation == "BYGENRE-Genre":
+            
+            ######### Get unique values to create comboboxes #########
+            while operation == "GET-GENRES":
                 try:
                     # Unique genres
                     genres = dataset.genre.unique()
@@ -161,6 +162,56 @@ class ClientHandler(threading.Thread):
                 self.print_gui_message(f"Sending operation results")
 
                 operation = pickle.load(writer_obj)
+
+            while operation == "GET-COMPANIES":
+                try:
+                    # Unique companies
+                    companies = dataset.company.unique()
+
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{companies}")
+
+                # stuur resultaat door
+                pickle.dump(companies, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+
+                operation = pickle.load(writer_obj)
+            
+            while operation == "GET-NAMES":
+                try:
+                    # Unique names
+                    names = dataset.name.unique()
+
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{names}")
+
+                # stuur resultaat door
+                pickle.dump(names, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+
+                operation = pickle.load(writer_obj)
+            
+            while operation == "GET-YEARS":
+                try:
+                    # Unique years
+                    years = dataset.year.unique()
+
+                except Exception as e:
+                    self.print_gui_message(f"Error from query: {e}")
+                self.print_gui_message(f"{years}")
+
+                # stuur resultaat door
+                pickle.dump(years, writer_obj)
+                writer_obj.flush()
+                self.print_gui_message(f"Sending operation results")
+
+                operation = pickle.load(writer_obj)
+            
+            
 
         self.print_gui_message(f"Connection closed")
         self.socket_to_client.close()

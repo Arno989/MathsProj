@@ -125,7 +125,7 @@ class pageByGenre(tk.Frame):
         label.pack()
 
         #Find genres
-        self.findGenres()
+        self.getGenres()
 
         btnSearch = tk.Button(self, text="Search",
                             command=self.searchByGenre)
@@ -191,10 +191,10 @@ class pageByGenre(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
     
-    def findGenres(self):
+    def getGenres(self):
         try:
             #get values for combobox
-            pickle.dump("BYGENRE-Genre", self.my_writer_obj)
+            pickle.dump("GET-GENRES", self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
@@ -221,9 +221,8 @@ class pageByGenre(tk.Frame):
             #send BYGENRE to clienthandler
             pickle.dump("BYGENRE", self.my_writer_obj)
 
-            
+            # selected value off combobox
             genre = str(self.cbo_genre.get())
-            print(genre)
            
             #Voef genre toe aan klasse 
             search = ByGenre(genre)
@@ -295,8 +294,8 @@ class pageByCompany(tk.Frame):
         label = tk.Label(self, text="Company:")
         label.pack()
 
-        self.entry_company = tk.Entry(self)
-        self.entry_company.pack()
+        # get companies and create combobox
+        self.getCompanies()
     
 
         btnSearch = tk.Button(self, text="Search",
@@ -357,15 +356,37 @@ class pageByCompany(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byCompany - foutmelding", "Something has gone wrong...")
     
+    def getCompanies(self):
+        try:
+            #get values for combobox
+            pickle.dump("GET-COMPANIES", self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            self.companies = pickle.load(self.my_writer_obj)
+
+            # Each companie go in list choices
+            choices =[]
+            for each_companie in self.companies:
+                choices.append(each_companie)
+                
+            #Create combobox
+            self.cbo_companie = ttk.Combobox(self,state = "readonly", width=40)
+            self.cbo_companie['values'] = choices
+            self.cbo_companie.pack()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("getCompanies - foutmelding", "Something has gone wrong...")
+
     def searchByCompany(self):
         try:
             #send BYCOMPANY to clienthandler
             pickle.dump("BYCOMPANY", self.my_writer_obj)
 
+            # Get selected value off combobox
+            company = str(self.cbo_companie.get())
             
-            company = str(self.entry_company.get())
-            print(company)
-           
             #add to  klasse 
             search = ByCompany(company)
             pickle.dump(search, self.my_writer_obj)
@@ -432,8 +453,8 @@ class pageByName(tk.Frame):
         label = tk.Label(self, text="Name:")
         label.pack()
 
-        self.entry_name = tk.Entry(self)
-        self.entry_name.pack()
+        # Get values to search and create combobox
+        self.getNames()
     
 
         btnSearch = tk.Button(self, text="Search",
@@ -495,14 +516,37 @@ class pageByName(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName - foutmelding", "Something has gone wrong...")
     
+    def getNames(self):
+        try:
+            #get values for combobox
+            pickle.dump("GET-NAMES", self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            self.names = pickle.load(self.my_writer_obj)
+
+            # Each name go in list choices
+            choices =[]
+            for each_name in self.names:
+                choices.append(each_name)
+                
+            #Create combobox
+            self.cbo_name = ttk.Combobox(self,state = "readonly", width=40)
+            self.cbo_name['values'] = choices
+            self.cbo_name.pack()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("getNames - foutmelding", "Something has gone wrong...")
+
+
     def searchByName(self):
         try:
             #send BYNAME to clienthandler
             pickle.dump("BYNAME", self.my_writer_obj)
 
-            
-            name = str(self.entry_name.get())
-            print(name)
+            #get selectec value off combobox
+            name = str(self.cbo_name.get())
            
             #Voeg name toe aan klasse 
             search = ByName(name)
@@ -566,19 +610,9 @@ class pageBetweenYears(tk.Frame):
         Title = tk.Label(self, text="Search Between Years", font=LARGE_FONT)
         Title.pack()
 
-        label = tk.Label(self, text="year:")
-        label.pack()
-
         
-
-        self.entry_year1 = tk.Entry(self)
-        self.entry_year1.pack()
-
-        label2 = tk.Label(self, text="year:")
-        label2.pack()
-
-        self.entry_year2 = tk.Entry(self)
-        self.entry_year2.pack()
+        # get years and create combobox (year1 & year2)
+        self.getYears()
     
 
         btnSearch = tk.Button(self, text="Search",
@@ -640,15 +674,66 @@ class pageBetweenYears(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("betweenYears - foutmelding", "Something has gone wrong...")
     
+    
+    def getYears(self):
+        try:
+            #get values for combobox
+            pickle.dump("GET-YEARS", self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            self.years = pickle.load(self.my_writer_obj)
+
+            # Each year go in list choices
+            choices =[]
+            for each_year in self.years:
+                choices.append(each_year)
+
+                
+            #Create label for year1
+            label = tk.Label(self, text="From year:")
+            label.pack()
+
+            #Create combobox year1
+            self.cbo_year1 = ttk.Combobox(self,state = "readonly", width=40)
+            self.cbo_year1['values'] = choices
+            self.cbo_year1.pack()
+
+            #Create label for year1
+            label2 = tk.Label(self, text="To year:")
+            label2.pack()
+
+            #Create combobox year2
+            self.cbo_year2 = ttk.Combobox(self,state = "readonly", width=40)
+            self.cbo_year2['values'] = choices
+            self.cbo_year2.pack()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("getYears - foutmelding", "Something has gone wrong...")
+
+
+    
     def searchBetweenYears(self):
         try:
             #send BYNAME to clienthandler
             pickle.dump("BETWEENYEARS", self.my_writer_obj)
 
-            
-            year1 = int(self.entry_year1.get())
-            year2 = int(self.entry_year2.get())
+            # get values from cbo
+            year1 = int(self.cbo_year1.get())
+            year2 = int(self.cbo_year2.get())
+
+            #show warning when year2 > year1 
+            while year2 < year1:
+                messagebox.showwarning("Warning","TO YEAR must be greater than FROM YEAR. We will increase FROM YEAR with TO YEAR + 1 year")
+                self.cbo_year2.set(year1 + 1) # set value of year2 to value (year1 + 1)
+
+                # get valid values from cbo
+                year1 = int(self.cbo_year1.get())
+                year2 = int(self.cbo_year2.get())
+
            
+
             #Voeg name toe aan klasse 
             search = BetweenYears(year1,year2)
             pickle.dump(search, self.my_writer_obj)
@@ -673,10 +758,8 @@ class pageBetweenYears(tk.Frame):
             indexx = 1 # niet 0 omdat je de eerte kolom niet kunt gebruiken 
             for col in search.result.columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
-                indexx += 1  
+                indexx += 1
 
-
-        
             # Display rows 
             for each_rec in range(len(search.result.values)):
                 self.tk_table.insert("", tk.END, values=list(search.result.values[each_rec]))
