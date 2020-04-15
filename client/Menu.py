@@ -85,6 +85,7 @@ class HomePage(tk.Frame):
                             command=lambda: controller.show_frame(pageGraphScore))
         btnGraphScore.pack(ipady=10,ipadx=150,pady=10)
 
+        #Wordt verwijderd 
         btnreconnect = tk.Button(self, text="Reconnect To Server",
                             command=lambda: makeConnnectionWithServer(self))
         btnreconnect.pack(ipady=10,ipadx=150,pady=10)
@@ -128,7 +129,7 @@ class pageByGenre(tk.Frame):
         self.getGenres()
 
         btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByGenre)
+                            command=self.controleValues)
         btnSearch.pack(pady=5,ipadx=30,ipady=5)
 
         btnClear = tk.Button(self, text="Clear",
@@ -168,6 +169,8 @@ class pageByGenre(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
+
+            self.cbo_genre.set("")
 
 
         except Exception as ex:
@@ -215,6 +218,23 @@ class pageByGenre(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
+    
+    def controleValues(self):
+        try:
+            # get values from cbo
+            genre = str(self.cbo_genre.get())
+            
+            # When is empty give warning
+            if genre == '':
+                tk.messagebox.showwarning(title='Warning',message='Genre is empty !')
+                self.cbo_genre.focus()
+            else:
+                #go to function
+                self.searchByGenre()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleGenre - foutmelding", "Something has gone wrong...")
 
     def searchByGenre(self):
         try:
@@ -299,7 +319,7 @@ class pageByCompany(tk.Frame):
     
 
         btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByCompany)
+                            command=self.controleValues)
         btnSearch.pack(pady=5,ipadx=30,ipady=5)
 
         btnClear = tk.Button(self, text="Clear",
@@ -333,6 +353,8 @@ class pageByCompany(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
+            
+            self.cbo_companie.set("")
 
 
         except Exception as ex:
@@ -378,6 +400,24 @@ class pageByCompany(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("getCompanies - foutmelding", "Something has gone wrong...")
+
+    def controleValues(self):
+        try:
+            # get values from cbo
+            companie = str(self.cbo_companie.get())
+            
+            # When it's empty give warning
+            if companie == '':
+                tk.messagebox.showwarning(title='Warning',message='Companie is empty !')
+                self.cbo_companie.focus()
+            else:
+                #go to function
+                self.searchByCompany()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleCompany - foutmelding", "Something has gone wrong...")
+
 
     def searchByCompany(self):
         try:
@@ -458,7 +498,7 @@ class pageByName(tk.Frame):
     
 
         btnSearch = tk.Button(self, text="Search",
-                            command=self.searchByName)
+                            command=self.controleValues)
         btnSearch.pack(pady=5,ipadx=30,ipady=5)
 
         btnClear = tk.Button(self, text="Clear",
@@ -493,7 +533,8 @@ class pageByName(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
-
+            self.cbo_name.set("")
+        
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -538,6 +579,24 @@ class pageByName(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("getNames - foutmelding", "Something has gone wrong...")
+    
+    def controleValues(self):
+        try:
+            # get values from cbo
+            name = str(self.cbo_name.get())
+            
+            # When is empty give warning
+            if name == '':
+                tk.messagebox.showwarning(title='Warning',message='Name is empty !')
+                self.cbo_name.focus()
+            else:
+                #go to function
+                self.searchByName()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleName - foutmelding", "Something has gone wrong...")
+
 
 
     def searchByName(self):
@@ -616,7 +675,7 @@ class pageBetweenYears(tk.Frame):
     
 
         btnSearch = tk.Button(self, text="Search",
-                            command=self.searchBetweenYears)
+                            command=self.controleValues)
         btnSearch.pack(pady=5,ipadx=30,ipady=5)
 
         btnClear = tk.Button(self, text="Clear",
@@ -651,6 +710,8 @@ class pageBetweenYears(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
+            self.cbo_year1.set("")
+            self.cbo_year2.set("")
 
 
         except Exception as ex:
@@ -712,7 +773,33 @@ class pageBetweenYears(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("getYears - foutmelding", "Something has gone wrong...")
 
+    def controleValues(self):
 
+        try:
+            # get values from cbo
+            year1 = self.cbo_year1.get()
+            year2 = self.cbo_year2.get()
+
+            # When year1 or year2 is empty
+            if year1 == '' or year2 =='':
+                tk.messagebox.showwarning(title='Warning',message='FROM YEAR or TO YEAR is empty !!')
+            else:
+                # to int 
+                year1 = int(self.cbo_year1.get())
+                year2 = int(self.cbo_year2.get())
+
+                #show warning when year2 > year1 
+                if year1 < year2:
+                    self.searchBetweenYears()
+                else:
+                    tk.messagebox.showwarning(title='Warning',message='TO YEAR need to be greather than FROM YEAR !!')
+                    self.cbo_year2.focus()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleBetweenYears - foutmelding", "Something has gone wrong...")
+
+            
     
     def searchBetweenYears(self):
         try:
@@ -722,17 +809,6 @@ class pageBetweenYears(tk.Frame):
             # get values from cbo
             year1 = int(self.cbo_year1.get())
             year2 = int(self.cbo_year2.get())
-
-            #show warning when year2 > year1 
-            while year2 < year1:
-                messagebox.showwarning("Warning","TO YEAR must be greater than FROM YEAR. We will increase FROM YEAR with TO YEAR + 1 year")
-                self.cbo_year2.set(year1 + 1) # set value of year2 to value (year1 + 1)
-
-                # get valid values from cbo
-                year1 = int(self.cbo_year1.get())
-                year2 = int(self.cbo_year2.get())
-
-           
 
             #Voeg name toe aan klasse 
             search = BetweenYears(year1,year2)
@@ -746,7 +822,7 @@ class pageBetweenYears(tk.Frame):
 
             self.tk_table['show'] = 'headings'
 
-             #add each colum in columns
+            #add each colum in columns
             columns = []
             for col in search.result.columns:
                 columns.append(col)
@@ -766,8 +842,7 @@ class pageBetweenYears(tk.Frame):
 
             #Change width and high off window
             app.geometry("700x600")
-           
-
+        
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("betweenYears", "Something has gone wrong...")
