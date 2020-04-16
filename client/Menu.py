@@ -271,7 +271,7 @@ class pageSignUp(tk.Frame):
            
             #Voeg signIn toe aan klasse 
             signUp = SignUp(name,nickname,email,password)
-            pickle.dump(signIn, self.my_writer_obj)
+            pickle.dump(signUp, self.my_writer_obj)
             self.my_writer_obj.flush()
            
             # waiting for answer
