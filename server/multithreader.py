@@ -6,7 +6,7 @@ import sys
 import pandas as pd
 import numpy as np
 
-from clienthandler import ClientHandler
+from server.clientHandler import ClientHandler
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,7 +17,7 @@ class Movie_thread(threading.Thread):
         self.__is_connected = False
         self.host = host
         self.port = port
-        # self.init_server() 
+        # self.init_server()
         self.messages_queue = messages_queue
 
     @property
@@ -43,7 +43,7 @@ class Movie_thread(threading.Thread):
         try:
             while True:
                 self.print_gui_message("waiting for clients...")
-                
+
                 # establish a connection
                 socket_to_client, addr = self.serversocket.accept()
                 self.print_gui_message(f"Established connection with: {addr}")
@@ -52,14 +52,16 @@ class Movie_thread(threading.Thread):
                 clh = ClientHandler(socket_to_client, self.messages_queue)
                 try:
                     clh.start()
-                except(KeyboardInterrupt, SystemExit):
+                except (KeyboardInterrupt, SystemExit):
                     clh.stop()
                     sys.kill()
 
-                self.print_gui_message(f"Current thread count: {threading.active_count()}")
+                self.print_gui_message(
+                    f"Current thread count: {threading.active_count()}"
+                )
         except Exception as ex:
-            logging.error(f"Multithreader.py: {ex}")
-            self.print_gui_message("SOCKET CLOSED")
+            logging.error(f"Multithreader.py :> {ex}")
+            self.print_gui_message(f"SOCKET CLOSED: {ex}")
 
     def print_gui_message(self, message):
         self.messages_queue.put(f"Server:>  {message}")

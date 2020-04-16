@@ -1,32 +1,25 @@
 import logging
+import os
 import pickle
 import socket
+import sys
 import tkinter as tk
 from tkinter import *
-from tkinter import messagebox
-import pandas as pd
-from tkinter import ttk 
+from tkinter import messagebox, ttk
+
 import numpy as np
-
-from PIL import ImageTk, Image
-
-import os
-#print(os.getcwd())
-
-import sys
-#sys.path.insert(0, "../")
-#from data.movie import Stopafstand, ByGenre
-
+import pandas as pd
+from PIL import Image, ImageTk
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_ROOT)
 sys.path.insert(0, BASE_DIR)
 
+from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
-from data.movie import ByCompany, ByGenre, ByName, BetweenYears, SignIn, SignUp
- 
 
 LARGE_FONT= ("Verdana", 12)
+
 
 class Movies(tk.Tk):
 
@@ -62,7 +55,6 @@ class Movies(tk.Tk):
         frame.tkraise()
 
 
-
 class pageSignIn(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -73,11 +65,11 @@ class pageSignIn(tk.Frame):
         Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
         Title.pack()
 
-        label = tk.Label(self, text="Nickname:")
+        label = tk.Label(self, text="username:")
         label.pack()
 
-        self.entry_nickname = tk.Entry(self)
-        self.entry_nickname.pack()
+        self.entry_username = tk.Entry(self)
+        self.entry_username.pack()
 
 
         label1 = tk.Label(self, text="Password:")
@@ -120,13 +112,13 @@ class pageSignIn(tk.Frame):
     def controleValues(self):
         try:
             # get values from cbo
-            nickname = str(self.entry_nickname.get())
+            username = str(self.entry_username.get())
             password = str(self.entry_password.get())
             
             # When is empty give warning
-            if nickname == '' or password == '':
+            if username == '' or password == '':
                 tk.messagebox.showwarning(title='Warning',message='Please fill all the input fields !')
-                self.entry_nickname.focus()
+                self.entry_username.focus()
             else:
                 #go to function
                 self.singIn()
@@ -141,11 +133,11 @@ class pageSignIn(tk.Frame):
             pickle.dump("SIGNIN", self.my_writer_obj)
 
             # selected value off combobox
-            nickname = str(self.entry_nickname.get())
+            username = str(self.entry_username.get())
             password = str(self.entry_password.get())
            
             #Voeg signIn toe aan klasse 
-            signIn = SignIn(nickname,password)
+            signIn = User(username,password)
             pickle.dump(signIn, self.my_writer_obj)
             self.my_writer_obj.flush()
 
@@ -156,9 +148,9 @@ class pageSignIn(tk.Frame):
             if signIn.authenticated == True:
                 self.HomePage()
             else:
-                self.messagebox.showinfo("SignIn", signIn.authenticated)
+                self.messagebox.showinfo("SignIn", User.authenticated)
                 
-            self.entry_nickname.set("")
+            self.entry_username.set("")
             self.entry_password.set("")
                   
            #Change width and high off window
@@ -178,7 +170,6 @@ class pageSignIn(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("signIn", "Something has gone wrong...")
-
 
 
 class pageSignUp(tk.Frame):
@@ -203,10 +194,10 @@ class pageSignUp(tk.Frame):
         self.entry_email = tk.Entry(self)
         self.entry_email.pack()
 
-        label3 = tk.Label(self, text="Nickname:")
+        label3 = tk.Label(self, text="username:")
         label3.pack()
-        self.entry_nickname = tk.Entry(self)
-        self.entry_nickname.pack()
+        self.entry_username = tk.Entry(self)
+        self.entry_username.pack()
 
         label4 = tk.Label(self, text="Password:")
         label4.pack()
@@ -250,14 +241,14 @@ class pageSignUp(tk.Frame):
     def controleValues(self):
         try:
             # get values from cbo
-            nickname = str(self.entry_nickname.get())
+            username = str(self.entry_username.get())
             password = str(self.entry_password.get())
             name = str(self.entry_password.get())
             email = str(self.entry_password.get())
 
             
             # When is empty give warning
-            if nickname == '' or password == '' or email =='' or name == '':
+            if username == '' or password == '' or email =='' or name == '':
                 tk.messagebox.showwarning(title='Warning',message='Please fill all the input fields !')
                 self.entry_name.focus()
             else:
@@ -275,13 +266,13 @@ class pageSignUp(tk.Frame):
             pickle.dump("SIGNUP", self.my_writer_obj)
 
             # selected value off combobox
-            nickname = str(self.entry_nickname.get())
+            username = str(self.entry_username.get())
             password = str(self.entry_password.get())
             email = str(self.entry_email.get())
             name = str(self.entry_name.get())
            
             #Voeg signIn toe aan klasse 
-            signUp = SignUp(name,nickname,email,password)
+            signUp = SignUp(name,username,email,password)
             pickle.dump(signUp, self.my_writer_obj)
             self.my_writer_obj.flush()
            
@@ -295,7 +286,7 @@ class pageSignUp(tk.Frame):
             else:
                 self.messagebox.showinfo("SignIn", signUp.authenticated)
                 
-            self.entry_nickname.set("")
+            self.entry_username.set("")
             self.entry_email.set("")
             self.entry_name.set("")
             self.entry_password.set("")

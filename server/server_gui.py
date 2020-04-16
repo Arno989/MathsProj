@@ -4,7 +4,7 @@ from queue import Queue
 from threading import Thread
 from tkinter import *
 
-from multithreader import Movie_thread
+from server.multithreader import Movie_thread
 
 
 class ServerWindow(Frame):

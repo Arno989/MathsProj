@@ -9,132 +9,147 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from PIL import Image
 
+from server.login import auth_user
+from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
+
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", 15)
 pd.set_option("display.width", None)
-
-dataset = pd.read_csv("server/movies.csv", encoding="ISO-8859-1")
-
-dataset.score = dataset.score.astype(float)
+dataset = pd.read_csv("server/data/movies.csv", encoding="ISO-8859-1")
 
 
 class ClientHandler(threading.Thread):
-    numbers_clienthandlers = 0
+    threads = 0
 
-    def __init__(self, socketclient, messages_queue):
+    def __init__(self, socket, message_queue):
         threading.Thread.__init__(self)
-        self.socket_to_client = socketclient
-        self.messages_queue = messages_queue
-        self.id = ClientHandler.numbers_clienthandlers
-        ClientHandler.numbers_clienthandlers += 1
+        self.socket_to_client = socket
+        self.message_queue = message_queue
+        self.id = ClientHandler.threads
+        ClientHandler.threads += 1
 
     def run(self):
         writer_obj = self.socket_to_client.makefile(mode="rwb")
 
-        self.print_gui_message("Waiting for inputs...")
-        operation = pickle.load(writer_obj)
-        print(operation)
-        
-        authenticated = True
-        
+        self.printGui("Waiting for first query...")
+        query = pickle.load(writer_obj)
 
-        # Search by genre
-        if authenticated:
-            while operation != "C":
-                while operation == "BYGENRE":
-                    byGenre = pickle.load(writer_obj)
-                    search = str(byGenre.genre).capitalize()
+        user = User()
+        user.Authenticated = True
+
+        while query != "C":
+            while query == "SIGNIN":
+                try:
+                    user = pickle.load(writer_obj)
+                    if auth_user(user.Username, user.password):
+                        user.authenticated = True
+                        pickle.dump(user, writer_obj)
+                        writer_obj.flush()
+                        self.printGui(f"User signed in")
+                    else:
+                        user.authenticated = False
+                        pickle.dump(user, writer_obj)
+                        writer_obj.flush()
+                        self.printGui(f"Login refused")
+
+                except Exception as e:
+                    self.printGui(f"Error during login: {e}")
+
+                query = pickle.load(writer_obj)
+
+            if user.Authenticated:
+                while query == "BY_GENRE":  # Search by genre
+                    q_Genre = pickle.load(writer_obj)
+                    search = str(q_Genre.genre).capitalize()
+
+                    # Execute query
                     try:
-                        byGenre.result = dataset.loc[
-                            dataset["genre"] == search
-                        ]  # dataset[dataset.genre == search]
+                        q_Genre.result = dataset.loc[dataset["genre"] == search]
                     except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(byGenre.result)
+                        self.printGui(f"Error from query: {e}")
+                    self.printGui(f"Result from query: {q_Genre.result}")
 
-                    # stuur genre door
-                    pickle.dump(byGenre, writer_obj)
+                    # Reply with results
+                    pickle.dump(q_Genre, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    self.printGui(f"Sent query results")
 
-                    operation = pickle.load(writer_obj)
+                    query = pickle.load(writer_obj)
 
-                while operation == "BYCOMPANY":
-                    byCompany = pickle.load(writer_obj)
-                    search = str(byCompany.company)
+                while query == "BY_COMPANY":  # Search by company name
+                    q_Company = pickle.load(writer_obj)
+                    search = str(q_Company.company)
+
+                    # Execute query
                     try:
-                        byCompany.result = dataset.loc[
-                            dataset["company"] == search
-                        ]  # dataset[dataset.genre == search]    .lower()*2
+                        q_Company.result = dataset.loc[dataset["company"] == search]
                     except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{byCompany.result}")
+                        self.printGui(f"Error from query: {e}")
+                    self.printGui(f"Result from query: {q_Company.result}")
 
-                    # stuur resultaat door
-                    pickle.dump(byCompany, writer_obj)
+                    # Reply with results
+                    pickle.dump(q_Company, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    self.printGui(f"Sent query results")
 
-                    operation = pickle.load(writer_obj)
+                    query = pickle.load(writer_obj)
 
-                while operation == "BYNAME":
-                    byName = pickle.load(writer_obj)
-                    search = str(byName.name)
+                while query == "BY_NAME":  # Search by main star name
+                    q_Name = pickle.load(writer_obj)
+                    search = str(q_Name.name)
+
+                    # Execute query
                     try:
-                        byName.result = dataset.loc[dataset["name"] == search]
+                        q_Name.result = dataset.loc[dataset["name"] == search]
                     except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{byName.result}")
+                        self.printGui(f"Error from query: {e}")
+                    self.printGui(f"Result from query: {q_Name.result}")
 
-                    # stuur resultaat door
-                    pickle.dump(byName, writer_obj)
+                    # Reply with results
+                    pickle.dump(q_Name, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    self.printGui(f"Sent query results")
 
-                    operation = pickle.load(writer_obj)
+                    query = pickle.load(writer_obj)
 
-                while operation == "BETWEENYEARS":
-                    betweenYears = pickle.load(writer_obj)
-                    year1 = int(betweenYears.year1)
-                    year2 = int(betweenYears.year2)
+                while query == "BY_BETWEEN_YEARS":  # Search between 2 years
+                    q_BetweenYears = pickle.load(writer_obj)
+
+                    # Execute query
                     try:
-
-                        betweenYears.result = dataset.loc[
-                            (dataset["year"] >= year1) & (dataset["year"] <= year2)
+                        q_BetweenYears.result = dataset.loc[
+                            (dataset["year"] >= int(q_BetweenYears.year2))
+                            & (dataset["year"] <= int(q_BetweenYears.year2))
                         ]
                     except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{betweenYears.result}")
+                        self.printGui(f"Error from query: {e}")
+                    self.printGui(f"Result from query: {q_BetweenYears.result}")
 
-                    # stuur resultaat door
-                    pickle.dump(betweenYears, writer_obj)
+                    # Reply with results
+                    pickle.dump(q_BetweenYears, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    self.printGui(f"Sent query results")
 
-                    operation = pickle.load(writer_obj)
+                    query = pickle.load(writer_obj)
 
-                while operation == "GRAPH-SCORE":
-
-                    # pandas en patplotlib shit
+                while query == "GRAPH_SCORE":
                     plt.rcParams.update(
                         {"figure.max_open_warning": 0}
                     )  # Max open -> important to avoid a crash
 
-                    # generate graph
+                    # Generate graph with dank colors  -->  https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
                     plt.figure(figsize=(8, 8))
-                    colors = plt.get_cmap("ocean")(
-                        np.linspace(0, 1, 100)
-                    )  # https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+                    colors = plt.get_cmap("ocean")(np.linspace(0, 1, 100))
                     n, bins, patches = plt.hist(dataset.score, bins=100)
                     for patch, color in zip(patches, colors):
                         patch.set_facecolor(color)
 
-                    # save
+                    # Save image to send
                     filename = "graph.jpg"
                     plt.savefig(filename)
 
-                    # Scale size off image
+                    # Scale size of image
                     basewidth = 600
                     img = Image.open(filename)
                     wpercent = basewidth / float(img.size[0])
@@ -145,89 +160,48 @@ class ClientHandler(threading.Thread):
                     img.save(filename)
                     f = open(filename, "rb")
 
-                    # filezise
+                    # Get filezise
                     size_in_bytes = os.path.getsize(filename)
                     number = math.ceil(size_in_bytes / 1024)
 
-                    # notify client
+                    # Notify client of incomming package and it's size
                     pickle.dump("%d" % number, writer_obj)
                     writer_obj.flush()
 
-                    # send graph
+                    # Send graph
                     l = f.read(1024)
                     while l:
                         pickle.dump(l, writer_obj)
                         writer_obj.flush()
-                        # self.socketclient.send(l)
                         l = f.read(1024)
 
-                ######### Get unique values to create dropdowns #########
-                while operation == "GET-GENRES":
-                    try:
-                        # Unique genres
-                        genres = dataset.genre.unique()
-
-                    except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{genres}")
-
-                    # stuur resultaat door
+                # Get unique values to create dropdown
+                while query == "GET_GENRES":
+                    genres = dataset.genre.unique()
                     pickle.dump(genres, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    query = pickle.load(writer_obj)
 
-                    operation = pickle.load(writer_obj)
-
-                while operation == "GET-COMPANIES":
-                    try:
-                        # Unique companies
-                        companies = dataset.company.unique()
-
-                    except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{companies}")
-
-                    # stuur resultaat door
+                while query == "GET_COMPANIES":
+                    companies = dataset.company.unique()
                     pickle.dump(companies, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    query = pickle.load(writer_obj)
 
-                    operation = pickle.load(writer_obj)
-
-                while operation == "GET-NAMES":
-                    try:
-                        # Unique names
-                        names = dataset.name.unique()
-
-                    except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{names}")
-
-                    # stuur resultaat door
+                while query == "GET_NAMES":
+                    names = dataset.name.unique()
                     pickle.dump(names, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    query = pickle.load(writer_obj)
 
-                    operation = pickle.load(writer_obj)
-
-                while operation == "GET-YEARS":
-                    try:
-                        # Unique years
-                        years = dataset.year.unique()
-
-                    except Exception as e:
-                        self.print_gui_message(f"Error from query: {e}")
-                    self.print_gui_message(f"{years}")
-
-                    # stuur resultaat door
+                while query == "GET_YEARS":
+                    years = dataset.year.unique()
                     pickle.dump(years, writer_obj)
                     writer_obj.flush()
-                    self.print_gui_message(f"Sending operation results")
+                    query = pickle.load(writer_obj)
 
-                    operation = pickle.load(writer_obj)
-
-            self.print_gui_message(f"Connection closed")
+            self.printGui(f"Connection closing")
             self.socket_to_client.close()
 
-    def print_gui_message(self, message):
-        self.messages_queue.put(f"CLH {self.id}:> {message}")
+    def printGui(self, message):
+        self.message_queue.put(f"CLH thread {self.id}:> {message}")
