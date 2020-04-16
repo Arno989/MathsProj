@@ -5,28 +5,48 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-
+from decimal import Decimal
 
 dataset = pd.read_csv("server/movies.csv", encoding="ISO-8859-1")
-# pd.describe_option("display")
-# print(dataset.shape)
+
+# for i in range(dataset.score.size):
+#     dataset.score[i] = round(dataset.score[i] * 10).astype(int)
+
 
 # pd.set_option("display.max_rows", None)
 # pd.set_option("display.max_columns", None)
 # pd.set_option("display.width", None)
 # pd.set_option("display.max_seq_items", None)
 
-# print(dataset.company.unique())
 
+# summies = 0
 
-# print(dataset.loc[dataset["genre"] == "Action"])
-# dataset.score = dataset.score.astype('float64')
-# dataset.sort_values(by=['score'])
-
+# for score in dataset.score:
+#     summies += Decimal(score)
+#     if len(str(score)) > 3:
+#         print(score)
+#     if not "." in str(score):
+#         print(score)
+        
+# print(summies)
+# print(Decimal(summies))
+# print(sum(dataset.score))
 
 plt.figure(figsize=(8, 8))
-sns.countplot('score', data=dataset)
-#plt.plot(dataset.score.value_counts()) 
+
+
+nbins = 100
+colors = plt.get_cmap('gnuplot')(np.linspace(0, 1, nbins)) # https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+n, bins, patches = plt.hist(dataset.score, bins=nbins)
+
+for patch, color in zip(patches, colors):
+    patch.set_facecolor(color)
+
+
+# plt.hist(dataset.score, bins=100)
+
+# sns.countplot('score', data=dataset)
+# plt.xticks(np.arange(0, 10.1, 0.1))
+
 plt.show()
 
