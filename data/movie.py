@@ -33,3 +33,21 @@ class BetweenYears:
 
     def __str__(self):
         return f"between: {self.year1} and {self.year2}"
+
+class SignIn:
+     def __init__(self, nickname,password):
+        self.nickname = nickname
+        self.password = password
+
+    def __str__(self):
+        return f"Signed in : {self.nickname}"
+
+class SignUp:
+     def __init__(self,name,email, nickname,password):
+        self.name = name
+        self.email = email
+        self.nickname = nickname
+        self.password = password
+
+    def __str__(self):
+        return f"Signed up with nickname : {self.nickname}"

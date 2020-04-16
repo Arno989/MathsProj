@@ -36,7 +36,7 @@ class ClientHandler(threading.Thread):
         operation = pickle.load(writer_obj)
         print(operation)
         
-        authenticated = False
+        authenticated = True
         
 
         # Search by genre

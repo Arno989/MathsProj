@@ -17,7 +17,7 @@ from PIL import ImageTk, Image
 #sys.path.insert(0, "../")
 #from data.movie import Stopafstand, ByGenre
 
-from movie import ByCompany, ByGenre, ByName, BetweenYears
+from movie import ByCompany, ByGenre, ByName, BetweenYears, SignIn, SignUp
  
 
 LARGE_FONT= ("Verdana", 12)
@@ -38,7 +38,7 @@ class Movies(tk.Tk):
         self.frames = {}
 
         # Voeg elke pagina hieraan toe 
-        for F in (HomePage, pageByGenre, pageByName,pageByCompany, pageBetweenYears,pageGraphScore):
+        for F in (pageSignIn,pageSignUp,HomePage, pageByGenre, pageByName,pageByCompany, pageBetweenYears,pageGraphScore):
 
             frame = F(container, self)
 
@@ -46,7 +46,7 @@ class Movies(tk.Tk):
 
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(HomePage)
+        self.show_frame(pageSignIn)
         
         
 
@@ -54,6 +54,259 @@ class Movies(tk.Tk):
 
         frame = self.frames[cont]
         frame.tkraise()
+
+
+
+class pageSignIn(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+        Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
+        Title.pack()
+
+        label = tk.Label(self, text="Nickname:")
+        label.pack()
+
+        self.entry_nickname = tk.Entry(self)
+        self.entry_nickname.pack()
+
+
+        label1 = tk.Label(self, text="Password:")
+        label1.pack()
+
+        self.entry_password = tk.Entry(self)
+        self.entry_password.pack()
+
+     
+
+        btnSignIn = tk.Button(self, text="Sign In",
+                            command=self.controleValues)
+        btnSignIn.pack(pady=5,ipadx=30,ipady=5)
+
+        btnSignUp = tk.Button(self, text="SignUp",
+                            command=lambda: controller.show_frame(pageSignUp))
+        btnSignUp.pack(pady=5,ipadx=30,ipady=5)
+
+
+
+    def __del__(self):
+        self.close_connection()
+        
+    
+    def makeConnnectionWithServer(self):
+        try:
+            logging.info("Making connection with server...")
+            # get local machine name
+            host = socket.gethostname()
+            port = 9999
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
+            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            logging.info("Open connection with server succesfully")
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("sign in page - foutmelding", "Something has gone wrong...")
+    
+    def controleValues(self):
+        try:
+            # get values from cbo
+            nickname = str(self.entry_nickname.get())
+            password = str(self.entry_password.get())
+            
+            # When is empty give warning
+            if nickname == '' or password == '':
+                tk.messagebox.showwarning(title='Warning',message='Please fill all the input fields !')
+                self.entry_nickname.focus()
+            else:
+                #go to function
+                self.singIn()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleGenre - foutmelding", "Something has gone wrong...")
+
+    def signIn(self):
+        try:
+            #send BYGENRE to clienthandler
+            pickle.dump("SIGNIN", self.my_writer_obj)
+
+            # selected value off combobox
+            nickname = str(self.entry_nickname.get())
+            password = str(self.entry_password.get())
+           
+            #Voeg signIn toe aan klasse 
+            signIn = SignIn(nickname,password)
+            pickle.dump(signIn, self.my_writer_obj)
+            self.my_writer_obj.flush()
+
+            # waiting for answer
+            signIn = pickle.load(self.my_writer_obj)
+            print(signIn.authenticated)
+
+            if signIn.authenticated == True:
+                self.HomePage()
+            else:
+                self.messagebox.showinfo("SignIn", signIn.authenticated)
+                
+            self.entry_nickname.set("")
+            self.entry_password.set("")
+                  
+           #Change width and high off window
+            app.geometry("200x100")
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("signIn", "Something has gone wrong...")
+
+    def close_connection(self):
+        try:
+            logging.info("Close connection with server...")
+            pickle.dump("C", self.my_writer_obj)
+        
+            self.my_writer_obj.flush()
+            self.socket_to_server.close()
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("signIn", "Something has gone wrong...")
+
+
+
+class pageSignUp(tk.Frame):
+    
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        Title = tk.Label(self, text="Sign Up", font=LARGE_FONT)
+        Title.pack()
+
+        label1 = tk.Label(self, text="Name:")
+        label1.pack()
+        self.entry_name = tk.Entry(self)
+        self.entry_name.pack()
+
+        label2 = tk.Label(self, text="email:")
+        label2.pack()
+        self.entry_email = tk.Entry(self)
+        self.entry_email.pack()
+
+        label3 = tk.Label(self, text="Nickname:")
+        label3.pack()
+        self.entry_nickname = tk.Entry(self)
+        self.entry_nickname.pack()
+
+        label4 = tk.Label(self, text="Password:")
+        label4.pack()
+        self.entry_password = tk.Entry(self)
+        self.entry_password.pack()
+
+     
+
+        
+        btnSignUp = tk.Button(self, text="Sign Up",
+                            command=self.controleValues)
+        btnSignUp.pack(pady=5,ipadx=30,ipady=5)
+
+
+        label3 = tk.Label(self, text="If u already have an account:")
+        label3.pack()
+        btnSignIn = tk.Button(self, text="Sign In",
+                            command=lambda: controller.show_frame(pageSignIn))
+        btnSignIn.pack(pady=5,ipadx=30,ipady=5)
+
+
+    def __del__(self):
+        self.close_connection()
+        
+    
+    def makeConnnectionWithServer(self):
+        try:
+            logging.info("Making connection with server...")
+            # get local machine name
+            host = socket.gethostname()
+            port = 9999
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
+            self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            logging.info("Open connection with server succesfully")
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("sign up page - foutmelding", "Something has gone wrong...")
+    
+    def controleValues(self):
+        try:
+            # get values from cbo
+            nickname = str(self.entry_nickname.get())
+            password = str(self.entry_password.get())
+            name = str(self.entry_password.get())
+            email = str(self.entry_password.get())
+
+            
+            # When is empty give warning
+            if nickname == '' or password == '' or email =='' or name == '':
+                tk.messagebox.showwarning(title='Warning',message='Please fill all the input fields !')
+                self.entry_name.focus()
+            else:
+                #go to function
+                self.signUp()
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("controleSignUp- foutmelding", "Something has gone wrong...")
+
+
+    def signUp(self):
+        try:
+            #send BYGENRE to clienthandler
+            pickle.dump("SIGNUP", self.my_writer_obj)
+
+            # selected value off combobox
+            nickname = str(self.entry_nickname.get())
+            password = str(self.entry_password.get())
+            email = str(self.entry_email.get())
+            name = str(self.entry_name.get())
+           
+            #Voeg signIn toe aan klasse 
+            signUp = SignUp(name,nickname,email,password)
+            pickle.dump(signIn, self.my_writer_obj)
+            self.my_writer_obj.flush()
+           
+            # waiting for answer
+            signUp = pickle.load(self.my_writer_obj)
+            print(signUp.authenticated)
+
+            if signUp.authenticated == True:
+                self.messagebox.showinfo("SignUp", "You are correctly signed up")
+                self.HomePage()
+            else:
+                self.messagebox.showinfo("SignIn", signUp.authenticated)
+                
+            self.entry_nickname.set("")
+            self.entry_email.set("")
+            self.entry_name.set("")
+            self.entry_password.set("")
+                  
+           #Change width and high off window
+            app.geometry("200x100")
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("signUp", "Something has gone wrong...")
+
+    def close_connection(self):
+        try:
+            logging.info("Close connection with server...")
+            pickle.dump("C", self.my_writer_obj)
+        
+            self.my_writer_obj.flush()
+            self.socket_to_server.close()
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("signUp", "Something has gone wrong...")
+
 
     
 class HomePage(tk.Frame):
@@ -85,27 +338,6 @@ class HomePage(tk.Frame):
                             command=lambda: controller.show_frame(pageGraphScore))
         btnGraphScore.pack(ipady=10,ipadx=150,pady=10)
 
-        #Wordt verwijderd 
-        btnreconnect = tk.Button(self, text="Reconnect To Server",
-                            command=lambda: makeConnnectionWithServer(self))
-        btnreconnect.pack(ipady=10,ipadx=150,pady=10)
-
-        #Wordt verwijderd 
-        def makeConnnectionWithServer(self):
-            try:
-                logging.info("Making connection with server...")
-                # get local machine name
-                host = socket.gethostname()
-                port = 9999
-                self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                # connection to hostname on the port.
-                self.socket_to_server.connect((host, port))
-                self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
-                logging.info("Open connection with server succesfully")
-            except Exception as ex:
-                logging.error("Foutmelding: %s" % ex)
-                messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
-         
         
 
 
