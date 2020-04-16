@@ -61,6 +61,8 @@ class pageSignIn(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        #make connection with server
+        self.makeConnnectionWithServer()
 
         Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
         Title.pack()
@@ -178,6 +180,9 @@ class pageSignUp(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+         #make connection with server
+        self.makeConnnectionWithServer()
 
         Title = tk.Label(self, text="Sign Up", font=LARGE_FONT)
         Title.pack()
