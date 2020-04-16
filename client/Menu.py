@@ -10,14 +10,20 @@ import numpy as np
 
 from PIL import ImageTk, Image
 
-#import os
+import os
 #print(os.getcwd())
 
-#import sys
+import sys
 #sys.path.insert(0, "../")
 #from data.movie import Stopafstand, ByGenre
 
-from movie import ByCompany, ByGenre, ByName, BetweenYears, SignIn, SignUp
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_ROOT)
+sys.path.insert(0, BASE_DIR)
+
+
+from data.movie import ByCompany, ByGenre, ByName, BetweenYears, SignIn, SignUp
  
 
 LARGE_FONT= ("Verdana", 12)
