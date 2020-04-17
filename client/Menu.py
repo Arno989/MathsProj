@@ -137,7 +137,7 @@ class pageSignIn(tk.Frame):
             password = str(self.entry_password.get())
            
             #Voeg signIn toe aan klasse 
-            signIn = User(username,password)
+            signIn = User(username=username,password=password)
             pickle.dump(signIn, self.my_writer_obj)
             self.my_writer_obj.flush()
 
@@ -148,7 +148,7 @@ class pageSignIn(tk.Frame):
             if signIn.authenticated == True:
                 self.HomePage()
             else:
-                self.messagebox.showinfo("SignIn", User.authenticated)
+                self.messagebox.showinfo("SignIn", "Login refused")
                 
             self.entry_username.set("")
             self.entry_password.set("")
@@ -228,10 +228,7 @@ class pageSignUp(tk.Frame):
             logging.info("Making connection with server...")
             # get local machine name
             host = socket.gethostname()
-            port = 9999
-            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            # connection to hostname on the port.
-            self.socket_to_server.connect((host, port))
+            port = 9999)
             self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
             logging.info("Open connection with server succesfully")
         except Exception as ex:
@@ -245,6 +242,9 @@ class pageSignUp(tk.Frame):
             password = str(self.entry_password.get())
             name = str(self.entry_password.get())
             email = str(self.entry_password.get())
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port)
 
             
             # When is empty give warning
@@ -272,7 +272,7 @@ class pageSignUp(tk.Frame):
             name = str(self.entry_name.get())
            
             #Voeg signIn toe aan klasse 
-            signUp = SignUp(name,username,email,password)
+            signUp = User(name=name,username=username,email=email,password=password)
             pickle.dump(signUp, self.my_writer_obj)
             self.my_writer_obj.flush()
            
@@ -284,7 +284,7 @@ class pageSignUp(tk.Frame):
                 self.messagebox.showinfo("SignUp", "You are correctly signed up")
                 self.HomePage()
             else:
-                self.messagebox.showinfo("SignIn", signUp.authenticated)
+                self.messagebox.showinfo("SignUp", "Refused to sign up")
                 
             self.entry_username.set("")
             self.entry_email.set("")
@@ -431,7 +431,7 @@ class pageByGenre(tk.Frame):
     def getGenres(self):
         try:
             #get values for combobox
-            pickle.dump("GET-GENRES", self.my_writer_obj)
+            pickle.dump("GET_GENRES", self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
@@ -473,7 +473,7 @@ class pageByGenre(tk.Frame):
     def searchByGenre(self):
         try:
             #send BYGENRE to clienthandler
-            pickle.dump("BYGENRE", self.my_writer_obj)
+            pickle.dump("BY_GENRE", self.my_writer_obj)
 
             # selected value off combobox
             genre = str(self.cbo_genre.get())
@@ -615,7 +615,7 @@ class pageByCompany(tk.Frame):
     def getCompanies(self):
         try:
             #get values for combobox
-            pickle.dump("GET-COMPANIES", self.my_writer_obj)
+            pickle.dump("GET_COMPANIES", self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
@@ -656,7 +656,7 @@ class pageByCompany(tk.Frame):
     def searchByCompany(self):
         try:
             #send BYCOMPANY to clienthandler
-            pickle.dump("BYCOMPANY", self.my_writer_obj)
+            pickle.dump("BY_COMPANY", self.my_writer_obj)
 
             # Get selected value off combobox
             company = str(self.cbo_companie.get())
@@ -794,7 +794,7 @@ class pageByName(tk.Frame):
     def getNames(self):
         try:
             #get values for combobox
-            pickle.dump("GET-NAMES", self.my_writer_obj)
+            pickle.dump("GET_NAMES", self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
@@ -836,7 +836,7 @@ class pageByName(tk.Frame):
     def searchByName(self):
         try:
             #send BYNAME to clienthandler
-            pickle.dump("BYNAME", self.my_writer_obj)
+            pickle.dump("BY_NAME", self.my_writer_obj)
 
             #get selectec value off combobox
             name = str(self.cbo_name.get())
@@ -973,7 +973,7 @@ class pageBetweenYears(tk.Frame):
     def getYears(self):
         try:
             #get values for combobox
-            pickle.dump("GET-YEARS", self.my_writer_obj)
+            pickle.dump("GET_YEARS", self.my_writer_obj)
             self.my_writer_obj.flush()
 
             # waiting for answer
@@ -1038,7 +1038,7 @@ class pageBetweenYears(tk.Frame):
     def searchBetweenYears(self):
         try:
             #send BYNAME to clienthandler
-            pickle.dump("BETWEENYEARS", self.my_writer_obj)
+            pickle.dump("BY_BETWEEN_YEARS", self.my_writer_obj)
 
             # get values from cbo
             year1 = int(self.cbo_year1.get())
@@ -1141,7 +1141,7 @@ class pageGraphScore(tk.Frame):
     def showGraph(self):
         try:
             #get values for combobox
-            pickle.dump("GRAPH-SCORE", self.my_writer_obj)
+            pickle.dump("GRAPH_SCORE", self.my_writer_obj)
             self.my_writer_obj.flush()
             
             #get image

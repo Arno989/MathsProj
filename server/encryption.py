@@ -1,4 +1,4 @@
-import bcrypt  # u gotta "pip install bcrypt" bro
+import bcrypt  # u gotta "pip install bcrypt" bro // done
 
 
 def hash_password(password: str) -> str:

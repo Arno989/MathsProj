@@ -6,7 +6,7 @@ import sys
 import pandas as pd
 import numpy as np
 
-from server.clientHandler import ClientHandler
+from clienthandler import ClientHandler
 
 logging.basicConfig(level=logging.INFO)
 

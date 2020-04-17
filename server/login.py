@@ -1,8 +1,8 @@
 import datetime
 import json
 
-from server.encryption import hash_password, check_password
-from server.dbHandler import get_json_file_contents, create_file_if_not_exists
+from encryption import hash_password, check_password
+from dbHandler import get_json_file_contents, create_file_if_not_exists
 
 jsonDb = "users.json"
 

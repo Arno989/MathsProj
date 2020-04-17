@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from PIL import Image
 
-from server.login import auth_user
+from login import auth_user
 from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
 
