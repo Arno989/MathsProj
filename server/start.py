@@ -21,9 +21,9 @@ def Stop():
         logging.error("Start.py :> Exception during stop " + str(ex))
 
 try:
-    root = Tk()
+    root = ServerWindow()
     root.geometry("400x600")
-    gui = ServerWindow(root)
+    #gui = ServerWindow(root)
     root.protocol("WM_DELETE_WINDOW", Stop)
 except Exception as ex:
     logging.error(f"Start.py in prep :> {ex}")

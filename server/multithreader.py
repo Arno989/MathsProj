@@ -66,3 +66,4 @@ class Movie_thread(threading.Thread):
     def print_gui_message(self, message):
         self.messages_queue.put(f"Server:>  {message}")
         logging.info(f"Multithreader:  {message}")
+

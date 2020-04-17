@@ -84,7 +84,7 @@ class pageSignIn(tk.Frame):
                             command=self.controleValues)
         btnSignIn.pack(pady=5,ipadx=30,ipady=5)
 
-        btnSignUp = tk.Button(self, text="SignUp",
+        btnSignUp = Button(self, text="SignUp",
                             command=lambda: controller.show_frame(pageSignUp))
         btnSignUp.pack(pady=5,ipadx=30,ipady=5)
 
