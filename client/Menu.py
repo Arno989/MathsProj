@@ -228,8 +228,11 @@ class pageSignUp(tk.Frame):
             logging.info("Making connection with server...")
             # get local machine name
             host = socket.gethostname()
-            port = 9999)
+            port = 9999
             self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -242,11 +245,9 @@ class pageSignUp(tk.Frame):
             password = str(self.entry_password.get())
             name = str(self.entry_password.get())
             email = str(self.entry_password.get())
-            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            # connection to hostname on the port.
-            self.socket_to_server.connect((host, port)
+          
 
-            
+
             # When is empty give warning
             if username == '' or password == '' or email =='' or name == '':
                 tk.messagebox.showwarning(title='Warning',message='Please fill all the input fields !')
