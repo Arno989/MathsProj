@@ -65,7 +65,7 @@ class pageSignIn(tk.Frame):
         Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
         Title.pack()
 
-        label = tk.Label(self, text="username:")
+        label = tk.Label(self, text="Username:")
         label.pack()
 
         self.entry_username = tk.Entry(self)
@@ -154,7 +154,7 @@ class pageSignIn(tk.Frame):
             self.entry_password.set("")
                   
            #Change width and high off window
-            app.geometry("200x100")
+            #app.geometry("200x100")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -189,12 +189,12 @@ class pageSignUp(tk.Frame):
         self.entry_name = tk.Entry(self)
         self.entry_name.pack()
 
-        label2 = tk.Label(self, text="email:")
+        label2 = tk.Label(self, text="Email:")
         label2.pack()
         self.entry_email = tk.Entry(self)
         self.entry_email.pack()
 
-        label3 = tk.Label(self, text="username:")
+        label3 = tk.Label(self, text="Username:")
         label3.pack()
         self.entry_username = tk.Entry(self)
         self.entry_username.pack()
@@ -229,6 +229,9 @@ class pageSignUp(tk.Frame):
             # get local machine name
             host = socket.gethostname()
             port = 9999
+            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # connection to hostname on the port.
+            self.socket_to_server.connect((host, port))
             self.my_writer_obj = self.socket_to_server.makefile(mode='rwb')
             self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # connection to hostname on the port.
@@ -236,7 +239,7 @@ class pageSignUp(tk.Frame):
             logging.info("Open connection with server succesfully")
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("sign up page - foutmelding", "Something has gone wrong...")
+            messagebox.showinfo("sign Up page - foutmelding", "Something has gone wrong...")
     
     def controleValues(self):
         try:
@@ -245,8 +248,7 @@ class pageSignUp(tk.Frame):
             password = str(self.entry_password.get())
             name = str(self.entry_password.get())
             email = str(self.entry_password.get())
-          
-
+         
 
             # When is empty give warning
             if username == '' or password == '' or email =='' or name == '':
@@ -293,7 +295,7 @@ class pageSignUp(tk.Frame):
             self.entry_password.set("")
                   
            #Change width and high off window
-            app.geometry("200x100")
+            #app.geometry("200x100")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
