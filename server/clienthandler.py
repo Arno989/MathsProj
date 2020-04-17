@@ -36,13 +36,13 @@ class ClientHandler(threading.Thread):
         query = pickle.load(writer_obj)
 
         user = User()
-        user.Authenticated = True
+        user.authenticated = True
 
         while query != "C":
             while query == "SIGNIN":
                 try:
                     user = pickle.load(writer_obj)
-                    if auth_user(user.Username, user.password):
+                    if auth_user(user.username, user.password):
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
@@ -57,8 +57,30 @@ class ClientHandler(threading.Thread):
                     self.printGui(f"Error during login: {e}")
 
                 query = pickle.load(writer_obj)
+                
+            while query == "SIGNUP":
+                try:
+                    user = pickle.load(writer_obj)
+                    try:
+                        add_user(user.username, user.password, user.email, user.name):
+                        
+                        user.authenticated = True
+                        pickle.dump(user, writer_obj)
+                        writer_obj.flush()
+                        self.printGui(f"User signed in")
+                            
+                    except ValueError:
+                        user.authenticated = True
+                        pickle.dump(False, writer_obj)
+                        writer_obj.flush()
+                        self.printGui(f"Username already exists")
 
-            if user.Authenticated:
+                except Exception as e:
+                    self.printGui(f"Error during signup: {e}")
+
+                query = pickle.load(writer_obj)
+
+            if user.authenticated:
                 while query == "BY_GENRE":  # Search by genre
                     q_Genre = pickle.load(writer_obj)
                     search = str(q_Genre.genre).capitalize()
