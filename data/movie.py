@@ -36,8 +36,8 @@ class BetweenYears:
 
 
 class User:
-    def __init__(self, name, username, email, password):
-        self.name = none
+    def __init__(self, name=None, username=None, email=None, password=None):
+        self.name = name
         self.username = username
         self.email = email
         self.password = password
