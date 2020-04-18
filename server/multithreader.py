@@ -15,7 +15,7 @@ class Movie_thread(threading.Thread):
     def __init__(self, host, port, messages_queue):
         threading.Thread.__init__(self)
         self.__is_connected = False
-        self.host = host
+        self.host = socket.gethostname()
         self.port = port
         # self.init_server()
         self.messages_queue = messages_queue

@@ -10,13 +10,13 @@ sys.path.insert(0, BASE_DIR)
 
 from server.server_gui import ServerWindow
 
-try:
-    root = Tk()
-    root.geometry("400x600")
-    gui = ServerWindow(root)
-    root.protocol("WM_DELETE_WINDOW", Stop)
-except Exception as ex:
-    logging.error(f"Start.py in prep :> {ex}")
+#try:
+#    root = ServerWindow()
+#    root.geometry("400x600")
+    #gui = ServerWindow()
+#    root.protocol("WM_DELETE_WINDOW", Stop)
+#except Exception as ex:
+#    logging.error(f"Start.py in prep :> {ex}")
 
 def Stop():
     logging.info("Deleting window")

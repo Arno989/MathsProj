@@ -39,7 +39,7 @@ def retrieve_user(username: str):
     print(len(all_users))
     if len(all_users) != 0:
         for u in all_users:
-            if u.username == username:
+            if u.get(username) == username:
                 return True
         return False
     else:

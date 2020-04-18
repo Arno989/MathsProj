@@ -56,11 +56,6 @@ class OverviewOnlineUsers(tk.Frame):
         tk.Frame.__init__(self,parent)
 
 
-
-   
-
-
-
         label = tk.Label(self, text="Overview Online Users", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
     

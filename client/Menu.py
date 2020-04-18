@@ -123,10 +123,6 @@ class pageSignIn(tk.Frame):
         btnSignUp.pack(pady=5,ipadx=30,ipady=5)
 
 
-        btnSignUp = tk.Button(
-            self, text="SignUp", command=lambda: controller.show_frame(pageSignUp)
-        )
-        btnSignUp.pack(pady=5, ipadx=30, ipady=5)
 
     def __del__(self):
         closeConnection()
@@ -169,9 +165,9 @@ class pageSignIn(tk.Frame):
 
             # waiting for answer
             signIn = pickle.load(my_writer_obj)
-            print(signIn.authenticated)
+            print(signIn)
 
-            if signIn.authenticated == True:
+            if signIn == True:
                 self.HomePage()
             else:
                 self.messagebox.showinfo("SignIn", "Login refused")
@@ -237,7 +233,7 @@ class pageSignUp(tk.Frame):
 
             # When is empty give warning
             if username == "" or password == "" or email == "" or name == "":
-                tk.messagebox.showwarning(
+                self.messagebox.showwarning(
                     title="Warning", message="Please fill all the input fields !"
                 )
                 self.entry_name.focus()
@@ -269,9 +265,9 @@ class pageSignUp(tk.Frame):
 
             # waiting for answer
             signUp = pickle.load(my_writer_obj)
-            print(signUp.authenticated)
+            print(signUp)
 
-            if signUp.authenticated == True:
+            if signUp == True:
                 self.messagebox.showinfo("SignUp", "You are correctly signed up")
                 self.HomePage()
             else:
