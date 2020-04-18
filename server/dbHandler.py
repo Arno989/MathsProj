@@ -21,14 +21,4 @@ def create_file_if_not_exists(path: str):
 
 def get_json_file_contents(path: str):
     with open(path) as users_file:
-<<<<<<< HEAD
-        #loads
-        print("opening content")
-        content = json.load(users_file)
-        #content = json.load(users_file, object_hook=User)
-        #print(content)
-        
-        return content
-=======
         return json.load(users_file)
->>>>>>> 013bb0e39fbe3067dd88c9609bfcc2c92cc2e75e

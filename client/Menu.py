@@ -159,7 +159,8 @@ class pageSignIn(tk.Frame):
             print(signIn.authenticated)
 
             if signIn.authenticated == True:
-                self.HomePage()
+                print("gelukt om in te loggen !!")
+                controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignIn", "Login refused")
 
@@ -257,7 +258,7 @@ class pageSignUp(tk.Frame):
 
             if signUp.authenticated == True:
                 tk.messagebox.showinfo("SignUp", "You are correctly signed up")
-                self.HomePage()
+                controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignUp", "Refused to sign up")
 

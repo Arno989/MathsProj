@@ -29,8 +29,8 @@ def Stop():
 
 
 logging.info(f"Start> Server online")
+root = ServerWindow()
 try:
-    root = ServerWindow()
     root.geometry("400x600")
     #gui = ServerWindow(root)
     root.protocol("WM_DELETE_WINDOW", Stop)
