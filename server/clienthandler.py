@@ -16,6 +16,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 sys.path.insert(0, BASE_DIR)
 dataset = pd.read_csv(f"{PROJECT_ROOT}\\data\\movies.csv", encoding="ISO-8859-1")
 
+from server.multithreader import Online_users
 from server.login import auth_user, add_user
 from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
@@ -48,17 +49,12 @@ class ClientHandler(threading.Thread):
             while query == "SIGNIN":
                 try:
                     user = pickle.load(writer_obj)
-                    print("b4")
                     print(auth_user(user.username, user.password))
-                    print("b5")
                     if auth_user(user.username, user.password):
-                        print("b6")
                         user.authenticated = True
-                        print("b7")
                         pickle.dump(user, writer_obj)
-                        print("b8")
                         writer_obj.flush()
-                        print("b9")
+                        Online_users.loginUser(user.username)
                         self.printGui(f"User {user.username} signed in")
                     else:
                         user.authenticated = False
@@ -82,6 +78,7 @@ class ClientHandler(threading.Thread):
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
+                        Online_users.loginUser(user.username)
                         self.printGui(f"User {user.username} Signed in")
 
                     except ValueError:
