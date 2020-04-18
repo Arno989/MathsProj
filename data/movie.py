@@ -42,3 +42,6 @@ class User:
         self.email = email
         self.password = password
         self.authenticated = None
+        
+    def __str__(self):
+        return f"user: {self.name}, {self.username}, {self.email}, {self.password}"

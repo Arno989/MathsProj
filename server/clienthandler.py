@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from PIL import Image
 
-from login import auth_user
+from login import auth_user, add_user
 from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
 
@@ -57,18 +57,21 @@ class ClientHandler(threading.Thread):
                     self.printGui(f"Error during login: {e}")
 
                 query = pickle.load(writer_obj)
-                
+
             while query == "SIGNUP":
                 try:
                     user = pickle.load(writer_obj)
+                    print(user)
                     try:
-                        add_user(user.username, user.password, user.email, user.name):
-                        
+                        print("oneee")
+                        add_user(user.username, user.password, user.email, user.name)
+                        print("done?")
+
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
                         self.printGui(f"User signed in")
-                            
+
                     except ValueError:
                         user.authenticated = True
                         pickle.dump(False, writer_obj)
