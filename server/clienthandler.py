@@ -48,10 +48,17 @@ class ClientHandler(threading.Thread):
             while query == "SIGNIN":
                 try:
                     user = pickle.load(writer_obj)
+                    print("b4")
+                    print(auth_user(user.username, user.password))
+                    print("b5")
                     if auth_user(user.username, user.password):
+                        print("b6")
                         user.authenticated = True
+                        print("b7")
                         pickle.dump(user, writer_obj)
+                        print("b8")
                         writer_obj.flush()
+                        print("b9")
                         self.printGui(f"User {user.username} signed in")
                     else:
                         user.authenticated = False

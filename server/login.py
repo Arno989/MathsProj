@@ -16,7 +16,7 @@ jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 def add_user(username: str, password: str, name: str, email: str):
     create_file_if_not_exists(jsonDb)
     is_duplicate_user = retrieve_user(username)
-    if is_duplicate_user != False:
+    if is_duplicate_user != None:
         print(f'Username "{username}" already exists.')
     new_user = User(
         username=username, password=hash_password(password), name=name, email=email
@@ -31,16 +31,16 @@ def retrieve_user(username: str):
     all_users = get_json_file_contents(jsonDb)
     if len(all_users) != 0:
         for u in all_users:
-            if u.get(username) == username:
-                return True
-        return False
+            if u['username'] == username:
+                return u
+        return None
     else:
-        return False
+        return None
 
 
 def auth_user(username: str, password: str):
     user = retrieve_user(username)
-    password_hash = user["password"]
+    password_hash = user['password']
     if not user:
         return False
     if not check_password(password, password_hash):
