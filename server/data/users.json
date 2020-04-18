@@ -17,7 +17,14 @@
         "name": "arno",
         "username": "arno",
         "email": "arno",
-        "password": "$2b$12$nnw7SWl2UR69vDeJDrE01O0KKGE73dNJiU3KeBb48kCpIcukhqNHO",
+        "password": "$2b$12$GCsTyxLMVkir8HMguLU/O.MmFhhk/64JAZMUqgPn42UODCgd9Y2PW",
+        "authenticated": null
+    },
+    {
+        "name": "arno",
+        "username": "arno",
+        "email": "arno",
+        "password": "$2b$12$mwT.4.DHqnuSh8WjSXXb0.pRCfDgjlHnzH/.1Lbg4Fn6asyWQwvmK",
         "authenticated": null
     }
 ]

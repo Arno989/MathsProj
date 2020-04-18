@@ -19,33 +19,32 @@ from server.server_gui import ServerWindow
 #    logging.error(f"Start.py in prep :> {ex}")
 
 def Stop():
-    logging.info("Deleting window")
+    logging.info("Start> Deleting window")
     try:
         root.destroy()
-        logging.info("root destroyed but program still running, have to close threads")
+        logging.info("Start> window destroyed, calling system exit")
         sys.exit()
-        logging.info("closed threads and stopped program, this should not show up")
     except Exception as ex:
-        logging.error("Start.py :> Exception during stop " + str(ex))
+        logging.error(f"Start> Exception during stop {ex}")
 
 
-logging.info(f"Start.py :> Server running")
+logging.info(f"Start> Server online")
 try:
     root = ServerWindow()
     root.geometry("400x600")
     #gui = ServerWindow(root)
     root.protocol("WM_DELETE_WINDOW", Stop)
 except Exception as ex:
-    logging.error(f"Start.py in prep :> {ex}")
+    logging.error(f"Start.py> {ex}")
 
 try:
     while True:
         try:
             root.mainloop()
         except Exception as ex:
-            logging.error(f"Start.py :> Unhandled exception in main loop: {ex}")
+            logging.error(f"Start> Unhandled exception in main loop: {ex} \n       Calling stop")
             Stop()
 
 except KeyboardInterrupt:
-    print("Interrupted, calling Stop().")
+    print("Start> Interrupted, calling Stop.")
     Stop()
