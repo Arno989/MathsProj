@@ -112,8 +112,16 @@ class pageSignIn(tk.Frame):
         self.entry_password = tk.Entry(self)
         self.entry_password.pack()
 
-        btnSignIn = tk.Button(self, text="Sign In", command=self.controleValues)
-        btnSignIn.pack(pady=5, ipadx=30, ipady=5)
+     
+
+        btnSignIn = tk.Button(self, text="Sign In",
+                            command=self.controleValues)
+        btnSignIn.pack(pady=5,ipadx=30,ipady=5)
+
+        btnSignUp = Button(self, text="SignUp",
+                            command=lambda: controller.show_frame(pageSignUp))
+        btnSignUp.pack(pady=5,ipadx=30,ipady=5)
+
 
         btnSignUp = tk.Button(
             self, text="SignUp", command=lambda: controller.show_frame(pageSignUp)
