@@ -91,6 +91,7 @@ class Movies(tk.Tk):
 
 class pageSignIn(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
 
         Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
@@ -160,7 +161,7 @@ class pageSignIn(tk.Frame):
 
             if signIn.authenticated == True:
                 print("gelukt om in te loggen !!")
-                controller.show_frame(HomePage)
+                self.controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignIn", "Login refused")
 
@@ -258,7 +259,7 @@ class pageSignUp(tk.Frame):
 
             if signUp.authenticated == True:
                 tk.messagebox.showinfo("SignUp", "You are correctly signed up")
-                controller.show_frame(HomePage)
+                Movies.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignUp", "Refused to sign up")
 
