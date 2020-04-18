@@ -27,11 +27,11 @@ class Movie_thread(threading.Thread):
         self.serversocket.bind((self.host, self.port))
         self.serversocket.listen(5)
         self.connected = True
-        self.print_gui_message("SERVER STARTED")
+        self.print_gui_message("Started")
 
     def close_server_socket(self):
         # remove the socket object
-        self.print_gui_message("CLOSING SERVER")
+        self.print_gui_message("Closing")
         self.serversocket.close()
         self.connected = False
 
@@ -41,24 +41,26 @@ class Movie_thread(threading.Thread):
             threads = 0
             clh = []
             while True:
-                self.print_gui_message("MT> waiting for client...")
+                self.print_gui_message("waiting for client...")
 
                 # establish a connection
                 socket_to_client, addr = self.serversocket.accept()
-                self.print_gui_message(f"MT> Established connection with: {addr}")
+                self.print_gui_message(f"Established connection with: {addr}")
 
                 # initiate thread
                 threads += 1
-                clh.append(ClientHandler(socket_to_client, self.messages_queue, threads))
+                clh.append(
+                    ClientHandler(socket_to_client, self.message_queue, threads)
+                )
                 try:
-                    clh[threads].start()
+                    clh[threads-1].start()
                 except (KeyboardInterrupt, SystemExit):
                     logging.info("MT> Interrupted, calling Stop.")
                     clh.stop()
                     sys.kill()
 
                 self.print_gui_message(
-                    f"Current thread count: {threads}" # threading.active_count()
+                    f"Current thread count: {threads}"  # threading.active_count()
                 )
         except Exception as ex:
             logging.error(f"MT> {ex}")
@@ -67,4 +69,3 @@ class Movie_thread(threading.Thread):
     def print_gui_message(self, message):
         self.message_queue.put(f"MT> {message}")
         logging.info(f"MT> {message}")
-

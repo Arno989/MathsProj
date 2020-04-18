@@ -38,7 +38,7 @@ class ClientHandler(threading.Thread):
     def run(self):
         writer_obj = self.socket_to_client.makefile(mode="rwb")
 
-        self.printGui(f"Waiting for first query from {self.socket_to_client}")
+        self.printGui(f"Waiting for first query...")
         query = pickle.load(writer_obj)
 
         user = User()

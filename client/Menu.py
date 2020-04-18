@@ -77,15 +77,11 @@ class Movies(tk.Tk):
         ):
 
             frame = F(container, self)
-
             self.frames[F] = frame
 
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(pageSignIn)
-
-    def __del__(self):
-        closeConnection()
 
     def show_frame(self, cont):
 
@@ -119,9 +115,6 @@ class pageSignIn(tk.Frame):
             self, text="SignUp", command=lambda: controller.show_frame(pageSignUp)
         )
         btnSignUp.pack(pady=5, ipadx=30, ipady=5)
-
-    def __del__(self):
-        closeConnection()
 
     def controleValues(self):
         try:
@@ -215,9 +208,6 @@ class pageSignUp(tk.Frame):
             self, text="Sign In", command=lambda: controller.show_frame(pageSignIn)
         )
         btnSignIn.pack(pady=5, ipadx=30, ipady=5)
-
-    def __del__(self):
-        closeConnection()
 
     def controleValues(self):
         try:
@@ -320,10 +310,6 @@ class HomePage(tk.Frame):
         )
         btnGraphScore.pack(ipady=10, ipadx=150, pady=10)
 
-    def __del__(self):
-        closeConnection()
-
-
 class pageByGenre(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -365,9 +351,6 @@ class pageByGenre(tk.Frame):
         self.tk_table.configure(xscrollcommand=scroll.set)
 
         self.tk_table.pack()
-
-    def __del__(self):
-        closeConnection()
 
     def clearTreeview(self):
         try:
@@ -510,9 +493,6 @@ class pageByCompany(tk.Frame):
         self.tk_table.configure(xscrollcommand=scroll.set)
 
         self.tk_table.pack()
-
-    def __del__(self):
-        closeConnection()
 
     def clearTreeview(self):
         try:
@@ -660,9 +640,6 @@ class pageByName(tk.Frame):
 
         self.tk_table.pack()
 
-    def __del__(self):
-        closeConnection()
-
     def clearTreeview(self):
         try:
             for i in self.tk_table.get_children():
@@ -798,9 +775,6 @@ class pageBetweenYears(tk.Frame):
         self.tk_table.configure(xscrollcommand=scroll.set)
 
         self.tk_table.pack()
-
-    def __del__(self):
-        closeConnection()
 
     def clearTreeview(self):
         try:
@@ -952,9 +926,6 @@ class pageGraphScore(tk.Frame):
         self.image = tk.Label(self)
         self.image.pack(pady=(5, 5), padx=(5, 5))
 
-    def __del__(self):
-        closeConnection()
-
     def showGraph(self):
         try:
             # get values for combobox
@@ -990,6 +961,7 @@ app = Movies()
 
 
 def Stop():
+    closeConnection()
     logging.info("Deleting window")
     try:
         app.destroy()
@@ -1001,8 +973,6 @@ def Stop():
 
 try:
 
-    logging.basicConfig(level=logging.INFO)
-
     app.geometry()
     app.mainloop()
 
@@ -1012,4 +982,3 @@ except KeyboardInterrupt:
 
 except Exception as e:
     print(f"ran into exception: {e}")
-    Stop()
