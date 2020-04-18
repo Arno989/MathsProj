@@ -263,7 +263,7 @@ class pageSignUp(tk.Frame):
             signUp = pickle.load(my_writer_obj)
             print(signUp)
 
-            if signUp == True:
+            if signUp.authenticated == True:
                 self.messagebox.showinfo("SignUp", "You are correctly signed up")
                 self.HomePage()
             else:
