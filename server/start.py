@@ -21,13 +21,7 @@ def Stop():
 
 
 logging.info(f"Start> Server online")
-<<<<<<< Updated upstream
 root = ServerWindow()
-=======
-
-root = ServerWindow()       
-    
->>>>>>> Stashed changes
 try:
     root.geometry("400x600")
     #gui = ServerWindow(root)
