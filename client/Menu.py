@@ -164,9 +164,10 @@ class pageSignIn(tk.Frame):
                 self.controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignIn", "Login refused")
+                self.entry_username.set("")
+                self.entry_password.set("")
 
-            self.entry_username.set("")
-            self.entry_password.set("")
+            
 
         # Change width and high off window
         # app.geometry("200x100")
@@ -178,6 +179,7 @@ class pageSignIn(tk.Frame):
 
 class pageSignUp(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
 
         Title = tk.Label(self, text="Sign Up", font=LARGE_FONT)
@@ -259,14 +261,15 @@ class pageSignUp(tk.Frame):
 
             if signUp.authenticated == True:
                 tk.messagebox.showinfo("SignUp", "You are correctly signed up")
-                Movies.show_frame(HomePage)
+                self.controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignUp", "Refused to sign up")
+                self.entry_username.set("")
+                self.entry_email.set("")
+                self.entry_name.set("")
+                self.entry_password.set("")
 
-            self.entry_username.set("")
-            self.entry_email.set("")
-            self.entry_name.set("")
-            self.entry_password.set("")
+           
 
         # Change width and high off window
         # app.geometry("200x100")
