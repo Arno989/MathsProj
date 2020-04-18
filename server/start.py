@@ -10,14 +10,6 @@ sys.path.insert(0, BASE_DIR)
 
 from server.server_gui import ServerWindow
 
-#try:
-#    root = ServerWindow()
-#    root.geometry("400x600")
-    #gui = ServerWindow()
-#    root.protocol("WM_DELETE_WINDOW", Stop)
-#except Exception as ex:
-#    logging.error(f"Start.py in prep :> {ex}")
-
 def Stop():
     logging.info("Start> Deleting window")
     try:
@@ -29,7 +21,13 @@ def Stop():
 
 
 logging.info(f"Start> Server online")
+<<<<<<< Updated upstream
 root = ServerWindow()
+=======
+
+root = ServerWindow()       
+    
+>>>>>>> Stashed changes
 try:
     root.geometry("400x600")
     #gui = ServerWindow(root)
