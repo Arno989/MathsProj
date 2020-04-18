@@ -90,50 +90,68 @@ class OverviewUsers(tk.Frame):
         )
         btnHome.pack(ipady=10, ipadx=150, pady=10)
 
-        # Show treeview
-        self.tk_table = ttk.Treeview(self)
+        self.showUsers()
 
-        # Scroll Vertical
-        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-        scrolly.pack(side=RIGHT, fill="y")
-        self.tk_table.configure(yscrollcommand=scrolly.set)
+        btnGet_userInfo = tk.Button(
+            self, text="Show info about selected user", command=self.get_userinfo)
+        btnGet_userInfo.pack(ipady=10, ipadx=150, pady=10)
 
-        # Scroll Horizontal -> treeview
-        scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
-        scroll.pack(side=BOTTOM, fill="x")
-        self.tk_table.configure(xscrollcommand=scroll.set)
+     
+    def showUsers(self):
+        try:
+            # Show treeview
+            self.tk_table = ttk.Treeview(self)
 
-        self.tk_table["height"] = 17
+            # Scroll Vertical
+            scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+            scrolly.pack(side=RIGHT, ipady=300,pady=(0,120))
+            self.tk_table.configure(yscrollcommand=scrolly.set)
 
-        self.tk_table["show"] = "headings"
+            self.tk_table["height"] = 17
 
-        # add each colum in columns
-        columns = ["name", "username", "email"]
+            self.tk_table["show"] = "headings"
 
-        # display columns
-        self.tk_table["columns"] = columns
+            # add each colum in columns
+            columns = ["Username"]
 
-        indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
-        for col in columns:
-            self.tk_table.heading(f"#{indexx}", text=col)
-            indexx += 1
+            # display columns
+            self.tk_table["columns"] = columns
 
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            for col in columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1
+
+            all_users = get_json_file_contents(jsonDb)
+            # Display rows
+            for each_rec in all_users:
+                self.tk_table.insert(
+                    "",
+                    tk.END,
+                    values=(each_rec["username"]),
+                )
+
+            self.tk_table.pack()
+        
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("show users", "Something has gone wrong...")
+        
+    def get_userinfo(self):
         all_users = get_json_file_contents(jsonDb)
-        # Display rows
-        for each_rec in all_users:
-            self.tk_table.insert(
-                "",
-                tk.END,
-                values=(each_rec["name"], each_rec["username"], each_rec["email"]),
-            )
+        selected_item  = self.tk_table.selection()[0]
+        # Check if selected an item
+        if len(selected_item)!=0:
+            selected_username=self.tk_table.item(selected_item)['values'][0]
+            for u in all_users:
+                if u['username'] == selected_username:
+                    tk.messagebox.showinfo(f"Selected name {u['name']}",f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}")
 
-        self.tk_table.pack()
-
-        # Display rows
-
-        # self.tk_table.insert(
-        #    "", tk.END, values=(all_users["name"],all_users["username"],all_users["email"]))
-
+        else:
+            messagebox.showinfo("get_userinfo", "select user before push the button")
+    
+    
+        
 
 class OverviewAskedSearch(tk.Frame):
     def __init__(self, parent, controller):
