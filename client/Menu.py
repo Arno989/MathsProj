@@ -137,7 +137,8 @@ class pageSignIn(tk.Frame):
                 self.entry_username.focus()
             else:
                 # go to function
-                self.singIn()
+                
+                self.signIn()
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -148,6 +149,7 @@ class pageSignIn(tk.Frame):
     def signIn(self):
         try:
             # send BYGENRE to clienthandler
+            
             pickle.dump("SIGNIN", my_writer_obj)
 
             # selected value off combobox
@@ -161,12 +163,12 @@ class pageSignIn(tk.Frame):
 
             # waiting for answer
             signIn = pickle.load(my_writer_obj)
-            print(signIn)
+            print(signIn.authenticated)
 
-            if signIn == True:
+            if signIn.authenticated == True:
                 self.HomePage()
             else:
-                self.messagebox.showinfo("SignIn", "Login refused")
+                tk.messagebox.showinfo("SignIn", "Login refused")
 
             self.entry_username.set("")
             self.entry_password.set("")
@@ -229,7 +231,7 @@ class pageSignUp(tk.Frame):
 
             # When is empty give warning
             if username == "" or password == "" or email == "" or name == "":
-                self.messagebox.showwarning(
+                tk.messagebox.showwarning(
                     title="Warning", message="Please fill all the input fields !"
                 )
                 self.entry_name.focus()
@@ -264,10 +266,10 @@ class pageSignUp(tk.Frame):
             print(signUp)
 
             if signUp.authenticated == True:
-                self.messagebox.showinfo("SignUp", "You are correctly signed up")
+                tk.messagebox.showinfo("SignUp", "You are correctly signed up")
                 self.HomePage()
             else:
-                self.messagebox.showinfo("SignUp", "Refused to sign up")
+                tk.messagebox.showinfo("SignUp", "Refused to sign up")
 
             self.entry_username.set("")
             self.entry_email.set("")

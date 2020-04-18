@@ -22,6 +22,6 @@ def get_json_file_contents(path: str):
         print("opening content")
         content = json.load(users_file)
         #content = json.load(users_file, object_hook=User)
-        print(content)
+        #print(content)
         
         return content

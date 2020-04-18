@@ -11,6 +11,13 @@ from tkinter import messagebox, ttk
 
 from multithreader import Movie_thread
 
+import json
+from pathlib import Path
+from dbHandler import get_json_file_contents
+from data.movie import User
+
+jsonDb = "server/users.json"
+
 
 
 LARGE_FONT= ("Verdana", 12)
@@ -74,7 +81,7 @@ class OverviewUsers(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
 
-       
+
 
         label = tk.Label(self, text="Overview Users", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
@@ -83,7 +90,64 @@ class OverviewUsers(tk.Frame):
                             command=lambda: controller.show_frame(ServerLog))
         btnHome.pack(ipady=10,ipadx=150,pady=10)
 
-   
+       
+
+        # Show treeview
+        self.tk_table = ttk.Treeview(self)
+
+        # Scroll Vertical
+        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+        scrolly.pack(side=RIGHT, fill="y")
+        self.tk_table.configure(yscrollcommand=scrolly.set)
+
+        # Scroll Horizontal -> treeview
+        scroll = ttk.Scrollbar(self, orient=HORIZONTAL, command=self.tk_table.xview)
+        scroll.pack(side=BOTTOM, fill="x")
+        self.tk_table.configure(xscrollcommand=scroll.set)
+
+
+        self.tk_table["height"] = 17
+
+        self.tk_table["show"] = "headings"
+
+        # add each colum in columns
+        columns = ["name","username","email"]
+        
+        
+
+        # display columns
+        self.tk_table["columns"] = columns
+
+        indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+        for col in columns:
+            self.tk_table.heading(f"#{indexx}", text=col)
+            indexx += 1
+        
+        all_users = get_json_file_contents(jsonDb)
+        # Display rows
+        for each_rec in all_users:
+            self.tk_table.insert(
+                "", tk.END, values=(each_rec["name"],each_rec["username"],each_rec["email"])
+            )
+
+        self.tk_table.pack()
+        
+                
+        
+
+        
+
+        
+
+       
+
+        # Display rows
+        
+        #self.tk_table.insert(
+        #    "", tk.END, values=(all_users["name"],all_users["username"],all_users["email"]))
+
+        
+
 class OverviewAskedSearch(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
