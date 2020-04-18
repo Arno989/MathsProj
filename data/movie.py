@@ -44,4 +44,5 @@ class User:
         self.authenticated = None
         
     def __str__(self):
-        return f"user: {self.name}, {self.username}, {self.email}, {self.password}"
+        return str(self.__dict__) #f"user: {self.name}, {self.username}, {self.email}, {self.password}"
+    

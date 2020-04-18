@@ -112,17 +112,13 @@ class pageSignIn(tk.Frame):
         self.entry_password = tk.Entry(self)
         self.entry_password.pack()
 
-     
+        btnSignIn = tk.Button(self, text="Sign In", command=self.controleValues)
+        btnSignIn.pack(pady=5, ipadx=30, ipady=5)
 
-        btnSignIn = tk.Button(self, text="Sign In",
-                            command=self.controleValues)
-        btnSignIn.pack(pady=5,ipadx=30,ipady=5)
-
-        btnSignUp = Button(self, text="SignUp",
-                            command=lambda: controller.show_frame(pageSignUp))
-        btnSignUp.pack(pady=5,ipadx=30,ipady=5)
-
-
+        btnSignUp = Button(
+            self, text="SignUp", command=lambda: controller.show_frame(pageSignUp)
+        )
+        btnSignUp.pack(pady=5, ipadx=30, ipady=5)
 
     def __del__(self):
         closeConnection()
@@ -677,21 +673,6 @@ class pageByName(tk.Frame):
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("byName - foutmelding", "Something has gone wrong...")
 
-    def makeConnnectionWithServer(self):
-        try:
-            logging.info("Making connection with server...")
-            # get local machine name
-            host = socket.gethostname()
-            port = 9999
-            self.socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            # connection to hostname on the port.
-            self.socket_to_server.connect((host, port))
-            my_writer_obj = self.socket_to_server.makefile(mode="rwb")
-            logging.info("Open connection with server succesfully")
-        except Exception as ex:
-            logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("byName - foutmelding", "Something has gone wrong...")
-
     def getNames(self):
         try:
             # get values for combobox
@@ -1005,8 +986,30 @@ class pageGraphScore(tk.Frame):
             )
 
 
-logging.basicConfig(level=logging.INFO)
-
 app = Movies()
-app.geometry()
-app.mainloop()
+
+
+def Stop():
+    logging.info("Deleting window")
+    try:
+        app.destroy()
+        logging.info("root destroyed but program still running, have to close threads")
+        sys.exit()
+        logging.info("closed threads and stopped program, this should not show up")
+    except Exception as ex:
+        logging.error("Start.py :> Exception during stop " + str(ex))
+
+try:
+
+    logging.basicConfig(level=logging.INFO)
+
+    app.geometry()
+    app.mainloop()
+
+except KeyboardInterrupt:
+    print("Interrupted, calling Stop().")
+    Stop()
+
+except Exception as e:
+    print(f"ran into exception: {e}")
+    Stop()

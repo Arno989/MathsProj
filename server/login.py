@@ -13,24 +13,23 @@ jsonDb = "server/users.json"
 
 def add_user(username: str, password: str, name: str, email: str):
     create_file_if_not_exists(jsonDb)
-    print("create db")
+    print(f"check user dup")
     is_duplicate_user = retrieve_user(username)
-    print("aaa")
-    print(f"check user dup {is_duplicate_user}")
-    print("bbb")
+    print(f"user dup {is_duplicate_user}")
     if is_duplicate_user != False:
-        raise ValueError(f'Username "{username}" already exists., why am i called?')
-    new_user = User(
-        username=username, password=hash_password(password), name=name, email=email
-    )
-    print("created user")
+        print(f'Username "{username}" already exists. server side')
+    new_user = User(username=username, password=hash_password(password), name=name, email=email)
+    print(f"created user : {new_user}")
     all_users = get_json_file_contents(jsonDb)
     print(f"all users = {all_users}")
-    if not all_users:
-        all_users = []
-    all_users.append(new_user)
+    print(f"filetype {type(all_users)}")
+    print(f"filetype {type(all_users[0])}")
+    print(new_user.__dict__)
+    all_users.append(new_user.__dict__)
+    print("appendededed")
     with open(jsonDb, "w") as users_file:
-        json.dump(all_users, users_file, indent=2)
+        print(f"dumping {all_users}")
+        json.dump(all_users, users_file, indent=4)
 
 
 def retrieve_user(username: str):

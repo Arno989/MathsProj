@@ -1,2 +1,23 @@
-{"username": "jan", "password": "dfgf","name": "janneke", "email":"jan@hotmail.com"}
-  
+[
+    {
+        "name": "yeet",
+        "username": "yeet",
+        "email": "yeet",
+        "password": "hash",
+        "authenticated": null
+    },
+    {
+        "name": "yeet2",
+        "username": "yeet2",
+        "email": "yeet2",
+        "password": "hash2",
+        "authenticated": null
+    },
+    {
+        "name": "arno",
+        "username": "arno",
+        "email": "arno",
+        "password": "$2b$12$nnw7SWl2UR69vDeJDrE01O0KKGE73dNJiU3KeBb48kCpIcukhqNHO",
+        "authenticated": null
+    }
+]
