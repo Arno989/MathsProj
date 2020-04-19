@@ -49,7 +49,6 @@ class ClientHandler(threading.Thread):
             while query == "SIGNIN":
                 try:
                     user = pickle.load(writer_obj)
-                    print(auth_user(user.username, user.password))
                     if auth_user(user.username, user.password):
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
@@ -74,7 +73,6 @@ class ClientHandler(threading.Thread):
                     try:
                         add_user(user.username, user.password, user.email, user.name)
                         self.printGui(f"Added user {user.username}")
-
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
@@ -92,7 +90,7 @@ class ClientHandler(threading.Thread):
 
                 query = pickle.load(writer_obj)
 
-            if user.authenticated:
+            while user.authenticated:
                 while query == "BY_GENRE":  # Search by genre
                     q_Genre = pickle.load(writer_obj)
                     search = str(q_Genre.genre).capitalize()
@@ -229,6 +227,19 @@ class ClientHandler(threading.Thread):
                     pickle.dump(years, writer_obj)
                     writer_obj.flush()
                     query = pickle.load(writer_obj)
+
+                while query == "SIGNOFF":
+                    try:
+                        user = pickle.load(writer_obj)
+                        user.authenticated = False
+                        pickle.dump(user, writer_obj)
+                        writer_obj.flush()
+                        Online_users.logoutUser(user.username)
+                        self.printGui(f"User {user.username} signed off")
+
+                    except Exception as e:
+                        self.printGui(f"Error during logout: {e}")
+
 
             self.printGui(f"Connection closing")
             self.socket_to_client.close()
