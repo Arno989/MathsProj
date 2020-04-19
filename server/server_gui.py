@@ -247,9 +247,8 @@ class SendMessage(tk.Frame):
 
         self.input_message()
 
-      
         btnMessageToSend = tk.Button(
-            self, text="Show info about selected user", command=self.sendMessageToUsers)
+            self, text="Send Message", command=self.sendMessageToUsers)
         btnMessageToSend.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
@@ -267,27 +266,18 @@ class SendMessage(tk.Frame):
         S.config(command=self.T.yview)
         self.T.config(yscrollcommand=S.set)
         
-        quote = """HAMLET: To be, or not to be--that is the question:
-                    Whether 'tis nobler in the mind to suffer
-                    The slings and arrows of outrageous fortune
-                    Or to take arms against a sea of troubles
-                    And by opposing end them. To die, to sleep--
-                    No more--and by a sleep to say we end
-                    The heartache, and the thousand natural shocks
-                    That flesh is heir to. 'Tis a consummation
-                    Devoutly to be wished."""
-        self.T.insert(tk.END, quote)
         
     def sendMessageToUsers(self):
         #print van begin tot eind
         message = self.T.get("1.0",tk.END)
-        #if message is not ""
-        if len(message)!=0:<
+        messegaLen = len(message)
+        #if message is empty
+        if messegaLen == 1:
+            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+        else:
             print(message)
             tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
             ## komt nog code om te verzenden mss in class --> !!
-        else:
-            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
 
 
 
