@@ -79,7 +79,8 @@ class OverviewOnlineUsers(tk.Frame):
 
         #show table
         self.show_table()
-
+        
+        #combobox off online users
         self.getOnlineUsers()
 
         btnShowUserInfo = tk.Button(
@@ -145,17 +146,6 @@ class OverviewOnlineUsers(tk.Frame):
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
 
-            
-
-            #all_users = get_json_file_contents(jsonDb)
-            # Display rows
-            #for each_rec in all_users:
-            #    self.tk_table.insert(
-            #        "",
-            #        tk.END,
-            #        values=(each_rec["username"]),
-            #    )
-
             self.tk_table.pack(fill="x",padx=(10,0))
             
         
@@ -169,6 +159,16 @@ class OverviewOnlineUsers(tk.Frame):
         for i in self.tk_table.get_children():
             self.tk_table.delete(i)
         print("search history moet nog aangemaakt worden")
+        #here insert table
+        
+        #all_users = get_json_file_contents(jsonDb)
+        # Display rows
+        #for each_rec in all_users:
+        #    self.tk_table.insert(
+        #        "",
+        #        tk.END,
+        #        values=(each_rec["username"]),
+        #    )
 
 
 

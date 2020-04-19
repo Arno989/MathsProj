@@ -74,6 +74,9 @@ class Movies(tk.Tk):
             pageByCompany,
             pageBetweenYears,
             pageGraphScore,
+            pageReceivedMessages,
+            
+            
         ):
 
             frame = F(container, self)
@@ -315,6 +318,16 @@ class HomePage(tk.Frame):
             command=lambda: controller.show_frame(pageGraphScore),
         )
         btnGraphScore.pack(ipady=10, ipadx=150, pady=10)
+
+        btnReceivedMessages = tk.Button(
+            self,
+            text="Received Messages",
+            command=lambda: controller.show_frame(pageReceivedMessages),
+        )
+        btnReceivedMessages.pack(ipady=10, ipadx=150, pady=10)
+
+
+      
 
         btnLogOut = tk.Button(
             self,
@@ -942,6 +955,100 @@ class pageBetweenYears(tk.Frame):
             messagebox.showinfo("betweenYears", "Something has gone wrong...")
 
 
+class pageReceivedMessages(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Received Messages", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        
+
+        #show table
+        self.show_table()
+        #get received messages
+        #self.get_received_messages()
+
+        
+        btnHome = tk.Button(
+            self, text="Back To Home", command=lambda: controller.show_frame(HomePage))
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+      
+    def show_table(self):
+        try:
+            # Show treeview
+            self.tk_table = ttk.Treeview(self)
+
+            # Scroll Vertical
+            scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            self.tk_table.configure(yscrollcommand=scrolly.set)
+
+            self.tk_table["height"] = 17
+
+            self.tk_table["show"] = "headings"
+
+            # add each colum in columns
+            columns = ["Messages"]
+
+            # display columns
+            self.tk_table["columns"] = columns
+
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            for col in columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1
+
+            self.tk_table.pack(fill="x",padx=(10,0))
+            
+        
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("show table messages", "Something has gone wrong...")
+
+
+    def get_received_messages(self):
+        try:
+            # send BYNAME to clienthandler
+            pickle.dump("GET_MESSAGES", my_writer_obj)
+            # add class to send
+            user = User()
+            #prepare for send
+            pickle.dump(user, my_writer_obj)
+            #send to server
+            my_writer_obj.flush()
+
+            # waiting for answer
+            self.messages = pickle.load(my_writer_obj)
+            print(self.messages)
+            
+        except Exception as ex:
+                    logging.error("Foutmelding: %s" % ex)
+                    messagebox.showinfo("get received messages", "Something has gone wrong...")
+                    
+    def insert_received_messages(self):
+        #clear the treeview before show data
+        for i in self.tk_table.get_children():
+            self.tk_table.delete(i)
+        print("search history moet nog aangemaakt worden")
+        
+
+        #here insert table
+        
+        #self.messages
+        # Display rows
+        #for each_rec in self.messages:
+        #    self.tk_table.insert(
+        #        "",
+        #        tk.END,
+        #        values=(each_rec),
+        #    )
+
+
+
+
+
 class pageGraphScore(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -991,6 +1098,10 @@ class pageGraphScore(tk.Frame):
             messagebox.showinfo(
                 "graphScore - foutmelding", "Something has gone wrong..."
             )
+
+
+            
+
 
 
 app = Movies()
