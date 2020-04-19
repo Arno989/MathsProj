@@ -53,7 +53,7 @@ class ClientHandler(threading.Thread):
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
-                        Online_users.loginUser(user.username)
+                        #Online_users.loginUser(user.username)
                         self.printGui(f"User {user.username} signed in")
                     else:
                         user.authenticated = False
@@ -76,7 +76,7 @@ class ClientHandler(threading.Thread):
                         user.authenticated = True
                         pickle.dump(user, writer_obj)
                         writer_obj.flush()
-                        Online_users.loginUser(user.username)
+                        # Online_users.loginUser(user.username)
                         self.printGui(f"User {user.username} Signed in")
 
                     except ValueError:
@@ -228,17 +228,17 @@ class ClientHandler(threading.Thread):
                     writer_obj.flush()
                     query = pickle.load(writer_obj)
 
-                while query == "SIGNOFF":
-                    try:
-                        user = pickle.load(writer_obj)
-                        user.authenticated = False
-                        pickle.dump(user, writer_obj)
-                        writer_obj.flush()
-                        Online_users.logoutUser(user.username)
-                        self.printGui(f"User {user.username} signed off")
+                # while query == "SIGNOFF":
+                #     try:
+                #         user = pickle.load(writer_obj)
+                #         user.authenticated = False
+                #         pickle.dump(user, writer_obj)
+                #         writer_obj.flush()
+                #         Online_users.logoutUser(user.username)
+                #         self.printGui(f"User {user.username} signed off")
 
-                    except Exception as e:
-                        self.printGui(f"Error during logout: {e}")
+                #     except Exception as e:
+                #         self.printGui(f"Error during logout: {e}")
 
 
             self.printGui(f"Connection closing")
