@@ -48,10 +48,9 @@ class ServerWindow(tk.Tk):
         for F in (
             ServerLog,
             OverviewOnlineUsers,
-            OverviewAskedSearch,
             OverviewUsers,
             SendMessage,
-            PopularitieOffSearch,
+            PopularityOffSearch,
         ):
 
             frame = F(container, self)
@@ -122,18 +121,53 @@ class OverviewOnlineUsers(tk.Frame):
         else:
             tk.messagebox.showinfo("get_userinfo", "select user before push the button")
     def show_table(self):
-        # Show treeview
-        self.tk_table = ttk.Treeview(self)
+        try:
+            # Show treeview
+            self.tk_table = ttk.Treeview(self)
 
-        # Scroll Vertical
-        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-        scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
-        self.tk_table.configure(yscrollcommand=scrolly.set)
+            # Scroll Vertical
+            scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            self.tk_table.configure(yscrollcommand=scrolly.set)
 
-        self.tk_table["height"] = 17
+            self.tk_table["height"] = 17
 
-        self.tk_table.pack(fill="x",padx=(10,0))
+            self.tk_table["show"] = "headings"
+
+            # add each colum in columns
+            columns = ["Searches","Parameter"]
+
+            # display columns
+            self.tk_table["columns"] = columns
+
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            for col in columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1
+
+            
+
+            #all_users = get_json_file_contents(jsonDb)
+            # Display rows
+            #for each_rec in all_users:
+            #    self.tk_table.insert(
+            #        "",
+            #        tk.END,
+            #        values=(each_rec["username"]),
+            #    )
+
+            self.tk_table.pack(fill="x",padx=(10,0))
+            
+        
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("show searches off user", "Something has gone wrong...")
+
+
     def search_history(self):
+        #clear the treeview before show data
+        for i in self.tk_table.get_children():
+            self.tk_table.delete(i)
         print("search history moet nog aangemaakt worden")
 
 
@@ -219,23 +253,6 @@ class OverviewUsers(tk.Frame):
 
         else:
             tk.messagebox.showinfo("get_userinfo", "select user before push the button")
-    
-    
-        
-
-class OverviewAskedSearch(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        # per client een nieuwe tabel
-
-        label = tk.Label(self, text="Overview Asked Search", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-
-        btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
-        )
-        btnHome.pack(ipady=10, ipadx=150, pady=10)
 
 
 class SendMessage(tk.Frame):
@@ -246,10 +263,17 @@ class SendMessage(tk.Frame):
         label.pack(pady=10, padx=10)
 
         self.input_message()
+        
 
         btnMessageToSend = tk.Button(
-            self, text="Send Message", command=self.sendMessageToUsers)
+            self, text="Send Message To All", command=self.sendMessageToAllUsers)
         btnMessageToSend.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+        self.getOnlineUsers()
+
+        btnMessageToSendUser = tk.Button(
+            self, text="Send Message To Selected User", command=self.sendMessageToUser)
+        btnMessageToSendUser.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
@@ -265,35 +289,112 @@ class SendMessage(tk.Frame):
         self.T.pack(fill="x")
         S.config(command=self.T.yview)
         self.T.config(yscrollcommand=S.set)
+
+    def getOnlineUsers(self):
+        users= Online_users.users_online()
+        
+        label2 = tk.Label(self, text="Online users")
+        label2.pack(pady=(2,1), padx=10)
+
+        # Create combobox
+        self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
+        self.cbo_onlineUsers["values"] = users
+        self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
         
         
-    def sendMessageToUsers(self):
+    def sendMessageToAllUsers(self):
         #print van begin tot eind
         message = self.T.get("1.0",tk.END)
         messegaLen = len(message)
         #if message is empty
         if messegaLen == 1:
             tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+            self.cbo_onlineUsers.set("")
         else:
             print(message)
+            #Clear the textbox
+            self.T.delete('1.0', tk.END)
+            self.cbo_onlineUsers.set("")
             tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
+            ## komt nog code om te verzenden mss in class --> !!
+    
+    def sendMessageToUser(self):
+        #print van begin tot eind
+        message = self.T.get("1.0",tk.END)
+        messegaLen = len(message)
+        #if message is empty
+        if messegaLen == 1:
+            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+            self.cbo_onlineUsers.set("")
+            
+        else:
+            print(message)
+            tk.messagebox.showinfo(f"Send message",f" Message sended to user !")
+            self.cbo_onlineUsers.set("")
+            #clear the textbox
+            self.T.delete('1.0', tk.END)
             ## komt nog code om te verzenden mss in class --> !!
 
 
 
-class PopularitieOffSearch(tk.Frame):
+class PopularityOffSearch(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
         # per client een nieuwe tabel
 
-        label = tk.Label(self, text="Overview Popularitie Off Search", font=LARGE_FONT)
+        label = tk.Label(self, text="Overview Popularity Off Searches", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
+
+        #treeview
+        self.showPopularity()
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=10)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+        
+    def showPopularity(self):
+        try:
+            # Show treeview
+            self.tk_table = ttk.Treeview(self)
+
+            # Scroll Vertical
+            scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            self.tk_table.configure(yscrollcommand=scrolly.set)
+
+            self.tk_table["height"] = 17
+
+            self.tk_table["show"] = "headings"
+
+            # add each colum in columns
+            columns = ["Searches","Parameter","Times Requested"]
+
+            # display columns
+            self.tk_table["columns"] = columns
+
+            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            for col in columns:
+                self.tk_table.heading(f"#{indexx}", text=col)
+                indexx += 1
+
+            #all_users = get_json_file_contents(jsonDb)
+            # Display rows
+            #for each_rec in all_users:
+            #    self.tk_table.insert(
+            #        "",
+            #        tk.END,
+            #        values=(each_rec["username"]),
+            #    )
+
+            self.tk_table.pack(fill="x",padx=(10,0))
+            
+        
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("show popularity searches", "Something has gone wrong...")
 
 
 class ServerLog(tk.Frame):
@@ -348,7 +449,7 @@ class ServerLog(tk.Frame):
         btnPopularitieOffSearch = tk.Button(
             self,
             text="Popularity Off Searches",
-            command=lambda: controller.show_frame(PopularitieOffSearch),
+            command=lambda: controller.show_frame(PopularityOffSearch),
         )
         btnPopularitieOffSearch.grid(
             row=8,
