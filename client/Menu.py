@@ -143,18 +143,17 @@ class pageSignIn(tk.Frame):
     def signIn(self):
         try:
             # send BYGENRE to clienthandler
-            
             pickle.dump("SIGNIN", my_writer_obj)
 
             # selected value off combobox
             username = str(self.entry_username.get())
             password = str(self.entry_password.get())
-
+            
             # Voeg signIn toe aan klasse
             signIn = User(username=username, password=password)
             pickle.dump(signIn, my_writer_obj)
             my_writer_obj.flush()
-
+            
             # waiting for answer
             signIn = pickle.load(my_writer_obj)
             print(signIn.authenticated)
@@ -316,6 +315,36 @@ class HomePage(tk.Frame):
             command=lambda: controller.show_frame(pageGraphScore),
         )
         btnGraphScore.pack(ipady=10, ipadx=150, pady=10)
+
+        btnLogOut = tk.Button(
+            self,
+            text="Log Out",
+            command=self.Logout,
+        )
+        btnLogOut.pack(ipady=10, ipadx=150, pady=10)
+    
+    def Logout(self):
+        try:
+            # send SIGNOFF to clienthandler
+            pickle.dump("SIGNOFF", my_writer_obj)
+
+             # add class to send
+            user = User()
+            #prepare for send
+            pickle.dump(user, my_writer_obj)
+            #send to server
+            my_writer_obj.flush()
+
+            # waiting for answer
+            user = pickle.load(my_writer_obj)
+            print(user.name)
+
+
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("Logout", "Something has gone wrong...")
+
+        
 
 class pageByGenre(tk.Frame):
     def __init__(self, parent, controller):

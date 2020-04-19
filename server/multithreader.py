@@ -8,14 +8,6 @@ import numpy as np
 
 from server.clienthandler import ClientHandler
 
-onlineUsers = []
-
-class Online_users():    
-    def loginUser(self, username):
-        onlineUsers.append(username)
-        
-    def logoutUser(self, username):
-        onlineUsers.remove(username)
 
 
 class Movie_thread(threading.Thread):

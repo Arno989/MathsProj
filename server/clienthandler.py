@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 sys.path.insert(0, BASE_DIR)
 dataset = pd.read_csv(f"{PROJECT_ROOT}\\data\\movies.csv", encoding="ISO-8859-1")
 
-from server.multithreader import Online_users
+from data.moderator import Online_users
 from server.login import auth_user, add_user
 from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 

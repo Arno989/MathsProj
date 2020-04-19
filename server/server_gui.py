@@ -10,21 +10,25 @@ import pickle
 import numpy as np
 import pandas as pd
 from tkinter import messagebox, ttk
+#fix relative path
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_ROOT)
+sys.path.insert(0, BASE_DIR)
+jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
+from data.moderator import Online_users
+
+
 
 import json
 from pathlib import Path
 from server.dbHandler import get_json_file_contents
 from data.movie import User
 
-
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-BASE_DIR = os.path.dirname(PROJECT_ROOT)
-sys.path.insert(0, BASE_DIR)
-jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
-
+#font
 LARGE_FONT = ("Verdana", 12)
+
 
 
 class ServerWindow(tk.Tk):
@@ -71,30 +75,93 @@ class OverviewOnlineUsers(tk.Frame):
         label = tk.Label(self, text="Overview Online Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
+        label1 = tk.Label(self, text="Search History")
+        label1.pack(pady=3, padx=10)
+
+        #show table
+        self.show_table()
+
+        self.getOnlineUsers()
+
+        btnShowUserInfo = tk.Button(
+            self, text="Show Info About Selected User", command=lambda: self.get_userinfo())
+        btnShowUserInfo.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+        btnShowHistory = tk.Button(
+            self, text="Show Search History Off Selected User", command=lambda: self.search_history())
+        btnShowHistory.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=10)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+    
+    def getOnlineUsers(self):
+        users= Online_users.users_online()
+        
+        label2 = tk.Label(self, text="Users")
+        label2.pack(pady=(2,1), padx=10)
+
+        # Create combobox
+        self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
+        self.cbo_onlineUsers["values"] = users
+        self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
+
+    def get_userinfo(self):
+        #get all the users
+        all_users = get_json_file_contents(jsonDb)
+        # get the selected item off the treeview
+        selected_item  = str(self.cbo_onlineUsers.get())
+        # Check if selected an item before clicked on the button 
+        if len(selected_item)!=0:
+            selected_username=selected_item
+            for u in all_users:
+                if u['username'] == selected_username:
+                    tk.messagebox.showinfo(f"Selected name {u['name']}",f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}")
+
+        else:
+            tk.messagebox.showinfo("get_userinfo", "select user before push the button")
+    def show_table(self):
+        # Show treeview
+        self.tk_table = ttk.Treeview(self)
+
+        # Scroll Vertical
+        scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
+        scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+        self.tk_table.configure(yscrollcommand=scrolly.set)
+
+        self.tk_table["height"] = 17
+
+        self.tk_table.pack(fill="x",padx=(10,0))
+    def search_history(self):
+        print("search history moet nog aangemaakt worden")
+
+
+
 
 
 class OverviewUsers(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
-
+   
         label = tk.Label(self, text="Overview Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-
-        btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
-        )
-        btnHome.pack(ipady=10, ipadx=150, pady=10)
 
         self.showUsers()
 
         btnGet_userInfo = tk.Button(
             self, text="Show info about selected user", command=self.get_userinfo)
-        btnGet_userInfo.pack(ipady=10, ipadx=150, pady=10)
+        btnGet_userInfo.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+     
+
+        btnHome = tk.Button(
+            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
+        )
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+        
+
+        
 
      
     def showUsers(self):
@@ -104,7 +171,7 @@ class OverviewUsers(tk.Frame):
 
             # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT, ipady=300,pady=(0,120))
+            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
             self.tk_table.configure(yscrollcommand=scrolly.set)
 
             self.tk_table["height"] = 17
@@ -131,16 +198,19 @@ class OverviewUsers(tk.Frame):
                     values=(each_rec["username"]),
                 )
 
-            self.tk_table.pack()
+            self.tk_table.pack(fill="x",padx=(10,0))
+            
         
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("show users", "Something has gone wrong...")
         
     def get_userinfo(self):
+        #get all the users
         all_users = get_json_file_contents(jsonDb)
+        # get the selected item off the treeview
         selected_item  = self.tk_table.selection()[0]
-        # Check if selected an item
+        # Check if selected an item before clicked on the button 
         if len(selected_item)!=0:
             selected_username=self.tk_table.item(selected_item)['values'][0]
             for u in all_users:
@@ -148,7 +218,7 @@ class OverviewUsers(tk.Frame):
                     tk.messagebox.showinfo(f"Selected name {u['name']}",f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}")
 
         else:
-            messagebox.showinfo("get_userinfo", "select user before push the button")
+            tk.messagebox.showinfo("get_userinfo", "select user before push the button")
     
     
         
@@ -171,16 +241,54 @@ class OverviewAskedSearch(tk.Frame):
 class SendMessage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
-        # per client een nieuwe tabel
-
-        label = tk.Label(self, text="Send Message To All The Users", font=LARGE_FONT)
+    
+        label = tk.Label(self, text="Send Message To Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
+
+        self.input_message()
+
+      
+        btnMessageToSend = tk.Button(
+            self, text="Show info about selected user", command=self.sendMessageToUsers)
+        btnMessageToSend.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=10)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
+    
+    def input_message(self):
+        #textarea aanmaken | scrollbar
+        S = tk.Scrollbar(self)
+        self.T = tk.Text(self, height=20, width=50)
+        S.pack(side=RIGHT, fill="y")
+        self.T.pack(fill="x")
+        S.config(command=self.T.yview)
+        self.T.config(yscrollcommand=S.set)
+        
+        quote = """HAMLET: To be, or not to be--that is the question:
+                    Whether 'tis nobler in the mind to suffer
+                    The slings and arrows of outrageous fortune
+                    Or to take arms against a sea of troubles
+                    And by opposing end them. To die, to sleep--
+                    No more--and by a sleep to say we end
+                    The heartache, and the thousand natural shocks
+                    That flesh is heir to. 'Tis a consummation
+                    Devoutly to be wished."""
+        self.T.insert(tk.END, quote)
+        
+    def sendMessageToUsers(self):
+        #print van begin tot eind
+        message = self.T.get("1.0",tk.END)
+        #if message is not ""
+        if len(message)!=0:<
+            print(message)
+            tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
+            ## komt nog code om te verzenden mss in class --> !!
+        else:
+            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+
 
 
 class PopularitieOffSearch(tk.Frame):
@@ -233,20 +341,6 @@ class ServerLog(tk.Frame):
             sticky=N + S + E + W,
         )
 
-        btnOverviewAskedSearch = tk.Button(
-            self,
-            text="Overview Off Asked Search",
-            command=lambda: controller.show_frame(OverviewAskedSearch),
-        )
-        btnOverviewAskedSearch.grid(
-            row=6,
-            column=0,
-            columnspan=3,
-            pady=(0, 5),
-            padx=(5, 5),
-            sticky=N + S + E + W,
-        )
-
         btnSendMessage = tk.Button(
             self,
             text="Send Message",
@@ -263,7 +357,7 @@ class ServerLog(tk.Frame):
 
         btnPopularitieOffSearch = tk.Button(
             self,
-            text="Popularitie Off Search",
+            text="Popularity Off Searches",
             command=lambda: controller.show_frame(PopularitieOffSearch),
         )
         btnPopularitieOffSearch.grid(
