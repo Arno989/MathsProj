@@ -9,7 +9,6 @@ import numpy as np
 from server.clienthandler import ClientHandler
 
 
-
 class Movie_thread(threading.Thread):
     def __init__(self, host, port, message_queue):
         threading.Thread.__init__(self)
