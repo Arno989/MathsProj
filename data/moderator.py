@@ -1,33 +1,108 @@
-#list off online users
-onlineUsers = ['arno']
+import sys
+import os
+import json
 
-class Online_users():    
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_ROOT)
+sys.path.insert(0, BASE_DIR)
+searchlog = f"{PROJECT_ROOT}\\data\\searchlog.json"
+
+onlineUsers = []
+
+class users_online():    
     def loginUser(self, username):
+        print(f'adding {username} to online list')
         onlineUsers.append(username)
+        print(f'online users: {onlineUsers}')
         
     def logoutUser(self, username):
-        onlineUsers.remove(username)
+        print(f'removing {username} from online list')
+        onlineUsers.pop(onlineUsers.index(username))
+        print(f'online users: {onlineUsers}')
     
-    def users_online():
+    def getUsers(self):
         return onlineUsers
+    
+    
+class search_popularity():
+    def logSearch(self, user, query):
+        try:
+            data = json.load(searchlog)
+            temp = data['searches'] 
+            print(f'logging query {query} for user {user}')
+            temp.append({'user' : user, 'query': query}) 
+            with open(searchlog,'w') as f: 
+                json.dump(data, f, indent=4)
+        except Exception as e:
+            print(e)
+    
+    def getSearches(self, user='*'):
+        data = json.load(searchlog)
+        temp = data['searches']
+        searches = {}
+        try:
+            if user == '*':
+                for search in data['searches']:
+                    if search.query in searches:
+                        searches.query.append({search.query : '1'})
+                    else:
+                        searches.query[search.query] += 1
+            else:
+                for search in data['searches']:
+                    if search.user == user:
+                        if search.query in searches:
+                            searches.query.append({search.query : '1'})
+                        else:
+                            searches.query[search.query] += 1
+        except Exception as e:
+            print(e)
+    
+
+class user_message():
+    sentmessages = []
+    
+    def sendmessage(self, message, user='*'):
+        try:
+            if user == '*':
+                pass
+            else:
+                pass
+        except Exception as e:
+            print(e)
+            
+    def getmessages(self, user='*'):
+        try:
+            if user == '*':
+                pass
+            else:
+                pass
+        except Exception as e:
+            print(e)
 
 
-#To Do 
+'''
+To Do:
 
-#Fix Login
+List of sent messages sorteerbaar per user (of all)
+# class Message(user)
+# from server to client !!
 
-#List off sended message zowel (all users als unieke user)
-## class Message(user)
-## class Message() -> all
-## from server to client !!
+New query GET_MESSAGES zodat elke user zijn messages kan opvragen
 
-#n New query GET_MESSAGES -> zowel unieke messages als voor iedereen
+auto clear bij verandering zoekopdracht <- client side
 
-#List off searches of each user & parameter
-## class searches(user)
+autoscroll bij server gui
 
-#List off all searches & paramater & how much searched
-## class searches --> all
+terug naar login na logout
 
 
-## Bovenstaande items inserten in elk treeview !
+# Bovenstaande items inserten in elk treeview ! <---------- ???
+
+
+Done:
+
+Fix Login
+
+List off all searches & paramater & user
+
+'''

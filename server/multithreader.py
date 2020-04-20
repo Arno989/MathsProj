@@ -56,8 +56,6 @@ class Movie_thread(threading.Thread):
                     clh[threads-1].start()
                 except (KeyboardInterrupt, SystemExit):
                     logging.info("MT> Interrupted, calling Stop.")
-                    clh.stop()
-                    sys.kill()
 
                 self.print_gui_message(
                     f"Current thread count: {threads}"  # threading.active_count()
