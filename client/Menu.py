@@ -35,7 +35,7 @@ try:
     socket_to_server.connect((host, port))
     logging.info("Open connection with server succesfully")
 except Exception as ex:
-    logging.error("Foutmelding: %s" % ex)
+    logging.error("Foutmelding: main %s" % ex)
     messagebox.showinfo("sign Up page - foutmelding", "Something has gone wrong...")
 
 
@@ -47,7 +47,7 @@ def closeConnection():
         my_writer_obj.flush()
         socket_to_server.close()
     except Exception as ex:
-        logging.error("Foutmelding: %s" % ex)
+        logging.error("Foutmelding: closeConnection %s" % ex)
         messagebox.showinfo("cose connection", "Something has gone wrong...")
 
 
@@ -75,8 +75,6 @@ class Movies(tk.Tk):
             pageBetweenYears,
             pageGraphScore,
             pageReceivedMessages,
-            
-            
         ):
 
             frame = F(container, self)
@@ -134,11 +132,11 @@ class pageSignIn(tk.Frame):
                 self.entry_username.focus()
             else:
                 # go to function
-                
+
                 self.signIn()
 
         except Exception as ex:
-            logging.error("Foutmelding: %s" % ex)
+            logging.error("Foutmelding: controleValues %s" % ex)
             messagebox.showinfo(
                 "controleGenre - foutmelding", "Something has gone wrong..."
             )
@@ -147,19 +145,17 @@ class pageSignIn(tk.Frame):
         try:
             # send BYGENRE to clienthandler
             pickle.dump("SIGNIN", my_writer_obj)
-
             # selected value off combobox
             username = str(self.entry_username.get())
             password = str(self.entry_password.get())
-            
+
             # Voeg signIn toe aan klasse
             signIn = User(username=username, password=password)
             pickle.dump(signIn, my_writer_obj)
             my_writer_obj.flush()
-            
+
             # waiting for answer
             signIn = pickle.load(my_writer_obj)
-            print(signIn.authenticated)
 
             if signIn.authenticated == True:
                 print("gelukt om in te loggen !!")
@@ -169,13 +165,11 @@ class pageSignIn(tk.Frame):
                 self.entry_username.set("")
                 self.entry_password.set("")
 
-            
-
         # Change width and high off window
         # app.geometry("200x100")
 
         except Exception as ex:
-            logging.error("Foutmelding: %s" % ex)
+            logging.error("Foutmelding: signIn %s" % ex)
             messagebox.showinfo("signIn", "Something has gone wrong...")
 
 
@@ -271,8 +265,6 @@ class pageSignUp(tk.Frame):
                 self.entry_name.set("")
                 self.entry_password.set("")
 
-           
-
         # Change width and high off window
         # app.geometry("200x100")
 
@@ -325,39 +317,25 @@ class HomePage(tk.Frame):
             command=lambda: controller.show_frame(pageReceivedMessages),
         )
         btnReceivedMessages.pack(ipady=10, ipadx=150, pady=10)
-
-
-      
-
-        btnLogOut = tk.Button(
-            self,
-            text="Log Out",
-            command=self.Logout,
-        )
+        btnLogOut = tk.Button(self, text="Log Out", command=self.Logout)
         btnLogOut.pack(ipady=10, ipadx=150, pady=10)
-    
+
     def Logout(self):
         try:
             # send SIGNOFF to clienthandler
             pickle.dump("SIGNOFF", my_writer_obj)
-
-             # add class to send
-            user = User()
-            #prepare for send
-            pickle.dump(user, my_writer_obj)
-            #send to server
             my_writer_obj.flush()
 
             # waiting for answer
             user = pickle.load(my_writer_obj)
-            print(user.name)
+            print(user)
 
+            # self.controller.show_frame(pageSignIn)
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("Logout", "Something has gone wrong...")
 
-        
 
 class pageByGenre(tk.Frame):
     def __init__(self, parent, controller):
@@ -962,19 +940,16 @@ class pageReceivedMessages(tk.Frame):
         label = tk.Label(self, text="Received Messages", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        
-
-        #show table
+        # show table
         self.show_table()
-        #get received messages
-        #self.get_received_messages()
+        # get received messages
+        # self.get_received_messages()
 
-        
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(HomePage))
-        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self, text="Back To Home", command=lambda: controller.show_frame(HomePage)
+        )
+        btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
-      
     def show_table(self):
         try:
             # Show treeview
@@ -982,7 +957,7 @@ class pageReceivedMessages(tk.Frame):
 
             # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            scrolly.pack(side=RIGHT, ipady=150, pady=(0, 230))
             self.tk_table.configure(yscrollcommand=scrolly.set)
 
             self.tk_table["height"] = 17
@@ -1000,53 +975,47 @@ class pageReceivedMessages(tk.Frame):
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
 
-            self.tk_table.pack(fill="x",padx=(10,0))
-            
-        
+            self.tk_table.pack(fill="x", padx=(10, 0))
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("show table messages", "Something has gone wrong...")
-
 
     def get_received_messages(self):
         try:
             # send BYNAME to clienthandler
             pickle.dump("GET_MESSAGES", my_writer_obj)
             # add class to send
-            user = User()
-            #prepare for send
-            pickle.dump(user, my_writer_obj)
-            #send to server
+            # user = User()
+            # prepare for send
+            # pickle.dump(user, my_writer_obj)
+            # send to server
             my_writer_obj.flush()
 
             # waiting for answer
             self.messages = pickle.load(my_writer_obj)
             print(self.messages)
-            
+
         except Exception as ex:
-                    logging.error("Foutmelding: %s" % ex)
-                    messagebox.showinfo("get received messages", "Something has gone wrong...")
-                    
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("get received messages", "Something has gone wrong...")
+
     def insert_received_messages(self):
-        #clear the treeview before show data
+        # clear the treeview before show data
         for i in self.tk_table.get_children():
             self.tk_table.delete(i)
         print("search history moet nog aangemaakt worden")
-        
 
-        #here insert table
-        
-        #self.messages
+        # here insert table
+
+        # self.messages
         # Display rows
-        #for each_rec in self.messages:
+        # for each_rec in self.messages:
         #    self.tk_table.insert(
         #        "",
         #        tk.END,
         #        values=(each_rec),
         #    )
-
-
-
 
 
 class pageGraphScore(tk.Frame):
@@ -1094,14 +1063,10 @@ class pageGraphScore(tk.Frame):
             app.geometry("600x700")
 
         except Exception as ex:
-            logging.error("Foutmelding: %s" % ex)
+            logging.error("Foutmelding: showGraph %s" % ex)
             messagebox.showinfo(
                 "graphScore - foutmelding", "Something has gone wrong..."
             )
-
-
-            
-
 
 
 app = Movies()
@@ -1117,6 +1082,7 @@ def Stop():
         logging.info("closed threads and stopped program, this should not show up")
     except Exception as ex:
         logging.error("Start.py :> Exception during stop " + str(ex))
+
 
 try:
 

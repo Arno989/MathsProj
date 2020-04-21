@@ -17,7 +17,7 @@ sys.path.insert(0, BASE_DIR)
 jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
-from data.moderator import Online_users
+from data.moderator import users_online
 
 
 
@@ -50,7 +50,7 @@ class ServerWindow(tk.Tk):
             OverviewOnlineUsers,
             OverviewUsers,
             SendMessage,
-            PopularityOffSearch,
+            PopularityOfSearch,
         ):
 
             frame = F(container, self)
@@ -80,7 +80,7 @@ class OverviewOnlineUsers(tk.Frame):
         #show table
         self.show_table()
         
-        #combobox off online users
+        #combobox of online users
         self.getOnlineUsers()
 
         btnShowUserInfo = tk.Button(
@@ -88,7 +88,7 @@ class OverviewOnlineUsers(tk.Frame):
         btnShowUserInfo.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnShowHistory = tk.Button(
-            self, text="Show Search History Off Selected User", command=lambda: self.search_history())
+            self, text="Show Search History Of Selected User", command=lambda: self.search_history())
         btnShowHistory.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
@@ -97,7 +97,7 @@ class OverviewOnlineUsers(tk.Frame):
         btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
     
     def getOnlineUsers(self):
-        users= Online_users.users_online()
+        users= users_online().getUsers()
         
         label2 = tk.Label(self, text="Users")
         label2.pack(pady=(2,1), padx=10)
@@ -110,7 +110,7 @@ class OverviewOnlineUsers(tk.Frame):
     def get_userinfo(self):
         #get all the users
         all_users = get_json_file_contents(jsonDb)
-        # get the selected item off the treeview
+        # get the selected item of the treeview
         selected_item  = str(self.cbo_onlineUsers.get())
         # Check if selected an item before clicked on the button 
         if len(selected_item)!=0:
@@ -151,7 +151,7 @@ class OverviewOnlineUsers(tk.Frame):
         
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("show searches off user", "Something has gone wrong...")
+            messagebox.showinfo("show searches of user", "Something has gone wrong...")
 
 
     def search_history(self):
@@ -242,7 +242,7 @@ class OverviewUsers(tk.Frame):
     def get_userinfo(self):
         #get all the users
         all_users = get_json_file_contents(jsonDb)
-        # get the selected item off the treeview
+        # get the selected item of the treeview
         selected_item  = self.tk_table.selection()[0]
         # Check if selected an item before clicked on the button 
         if len(selected_item)!=0:
@@ -291,7 +291,7 @@ class SendMessage(tk.Frame):
         self.T.config(yscrollcommand=S.set)
 
     def getOnlineUsers(self):
-        users= Online_users.users_online()
+        users= users_online().getUsers()
         
         label2 = tk.Label(self, text="Online users")
         label2.pack(pady=(2,1), padx=10)
@@ -305,9 +305,9 @@ class SendMessage(tk.Frame):
     def sendMessageToAllUsers(self):
         #print van begin tot eind
         message = self.T.get("1.0",tk.END)
-        messegaLen = len(message)
+        messageLen = len(message)
         #if message is empty
-        if messegaLen == 1:
+        if messageLen == 1:
             tk.messagebox.showinfo(f"Send message",f" Write something !!!")
             self.cbo_onlineUsers.set("")
         else:
@@ -315,15 +315,15 @@ class SendMessage(tk.Frame):
             #Clear the textbox
             self.T.delete('1.0', tk.END)
             self.cbo_onlineUsers.set("")
-            tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
+            tk.messagebox.showinfo(f"Send message",f" Message sent to users !")
             ## komt nog code om te verzenden mss in class --> !!
     
     def sendMessageToUser(self):
         #print van begin tot eind
         message = self.T.get("1.0",tk.END)
-        messegaLen = len(message)
+        messageLen = len(message)
         #if message is empty
-        if messegaLen == 1:
+        if messageLen == 1:
             tk.messagebox.showinfo(f"Send message",f" Write something !!!")
             self.cbo_onlineUsers.set("")
             
@@ -337,13 +337,13 @@ class SendMessage(tk.Frame):
 
 
 
-class PopularityOffSearch(tk.Frame):
+class PopularityOfSearch(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
         # per client een nieuwe tabel
 
-        label = tk.Label(self, text="Overview Popularity Off Searches", font=LARGE_FONT)
+        label = tk.Label(self, text="Overview Popularity Of Searches", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
         #treeview
@@ -446,12 +446,12 @@ class ServerLog(tk.Frame):
             sticky=N + S + E + W,
         )
 
-        btnPopularitieOffSearch = tk.Button(
+        btnPopularitieOfSearch = tk.Button(
             self,
-            text="Popularity Off Searches",
-            command=lambda: controller.show_frame(PopularityOffSearch),
+            text="Popularity Of Searches",
+            command=lambda: controller.show_frame(PopularityOfSearch),
         )
-        btnPopularitieOffSearch.grid(
+        btnPopularitieOfSearch.grid(
             row=8,
             column=0,
             columnspan=3,
