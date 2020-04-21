@@ -658,7 +658,9 @@ class pageByName(tk.Frame):
         label.pack()
 
         # Get values to search and create combobox
-        self.getNames()
+        #self.getNames()
+        self.name = tk.Entry(self)
+        self.name.pack()
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
         btnSearch.pack(pady=5, ipadx=30, ipady=5)
@@ -720,12 +722,12 @@ class pageByName(tk.Frame):
     def controleValues(self):
         try:
             # get values from cbo
-            name = str(self.cbo_name.get())
+            name = str(self.name.get())
 
             # When is empty give warning
             if name == "":
                 tk.messagebox.showwarning(title="Warning", message="Name is empty !")
-                self.cbo_name.focus()
+                self.name.focus()
             else:
                 # go to function
                 self.searchByName()
@@ -743,7 +745,7 @@ class pageByName(tk.Frame):
             pickle.dump("BY_NAME", my_writer_obj)
 
             # get selectec value off combobox
-            name = str(self.cbo_name.get())
+            name = str(self.name.get())
 
             # Voeg name toe aan klasse
             search = ByName(name)
@@ -1035,7 +1037,7 @@ class pageReceivedMessages(tk.Frame):
 
     def insert_received_messages(self):
         print("search history moet nog aangemaakt worden")
-
+        
         # here insert table
 
         # self.messages

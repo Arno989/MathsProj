@@ -17,7 +17,7 @@ sys.path.insert(0, BASE_DIR)
 jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
-from data.moderator import users_online,user_message
+from data.moderator import users_online,user_message,search_popularity
 
 
 
@@ -117,6 +117,7 @@ class OverviewOnlineUsers(tk.Frame):
 
 
     def getOnlineUsers(self):
+        self.cbo_onlineUsers.set("")
         users= users_online().getUsers()
         print(users)
 
@@ -172,21 +173,30 @@ class OverviewOnlineUsers(tk.Frame):
 
 
     def search_history(self):
-        #clear the treeview before show data
-        for i in self.tk_table.get_children():
-            self.tk_table.delete(i)
-        print("search history moet nog aangemaakt worden")
-        #here insert table
-        
-        #all_users = get_json_file_contents(jsonDb)
-        #Display rows
-        #for each_rec in all_users:
-        #    self.tk_table.insert(
-        #        "",
-        #        tk.END,
-        #        values=(each_rec["username"]),
-        #    )
-
+        if self.cbo_onlineUsers.get()=="":
+            tk.messagebox.showinfo("Info","You need to select a user first")
+        else:
+            #clear the treeview before show data
+            for i in self.tk_table.get_children():
+                self.tk_table.delete(i)
+            print("search history moet nog aangemaakt worden")
+            
+            #here insert table
+            user = self.cbo_onlineUsers.get()
+            print(f"toon zoekgeschiedenis van {user}")
+            try:
+                all_searches = search_popularity().getSearches(user)
+                print(all_searches)
+                #Display rows
+                for each_rec in all_searches:
+                    self.tk_table.insert(
+                        "",
+                        tk.END,
+                        values=(each_rec["query"],each_rec["parameters"]),
+                    )
+            except Exception as ex:
+                logging.error("Foutmelding: %s" % ex)
+                messagebox.showinfo("insert data popularity", "Something has gone wrong...")
 
 
 
@@ -329,6 +339,7 @@ class SendMessage(tk.Frame):
         self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
 
     def getOnlineUsers(self):
+        self.cbo_onlineUsers.set("")
         users= users_online().getUsers()
 
         #fill combobox
@@ -387,6 +398,11 @@ class PopularityOfSearch(tk.Frame):
         #treeview
         self.showPopularity()
 
+        btnShowData = tk.Button(
+            self, text="Show Popularity", command=self.insert_data
+        )
+        btnShowData.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
@@ -418,14 +434,7 @@ class PopularityOfSearch(tk.Frame):
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
 
-            #all_users = get_json_file_contents(jsonDb)
-            # Display rows
-            #for each_rec in all_users:
-            #    self.tk_table.insert(
-            #        "",
-            #        tk.END,
-            #        values=(each_rec["username"]),
-            #    )
+         
 
             self.tk_table.pack(fill="x",padx=(10,0))
             
@@ -433,7 +442,25 @@ class PopularityOfSearch(tk.Frame):
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("show popularity searches", "Something has gone wrong...")
-
+    
+    def insert_data(self):
+        #clear the treeview before show data
+        for i in self.tk_table.get_children():
+            self.tk_table.delete(i)
+        try: 
+            all_searches = search_popularity().getSearches()
+            print(all_searches)
+            #Display rows
+            for each_rec in all_searches:
+                self.tk_table.insert(
+                    "",
+                    tk.END,
+                    values=(each_rec["query"],each_rec["parameters"],all_searches.count(each_rec["parameters"])),
+                )
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo("insert data popularity", "Something has gone wrong...")
+    
 
 class ServerLog(tk.Frame):
     def __init__(self, parent, controller):
