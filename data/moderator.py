@@ -89,17 +89,25 @@ List of sent messages sorteerbaar per user (of all)
 
 New query GET_MESSAGES zodat elke user zijn messages kan opvragen
 
-auto clear bij verandering zoekopdracht <- client side
-
 autoscroll bij server gui
 
-terug naar login na logout
+search history zorg erook voor dat je de parameter kunt terug krijgen 
+
+fout bij laden van image... 'str' object has no attribute 'read'
+
+show messages clienthandler fout van opvangen van message
 
 
 # Bovenstaande items inserten in elk treeview ! <---------- ???
 
 
 Done:
+
+auto clear bij verandering zoekopdracht <- client side
+
+layout van server side for get online users fix
+
+terug naar login na logout
 
 Fix Login
 

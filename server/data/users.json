@@ -19,5 +19,12 @@
         "email": "arno",
         "password": "$2b$12$GCsTyxLMVkir8HMguLU/O.MmFhhk/64JAZMUqgPn42UODCgd9Y2PW",
         "authenticated": null
+    },
+    {
+        "name": "Ouassim.boutalliss@student.howest.be",
+        "username": "ouassim",
+        "email": "Ouassim",
+        "password": "$2b$12$I//VAUzumBheEvv4GzPFHOwLY8gV6GYPd4Z0LTGqGBTZIInRogIo.",
+        "authenticated": null
     }
 ]

@@ -17,7 +17,7 @@ sys.path.insert(0, BASE_DIR)
 jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
-from data.moderator import users_online
+from data.moderator import users_online,user_message
 
 
 
@@ -79,9 +79,17 @@ class OverviewOnlineUsers(tk.Frame):
 
         #show table
         self.show_table()
+
         
         #combobox of online users
-        self.getOnlineUsers()
+        self.show_cbo()
+
+        label3 = tk.Label(self, text="First Click On Get Online Users Button")
+        label3.pack(pady=(2,1), padx=10)
+
+        btngetOnlineUsers = tk.Button(
+            self, text="Get Online Users", command=self.getOnlineUsers)
+        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnShowUserInfo = tk.Button(
             self, text="Show Info About Selected User", command=lambda: self.get_userinfo())
@@ -96,16 +104,25 @@ class OverviewOnlineUsers(tk.Frame):
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
     
-    def getOnlineUsers(self):
-        users= users_online().getUsers()
+    def show_cbo(self):
+        
         
         label2 = tk.Label(self, text="Users")
         label2.pack(pady=(2,1), padx=10)
 
         # Create combobox
         self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
-        self.cbo_onlineUsers["values"] = users
+        
         self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
+
+
+    def getOnlineUsers(self):
+        users= users_online().getUsers()
+        print(users)
+
+        #inser users
+        self.cbo_onlineUsers["values"] = users
+        
 
     def get_userinfo(self):
         #get all the users
@@ -162,7 +179,7 @@ class OverviewOnlineUsers(tk.Frame):
         #here insert table
         
         #all_users = get_json_file_contents(jsonDb)
-        # Display rows
+        #Display rows
         #for each_rec in all_users:
         #    self.tk_table.insert(
         #        "",
@@ -262,14 +279,25 @@ class SendMessage(tk.Frame):
         label = tk.Label(self, text="Send Message To Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
+        label4 = tk.Label(self, text="MessageBox")
+        label4.pack(pady=(2,1), padx=10)
+
         self.input_message()
+        
         
 
         btnMessageToSend = tk.Button(
             self, text="Send Message To All", command=self.sendMessageToAllUsers)
         btnMessageToSend.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
-        self.getOnlineUsers()
+        self.show_cbo()
+
+        label3 = tk.Label(self, text="First Click On Get Online Users Button")
+        label3.pack(pady=(2,1), padx=10)
+
+        btngetOnlineUsers = tk.Button(
+            self, text="Get Online Users", command=self.getOnlineUsers)
+        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnMessageToSendUser = tk.Button(
             self, text="Send Message To Selected User", command=self.sendMessageToUser)
@@ -290,16 +318,22 @@ class SendMessage(tk.Frame):
         S.config(command=self.T.yview)
         self.T.config(yscrollcommand=S.set)
 
-    def getOnlineUsers(self):
-        users= users_online().getUsers()
+    def show_cbo(self):
         
+
         label2 = tk.Label(self, text="Online users")
         label2.pack(pady=(2,1), padx=10)
 
-        # Create combobox
+        #Create combobox
         self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
-        self.cbo_onlineUsers["values"] = users
         self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
+
+    def getOnlineUsers(self):
+        users= users_online().getUsers()
+
+        #fill combobox
+        self.cbo_onlineUsers["values"] = users
+       
         
         
     def sendMessageToAllUsers(self):
@@ -311,17 +345,19 @@ class SendMessage(tk.Frame):
             tk.messagebox.showinfo(f"Send message",f" Write something !!!")
             self.cbo_onlineUsers.set("")
         else:
-            print(message)
             #Clear the textbox
             self.T.delete('1.0', tk.END)
             self.cbo_onlineUsers.set("")
-            tk.messagebox.showinfo(f"Send message",f" Message sent to users !")
-            ## komt nog code om te verzenden mss in class --> !!
+            tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
+            ## send the message to all users
+            print(message)
+            user_message().sendmessage(message)
     
     def sendMessageToUser(self):
         #print van begin tot eind
         message = self.T.get("1.0",tk.END)
         messageLen = len(message)
+        selected_user = str(self.cbo_onlineUsers.get())
         #if message is empty
         if messageLen == 1:
             tk.messagebox.showinfo(f"Send message",f" Write something !!!")
@@ -329,11 +365,13 @@ class SendMessage(tk.Frame):
             
         else:
             print(message)
-            tk.messagebox.showinfo(f"Send message",f" Message sended to user !")
+            tk.messagebox.showinfo(f"Send message",f" Message sended to {selected_user} !")
             self.cbo_onlineUsers.set("")
             #clear the textbox
             self.T.delete('1.0', tk.END)
-            ## komt nog code om te verzenden mss in class --> !!
+            ## send message to user
+            user_message().sendmessage(message,selected_user)
+
 
 
 

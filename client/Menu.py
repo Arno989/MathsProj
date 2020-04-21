@@ -94,7 +94,13 @@ class pageSignIn(tk.Frame):
     def __init__(self, parent, controller):
         self.controller = controller
         tk.Frame.__init__(self, parent)
+        
+        self.init_window()
+        
 
+     
+
+    def init_window(self):
         Title = tk.Label(self, text="Login Page", font=LARGE_FONT)
         Title.pack()
 
@@ -112,11 +118,18 @@ class pageSignIn(tk.Frame):
 
         btnSignIn = tk.Button(self, text="Sign In", command=self.controleValues)
         btnSignIn.pack(pady=5, ipadx=30, ipady=5)
+        
+        label3 = tk.Label(self, text="If u don't have an account:")
+        label3.pack()
 
         btnSignUp = Button(
-            self, text="SignUp", command=lambda: controller.show_frame(pageSignUp)
+            self, text="SignUp", command=lambda: self.controller.show_frame(pageSignUp)
         )
         btnSignUp.pack(pady=5, ipadx=30, ipady=5)
+
+    def clearEntry(self):
+        self.entry_username.delete(0,"end")
+        self.entry_password.delete(0,"end")
 
     def controleValues(self):
         try:
@@ -159,11 +172,11 @@ class pageSignIn(tk.Frame):
 
             if signIn.authenticated == True:
                 print("gelukt om in te loggen !!")
+                self.clearEntry()
                 self.controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignIn", "Login refused")
-                self.entry_username.set("")
-                self.entry_password.set("")
+                self.clearEntry()
 
         # Change width and high off window
         # app.geometry("200x100")
@@ -178,6 +191,11 @@ class pageSignUp(tk.Frame):
         self.controller = controller
         tk.Frame.__init__(self, parent)
 
+        self.init_window()
+
+    
+    def init_window(self):
+        
         Title = tk.Label(self, text="Sign Up", font=LARGE_FONT)
         Title.pack()
 
@@ -207,9 +225,15 @@ class pageSignUp(tk.Frame):
         label3 = tk.Label(self, text="If u already have an account:")
         label3.pack()
         btnSignIn = tk.Button(
-            self, text="Sign In", command=lambda: controller.show_frame(pageSignIn)
+            self, text="Sign In", command=lambda: self.controller.show_frame(pageSignIn)
         )
         btnSignIn.pack(pady=5, ipadx=30, ipady=5)
+
+    def clearEntry(self):
+        self.entry_username.delete(0,"end")
+        self.entry_password.delete(0,"end")
+        self.entry_email.delete(0,"end")
+        self.entry_name.delete(0,"end")
 
     def controleValues(self):
         try:
@@ -257,13 +281,12 @@ class pageSignUp(tk.Frame):
 
             if signUp.authenticated == True:
                 tk.messagebox.showinfo("SignUp", "You are correctly signed up")
+                self.clearEntry()
                 self.controller.show_frame(HomePage)
             else:
                 tk.messagebox.showinfo("SignUp", "Refused to sign up")
-                self.entry_username.set("")
-                self.entry_email.set("")
-                self.entry_name.set("")
-                self.entry_password.set("")
+                self.clearEntry()
+            
 
         # Change width and high off window
         # app.geometry("200x100")
@@ -275,50 +298,51 @@ class pageSignUp(tk.Frame):
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
 
         label = tk.Label(self, text="HOME", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        label.pack(pady=10, padx=10,fill="x")
 
         btnByGenre = tk.Button(
             self, text="By Genre", command=lambda: controller.show_frame(pageByGenre)
         )
-        btnByGenre.pack(ipady=10, ipadx=150, pady=10)
+        btnByGenre.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnByName = tk.Button(
             self, text="By Name", command=lambda: controller.show_frame(pageByName)
         )
-        btnByName.pack(ipady=10, ipadx=150, pady=10)
+        btnByName.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnByCompany = tk.Button(
             self,
             text="By Company",
             command=lambda: controller.show_frame(pageByCompany),
         )
-        btnByCompany.pack(ipady=10, ipadx=150, pady=10)
+        btnByCompany.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnBetweenYears = tk.Button(
             self,
             text="Between Years",
             command=lambda: controller.show_frame(pageBetweenYears),
         )
-        btnBetweenYears.pack(ipady=10, ipadx=150, pady=10)
+        btnBetweenYears.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnGraphScore = tk.Button(
             self,
             text="Graph Off Score",
             command=lambda: controller.show_frame(pageGraphScore),
         )
-        btnGraphScore.pack(ipady=10, ipadx=150, pady=10)
+        btnGraphScore.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnReceivedMessages = tk.Button(
             self,
             text="Received Messages",
             command=lambda: controller.show_frame(pageReceivedMessages),
         )
-        btnReceivedMessages.pack(ipady=10, ipadx=150, pady=10)
+        btnReceivedMessages.pack(ipady=10, ipadx=150, pady=10,fill="x")
         btnLogOut = tk.Button(self, text="Log Out", command=self.Logout)
-        btnLogOut.pack(ipady=10, ipadx=150, pady=10)
+        btnLogOut.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
     def Logout(self):
         try:
@@ -330,7 +354,7 @@ class HomePage(tk.Frame):
             user = pickle.load(my_writer_obj)
             print(user)
 
-            # self.controller.show_frame(pageSignIn)
+            self.controller.show_frame(pageSignIn)
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -352,9 +376,6 @@ class pageByGenre(tk.Frame):
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
         btnSearch.pack(pady=5, ipadx=30, ipady=5)
-
-        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
-        btnClear.pack(pady=5, ipadx=30, ipady=5)
 
         btnHome = tk.Button(
             self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
@@ -384,11 +405,10 @@ class pageByGenre(tk.Frame):
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
 
-            self.cbo_genre.set("")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("byGenre - foutmelding", "Something has gone wrong...")
+            messagebox.showinfo("clear byGenre - foutmelding", "Something has gone wrong...")
 
     def getGenres(self):
         try:
@@ -435,6 +455,7 @@ class pageByGenre(tk.Frame):
             )
 
     def searchByGenre(self):
+        self.clearTreeview()
         try:
             # send BYGENRE to clienthandler
             pickle.dump("BY_GENRE", my_writer_obj)
@@ -498,9 +519,6 @@ class pageByCompany(tk.Frame):
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
         btnSearch.pack(pady=5, ipadx=30, ipady=5)
 
-        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
-        btnClear.pack(pady=5, ipadx=30, ipady=5)
-
         btnHome = tk.Button(
             self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
         )
@@ -526,7 +544,7 @@ class pageByCompany(tk.Frame):
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
 
-            self.cbo_companie.set("")
+            
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo(
@@ -580,6 +598,7 @@ class pageByCompany(tk.Frame):
             )
 
     def searchByCompany(self):
+        self.clearTreeview()
         try:
             # send BYCOMPANY to clienthandler
             pickle.dump("BY_COMPANY", my_writer_obj)
@@ -644,8 +663,6 @@ class pageByName(tk.Frame):
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
         btnSearch.pack(pady=5, ipadx=30, ipady=5)
 
-        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
-        btnClear.pack(pady=5, ipadx=30, ipady=5)
 
         btnHome = tk.Button(
             self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
@@ -671,7 +688,7 @@ class pageByName(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
-            self.cbo_name.set("")
+            
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -720,6 +737,7 @@ class pageByName(tk.Frame):
             )
 
     def searchByName(self):
+        self.clearTreeview()
         try:
             # send BYNAME to clienthandler
             pickle.dump("BY_NAME", my_writer_obj)
@@ -760,7 +778,7 @@ class pageByName(tk.Frame):
                 )
 
             # Change width and high off window
-            app.geometry("700x450")
+            app.geometry("700x600")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -779,9 +797,6 @@ class pageBetweenYears(tk.Frame):
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
         btnSearch.pack(pady=5, ipadx=30, ipady=5)
-
-        btnClear = tk.Button(self, text="Clear", command=self.clearTreeview)
-        btnClear.pack(pady=5, ipadx=30, ipady=5)
 
         btnHome = tk.Button(
             self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
@@ -807,8 +822,7 @@ class pageBetweenYears(tk.Frame):
         try:
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
-            self.cbo_year1.set("")
-            self.cbo_year2.set("")
+            
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo(
@@ -885,6 +899,7 @@ class pageBetweenYears(tk.Frame):
             )
 
     def searchBetweenYears(self):
+        self.clearTreeview()
         try:
             # send BYNAME to clienthandler
             pickle.dump("BY_BETWEEN_YEARS", my_writer_obj)
@@ -942,14 +957,28 @@ class pageReceivedMessages(tk.Frame):
 
         # show table
         self.show_table()
+
         # get received messages
-        # self.get_received_messages()
+        btnGet_messages = tk.Button(
+            self, text="Show Messages", command=self.get_received_messages
+        )
+        btnGet_messages.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(HomePage)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
+    def clearTreeview(self):
+        try:
+            for i in self.tk_table.get_children():
+                self.tk_table.delete(i)
+          
+        except Exception as ex:
+            logging.error("Foutmelding: %s" % ex)
+            messagebox.showinfo(
+                "get messages - foutmelding", "Something has gone wrong..."
+            )
     def show_table(self):
         try:
             # Show treeview
@@ -982,6 +1011,7 @@ class pageReceivedMessages(tk.Frame):
             messagebox.showinfo("show table messages", "Something has gone wrong...")
 
     def get_received_messages(self):
+        self.clearTreeview()
         try:
             # send BYNAME to clienthandler
             pickle.dump("GET_MESSAGES", my_writer_obj)
@@ -996,26 +1026,26 @@ class pageReceivedMessages(tk.Frame):
             self.messages = pickle.load(my_writer_obj)
             print(self.messages)
 
+            #insert the messages
+            self.insert_received_messages()
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("get received messages", "Something has gone wrong...")
 
     def insert_received_messages(self):
-        # clear the treeview before show data
-        for i in self.tk_table.get_children():
-            self.tk_table.delete(i)
         print("search history moet nog aangemaakt worden")
 
         # here insert table
 
         # self.messages
         # Display rows
-        # for each_rec in self.messages:
-        #    self.tk_table.insert(
-        #        "",
-        #        tk.END,
-        #        values=(each_rec),
-        #    )
+        for each_rec in self.messages:
+            self.tk_table.insert(
+                "",
+                tk.END,
+                values=(each_rec),
+            )
 
 
 class pageGraphScore(tk.Frame):
@@ -1039,6 +1069,8 @@ class pageGraphScore(tk.Frame):
         self.image.pack(pady=(5, 5), padx=(5, 5))
 
     def showGraph(self):
+        #clear image
+        self.image["image"] = ""
         try:
             # get values for combobox
             pickle.dump("GRAPH_SCORE", my_writer_obj)

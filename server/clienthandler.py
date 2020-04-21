@@ -217,6 +217,7 @@ class ClientHandler(threading.Thread):
                             
                             pickle.dump(messages, writer_obj)
                             writer_obj.flush()
+                            print(messages)
                             
                             self.printGui(f"Sent usermessages for {user.username}")
                             
