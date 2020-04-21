@@ -25,12 +25,12 @@ class users_online():
     
     
 class search_popularity():
-    def logSearch(self, user, query):
+    def logSearch(self, user, query, params = []):
         try:
             data = json.load(searchlog)
             temp = data['searches'] 
             print(f'logging query {query} for user {user}')
-            temp.append({'user' : user, 'query': query}) 
+            temp.append({'user' : user, 'query': query, 'parameters': list(params)}) 
             with open(searchlog,'w') as f: 
                 json.dump(data, f, indent=4)
         except Exception as e:
@@ -91,8 +91,6 @@ New query GET_MESSAGES zodat elke user zijn messages kan opvragen
 
 autoscroll bij server gui
 
-search history zorg erook voor dat je de parameter kunt terug krijgen 
-
 fout bij laden van image... 'str' object has no attribute 'read'
 
 show messages clienthandler fout van opvangen van message
@@ -102,6 +100,10 @@ show messages clienthandler fout van opvangen van message
 
 
 Done:
+
+search history zorg erook voor dat je de parameter kunt terug krijgen 
+
+fixed re-login crash
 
 auto clear bij verandering zoekopdracht <- client side
 

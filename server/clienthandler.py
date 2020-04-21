@@ -72,7 +72,9 @@ class ClientHandler(threading.Thread):
                     try:
                         user = pickle.load(writer_obj)
                         try:
-                            add_user(user.username, user.password, user.email, user.name)
+                            add_user(
+                                user.username, user.password, user.email, user.name
+                            )
                             self.printGui(f"Added user {user.username}")
                             user.authenticated = True
                             pickle.dump(user, writer_obj)
@@ -93,9 +95,9 @@ class ClientHandler(threading.Thread):
 
                 while user.authenticated:
                     while query == "BY_GENRE":  # Search by genre
-                        search_popularity().logSearch(user.username, query)
                         q_Genre = pickle.load(writer_obj)
                         search = str(q_Genre.genre).capitalize()
+                        search_popularity().logSearch(user.username, query, search)
 
                         # Execute query
                         try:
@@ -112,9 +114,9 @@ class ClientHandler(threading.Thread):
                         query = pickle.load(writer_obj)
 
                     while query == "BY_COMPANY":  # Search by company name
-                        search_popularity().logSearch(user.username, query)
                         q_Company = pickle.load(writer_obj)
                         search = str(q_Company.company)
+                        search_popularity().logSearch(user.username, query, search)
 
                         # Execute query
                         try:
@@ -131,13 +133,13 @@ class ClientHandler(threading.Thread):
                         query = pickle.load(writer_obj)
 
                     while query == "BY_NAME":  # Search by main star name
-                        search_popularity().logSearch(user.username, query)
                         q_Name = pickle.load(writer_obj)
                         search = str(q_Name.name)
+                        search_popularity().logSearch(user.username, query, search)
 
                         # Execute query
                         try:
-                            q_Name.result = dataset.loc[dataset["name"] == search]
+                            q_Name.result = dataset.loc[dataset['name'].str.contains(pat=search, case=False, regex=False)]
                         except Exception as e:
                             self.printGui(f"Error from query: {e}")
                         self.printGui(f"Result from query: {q_Name.result}")
@@ -150,13 +152,13 @@ class ClientHandler(threading.Thread):
                         query = pickle.load(writer_obj)
 
                     while query == "BY_BETWEEN_YEARS":  # Search between 2 years
-                        search_popularity().logSearch(user.username, query)
                         q_BetweenYears = pickle.load(writer_obj)
+                        search_popularity().logSearch(user.username, query, [q_BetweenYears.year1, q_BetweenYears.year2])
 
                         # Execute query
                         try:
                             q_BetweenYears.result = dataset.loc[
-                                (dataset["year"] >= int(q_BetweenYears.year2))
+                                (dataset["year"] >= int(q_BetweenYears.year1))
                                 & (dataset["year"] <= int(q_BetweenYears.year2))
                             ]
                         except Exception as e:
@@ -208,19 +210,20 @@ class ClientHandler(threading.Thread):
                             pickle.dump(l, writer_obj)
                             writer_obj.flush()
                             l = f.read(1024)
-                            
+
                         query = pickle.load(writer_obj)
-                            
+
                     while query == "GET_MESSAGES":
                         try:
+                            search_popularity().logSearch(user.username, query)
                             messages = user_message().getmessages(user.username)
-                            
+
                             pickle.dump(messages, writer_obj)
                             writer_obj.flush()
                             print(messages)
-                            
+
                             self.printGui(f"Sent usermessages for {user.username}")
-                            
+
                             query = pickle.load(writer_obj)
 
                         except Exception as e:
@@ -234,11 +237,13 @@ class ClientHandler(threading.Thread):
                             users_online().logoutUser(user.username)
                             self.printGui(f"User {user.username} signed off")
                             print(users_online().getUsers())
-                            
-                            query = ''
+
+                            query = ""
 
                         except Exception as e:
                             self.printGui(f"Error during logout: {e}")
+
+                        query = pickle.load(writer_obj)
 
                 # Get unique values to create dropdown
                 while query == "GET_GENRES":
