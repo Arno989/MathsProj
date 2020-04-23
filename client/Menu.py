@@ -171,7 +171,7 @@ class pageSignIn(tk.Frame):
             signIn = pickle.load(my_writer_obj)
 
             if signIn.authenticated == True:
-                print("gelukt om in te loggen !!")
+                print("Sign in successfull")
                 self.clearEntry()
                 self.controller.show_frame(HomePage)
             else:
@@ -470,7 +470,6 @@ class pageByGenre(tk.Frame):
 
             # waiting for answer
             search = pickle.load(my_writer_obj)
-            print(search.result.columns)
 
             self.tk_table["height"] = 17
 
@@ -754,7 +753,6 @@ class pageByName(tk.Frame):
 
             # waiting for answer
             search = pickle.load(my_writer_obj)
-            print(search.result.columns)
 
             self.tk_table["height"] = 5
 

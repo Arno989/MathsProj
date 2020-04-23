@@ -1,1 +1,163 @@
-{ "searches": [] }
+[
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Drama"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Hemdale"
+    },
+    {
+        "user": "arno",
+        "query": "BY_BETWEEN_YEARS",
+        "parameters": [
+            1988,
+            1993
+        ]
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "A&M; Films"
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_BETWEEN_YEARS",
+        "parameters": [
+            1987,
+            1991
+        ]
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "BY_COMPANY",
+        "parameters": "Walt Disney Pictures"
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "BY_GENRE",
+        "parameters": "Horror"
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    },
+    {
+        "user": "arno",
+        "query": "BY_NAME",
+        "parameters": "a"
+    },
+    {
+        "user": "arno",
+        "query": "SIGNIN",
+        "parameters": []
+    }
+]

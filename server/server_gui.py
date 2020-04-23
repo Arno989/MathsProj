@@ -17,8 +17,7 @@ sys.path.insert(0, BASE_DIR)
 jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
-from data.moderator import users_online,user_message,search_popularity
-
+from server.moderator import users_online,user_message,search_popularity
 
 
 import json
@@ -448,17 +447,19 @@ class PopularityOfSearch(tk.Frame):
         for i in self.tk_table.get_children():
             self.tk_table.delete(i)
         try: 
+            print("getting searches")
             all_searches = search_popularity().getSearches()
             print(all_searches)
             #Display rows
-            for each_rec in all_searches:
+            for query in all_searches:
                 self.tk_table.insert(
                     "",
                     tk.END,
-                    values=(each_rec["query"],each_rec["parameters"],all_searches.count(each_rec["parameters"])),
+                    values=(query.keys()[0], query[query.keys()[1]],query[query.keys()[0]]), # not dynamic to format change but will have to do
                 )
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
+            print(ex)
             messagebox.showinfo("insert data popularity", "Something has gone wrong...")
     
 

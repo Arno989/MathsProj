@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 sys.path.insert(0, BASE_DIR)
 dataset = pd.read_csv(f"{PROJECT_ROOT}\\data\\movies.csv", encoding="ISO-8859-1")
 
-from data.moderator import users_online, search_popularity, user_message
+from server.moderator import users_online, search_popularity, user_message
 from server.login import auth_user, add_user
 from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
@@ -104,7 +104,7 @@ class ClientHandler(threading.Thread):
                             q_Genre.result = dataset.loc[dataset["genre"] == search]
                         except Exception as e:
                             self.printGui(f"Error from query: {e}")
-                        self.printGui(f"Result from query: {q_Genre.result}")
+                        self.printGui(f"Result from query")
 
                         # Reply with results
                         pickle.dump(q_Genre, writer_obj)
@@ -123,7 +123,7 @@ class ClientHandler(threading.Thread):
                             q_Company.result = dataset.loc[dataset["company"] == search]
                         except Exception as e:
                             self.printGui(f"Error from query: {e}")
-                        self.printGui(f"Result from query: {q_Company.result}")
+                        self.printGui(f"Result from query")
 
                         # Reply with results
                         pickle.dump(q_Company, writer_obj)
@@ -142,7 +142,7 @@ class ClientHandler(threading.Thread):
                             q_Name.result = dataset.loc[dataset['name'].str.contains(pat=search, case=False, regex=False)]
                         except Exception as e:
                             self.printGui(f"Error from query: {e}")
-                        self.printGui(f"Result from query: {q_Name.result}")
+                        self.printGui(f"Result from query")
 
                         # Reply with results
                         pickle.dump(q_Name, writer_obj)
@@ -163,7 +163,7 @@ class ClientHandler(threading.Thread):
                             ]
                         except Exception as e:
                             self.printGui(f"Error from query: {e}")
-                        self.printGui(f"Result from query: {q_BetweenYears.result}")
+                        self.printGui(f"Result from query")
 
                         # Reply with results
                         pickle.dump(q_BetweenYears, writer_obj)

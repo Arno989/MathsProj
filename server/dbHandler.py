@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import List, Union
 from data.movie import User
 
 startUsers = [
