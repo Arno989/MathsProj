@@ -159,5 +159,65 @@
         "user": "arno",
         "query": "SIGNIN",
         "parameters": []
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Crime"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Drama"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Drama"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_COMPANY",
+        "parameters": "Paramount Pictures"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Action"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_COMPANY",
+        "parameters": "Twentieth Century Fox Film Corporation"
+    },
+    {
+        "user": "ouassim",
+        "query": "GRAPH_SCORE",
+        "parameters": null
     }
 ]

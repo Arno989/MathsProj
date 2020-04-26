@@ -48,7 +48,7 @@ def closeConnection():
         socket_to_server.close()
     except Exception as ex:
         logging.error("Foutmelding: closeConnection %s" % ex)
-        messagebox.showinfo("cose connection", "Something has gone wrong...")
+        messagebox.showinfo("close connection", "Something has gone wrong...")
 
 
 class Movies(tk.Tk):
@@ -108,16 +108,16 @@ class pageSignIn(tk.Frame):
         label.pack()
 
         self.entry_username = tk.Entry(self)
-        self.entry_username.pack()
+        self.entry_username.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         label1 = tk.Label(self, text="Password:")
         label1.pack()
 
-        self.entry_password = tk.Entry(self)
-        self.entry_password.pack()
+        self.entry_password = tk.Entry(self,show="*")
+        self.entry_password.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnSignIn = tk.Button(self, text="Sign In", command=self.controleValues)
-        btnSignIn.pack(pady=5, ipadx=30, ipady=5)
+        btnSignIn.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
         
         label3 = tk.Label(self, text="If u don't have an account:")
         label3.pack()
@@ -125,7 +125,7 @@ class pageSignIn(tk.Frame):
         btnSignUp = Button(
             self, text="SignUp", command=lambda: self.controller.show_frame(pageSignUp)
         )
-        btnSignUp.pack(pady=5, ipadx=30, ipady=5)
+        btnSignUp.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
     def clearEntry(self):
         self.entry_username.delete(0,"end")
@@ -202,32 +202,32 @@ class pageSignUp(tk.Frame):
         label1 = tk.Label(self, text="Name:")
         label1.pack()
         self.entry_name = tk.Entry(self)
-        self.entry_name.pack()
+        self.entry_name.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         label2 = tk.Label(self, text="Email:")
         label2.pack()
         self.entry_email = tk.Entry(self)
-        self.entry_email.pack()
+        self.entry_email.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         label3 = tk.Label(self, text="Username:")
         label3.pack()
         self.entry_username = tk.Entry(self)
-        self.entry_username.pack()
+        self.entry_username.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         label4 = tk.Label(self, text="Password:")
         label4.pack()
         self.entry_password = tk.Entry(self)
-        self.entry_password.pack()
+        self.entry_password.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnSignUp = tk.Button(self, text="Sign Up", command=self.controleValues)
-        btnSignUp.pack(pady=5, ipadx=30, ipady=5)
+        btnSignUp.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         label3 = tk.Label(self, text="If u already have an account:")
         label3.pack()
         btnSignIn = tk.Button(
             self, text="Sign In", command=lambda: self.controller.show_frame(pageSignIn)
         )
-        btnSignIn.pack(pady=5, ipadx=30, ipady=5)
+        btnSignIn.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
     def clearEntry(self):
         self.entry_username.delete(0,"end")
@@ -301,44 +301,47 @@ class HomePage(tk.Frame):
         self.controller = controller
         tk.Frame.__init__(self, parent)
 
+        self.init_window()
+    
+    def init_window(self):
         label = tk.Label(self, text="HOME", font=LARGE_FONT)
         label.pack(pady=10, padx=10,fill="x")
 
         btnByGenre = tk.Button(
-            self, text="By Genre", command=lambda: controller.show_frame(pageByGenre)
+            self, text="By Genre", command=lambda: self.controller.show_frame(pageByGenre)
         )
         btnByGenre.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnByName = tk.Button(
-            self, text="By Name", command=lambda: controller.show_frame(pageByName)
+            self, text="By Name", command=lambda: self.controller.show_frame(pageByName)
         )
         btnByName.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnByCompany = tk.Button(
             self,
             text="By Company",
-            command=lambda: controller.show_frame(pageByCompany),
+            command=lambda: self.controller.show_frame(pageByCompany),
         )
         btnByCompany.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnBetweenYears = tk.Button(
             self,
             text="Between Years",
-            command=lambda: controller.show_frame(pageBetweenYears),
+            command=lambda: self.controller.show_frame(pageBetweenYears),
         )
         btnBetweenYears.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnGraphScore = tk.Button(
             self,
             text="Graph Off Score",
-            command=lambda: controller.show_frame(pageGraphScore),
+            command=lambda: self.controller.show_frame(pageGraphScore),
         )
         btnGraphScore.pack(ipady=10, ipadx=150, pady=10,fill="x")
 
         btnReceivedMessages = tk.Button(
             self,
             text="Received Messages",
-            command=lambda: controller.show_frame(pageReceivedMessages),
+            command=lambda: self.controller.show_frame(pageReceivedMessages),
         )
         btnReceivedMessages.pack(ipady=10, ipadx=150, pady=10,fill="x")
         btnLogOut = tk.Button(self, text="Log Out", command=self.Logout)
@@ -363,7 +366,12 @@ class HomePage(tk.Frame):
 
 class pageByGenre(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+    
+    def init_window(self):
 
         Title = tk.Label(self, text="Search By Genre", font=LARGE_FONT)
         Title.pack()
@@ -375,12 +383,12 @@ class pageByGenre(tk.Frame):
         self.getGenres()
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
-        btnSearch.pack(pady=5, ipadx=30, ipady=5)
+        btnSearch.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back to Home", command=lambda: self.controller.show_frame(HomePage)
         )
-        btnHome.pack(pady=5, ipadx=30, ipady=5)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         # bind with return key
         # self.entry_genre.bind("<Return>", (lambda event: self.searchByGenre()))
@@ -398,7 +406,7 @@ class pageByGenre(tk.Frame):
         scroll.pack(side=BOTTOM, fill="x")
         self.tk_table.configure(xscrollcommand=scroll.set)
 
-        self.tk_table.pack()
+        self.tk_table.pack(fill="x",padx=(10,0))
 
     def clearTreeview(self):
         try:
@@ -427,7 +435,7 @@ class pageByGenre(tk.Frame):
             # Create combobox
             self.cbo_genre = ttk.Combobox(self, state="readonly", width=40)
             self.cbo_genre["values"] = choices
-            self.cbo_genre.pack()
+            self.cbo_genre.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
             # self.cbo_genre.bind("<<ComboboxSelected>>", (lambda event: self.searchByGenre())
 
@@ -504,7 +512,12 @@ class pageByGenre(tk.Frame):
 
 class pageByCompany(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+        
+        self.init_window()
+
+    def init_window(self):
 
         Title = tk.Label(self, text="Search By Company", font=LARGE_FONT)
         Title.pack()
@@ -516,12 +529,12 @@ class pageByCompany(tk.Frame):
         self.getCompanies()
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
-        btnSearch.pack(pady=5, ipadx=30, ipady=5)
+        btnSearch.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back to Home", command=lambda: self.controller.show_frame(HomePage)
         )
-        btnHome.pack(pady=5, ipadx=30, ipady=5)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         # Show treeview
         self.tk_table = ttk.Treeview(self)
@@ -536,7 +549,7 @@ class pageByCompany(tk.Frame):
         scroll.pack(side=BOTTOM, fill="x")
         self.tk_table.configure(xscrollcommand=scroll.set)
 
-        self.tk_table.pack()
+        self.tk_table.pack(fill="x",padx=(10,0))
 
     def clearTreeview(self):
         try:
@@ -567,7 +580,7 @@ class pageByCompany(tk.Frame):
             # Create combobox
             self.cbo_companie = ttk.Combobox(self, state="readonly", width=40)
             self.cbo_companie["values"] = choices
-            self.cbo_companie.pack()
+            self.cbo_companie.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -648,7 +661,12 @@ class pageByCompany(tk.Frame):
 
 class pageByName(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+
+    def init_window(self):
 
         Title = tk.Label(self, text="Search By Name", font=LARGE_FONT)
         Title.pack()
@@ -659,16 +677,16 @@ class pageByName(tk.Frame):
         # Get values to search and create combobox
         #self.getNames()
         self.name = tk.Entry(self)
-        self.name.pack()
+        self.name.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
-        btnSearch.pack(pady=5, ipadx=30, ipady=5)
+        btnSearch.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
 
         btnHome = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back to Home", command=lambda: self.controller.show_frame(HomePage)
         )
-        btnHome.pack(pady=5, ipadx=30, ipady=5)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         # Show treeview
         self.tk_table = ttk.Treeview(self)
@@ -683,7 +701,7 @@ class pageByName(tk.Frame):
         scroll.pack(side=BOTTOM, fill="x")
         self.tk_table.configure(xscrollcommand=scroll.set)
 
-        self.tk_table.pack()
+        self.tk_table.pack(fill="x",padx=(10,0))
 
     def clearTreeview(self):
         try:
@@ -712,7 +730,7 @@ class pageByName(tk.Frame):
             # Create combobox
             self.cbo_name = ttk.Combobox(self, state="readonly", width=40)
             self.cbo_name["values"] = choices
-            self.cbo_name.pack()
+            self.cbo_name.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -787,7 +805,14 @@ class pageByName(tk.Frame):
 
 class pageBetweenYears(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+        
+        self.init_window()
+        
+    def init_window(self):
+
+
 
         Title = tk.Label(self, text="Search Between Years", font=LARGE_FONT)
         Title.pack()
@@ -796,12 +821,12 @@ class pageBetweenYears(tk.Frame):
         self.getYears()
 
         btnSearch = tk.Button(self, text="Search", command=self.controleValues)
-        btnSearch.pack(pady=5, ipadx=30, ipady=5)
+        btnSearch.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back to Home", command=lambda: self.controller.show_frame(HomePage)
         )
-        btnHome.pack(pady=5, ipadx=30, ipady=5)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         # Show treeview
         self.tk_table = ttk.Treeview(self)
@@ -816,7 +841,7 @@ class pageBetweenYears(tk.Frame):
         scroll.pack(side=BOTTOM, fill="x")
         self.tk_table.configure(xscrollcommand=scroll.set)
 
-        self.tk_table.pack()
+        self.tk_table.pack(fill="x",padx=(10,0))
 
     def clearTreeview(self):
         try:
@@ -850,7 +875,7 @@ class pageBetweenYears(tk.Frame):
             # Create combobox year1
             self.cbo_year1 = ttk.Combobox(self, state="readonly", width=40)
             self.cbo_year1["values"] = choices
-            self.cbo_year1.pack()
+            self.cbo_year1.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
             # Create label for year1
             label2 = tk.Label(self, text="To year:")
@@ -859,7 +884,7 @@ class pageBetweenYears(tk.Frame):
             # Create combobox year2
             self.cbo_year2 = ttk.Combobox(self, state="readonly", width=40)
             self.cbo_year2["values"] = choices
-            self.cbo_year2.pack()
+            self.cbo_year2.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
@@ -950,7 +975,12 @@ class pageBetweenYears(tk.Frame):
 
 class pageReceivedMessages(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+
+    def init_window(self):
 
         label = tk.Label(self, text="Received Messages", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
@@ -965,7 +995,7 @@ class pageReceivedMessages(tk.Frame):
         btnGet_messages.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back To Home", command=lambda: self.controller.show_frame(HomePage)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
@@ -1050,17 +1080,21 @@ class pageReceivedMessages(tk.Frame):
 
 class pageGraphScore(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+    def init_window(self):
 
         Title = tk.Label(self, text="Show Graph Off Score ", font=LARGE_FONT)
         Title.pack()
         btnShowGraph = tk.Button(self, text="Show Graph", command=self.showGraph)
-        btnShowGraph.pack(pady=8, ipadx=30, ipady=5)
+        btnShowGraph.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         btnHome = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(HomePage)
+            self, text="Back to Home", command=lambda: self.controller.show_frame(HomePage)
         )
-        btnHome.pack(pady=8, ipadx=30, ipady=5)
+        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
 
         # bind with return key
         btnShowGraph.bind("<Return>", (lambda event: self.showGraph()))
