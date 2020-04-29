@@ -44,7 +44,7 @@ class search_popularity:
         except Exception as e:
             print(f"exception in logging: {e}")
 
-    def getSearches(self, user="*"):  # bruh idk anymore, shit's confusing and took me 2 hours
+    def getSearches(self, user="*"):
         with open(searchlog) as f:
             print("got in the moderator")
             data = json.load(f)
@@ -52,21 +52,16 @@ class search_popularity:
             try:
                 if user == "*":
                     for record in data:
-                        if not any(record['query'] in d for d in searches):
-                            searches.append({record["query"]: 1})
+                        if not any(e["query"] == record["query"] for e in searches):
+                            searches.append({"query": record["query"], "amount": 1})
                         else:
-                            for r in searches:
-                                for k in r:
-                                    if k == record["query"]:
-                                        r[k] += 1
+                            for e in searches:
+                                if e["query"] == record["query"]:
+                                    e["amount"] += 1
                 else:
                     for record in data:
                         if record["user"] == user:
-                            if record["query"] in searches:
-                                searches.query.append({record["query"]: 1})
-                            else:
-                                searches.query[record["query"]] += 1
-                                print(f"returning: {searches}")
+                            searches.append({"query": record["query"], "parameters": record["parameters"]})
                 return searches
             except Exception as e:
                 print(f"exception in reading log {e}")
@@ -105,9 +100,13 @@ New query GET_MESSAGES zodat elke user zijn messages kan opvragen
 
 autoscroll bij server gui
 
-fout bij laden van image... 'str' object has no attribute 'read'
+
 
 show messages clienthandler fout van opvangen van message
+
+online users list moet gecleared worden elke keer ze worden opgevraagd
+
+get online users runt op het moment dat het venster opgeroepen wordt
 
 
 # Bovenstaande items inserten in elk treeview ! <---------- ???
@@ -115,20 +114,10 @@ show messages clienthandler fout van opvangen van message
 
 Done:
 
-adjusted search by name for free strings
+fout bij laden van image... 'str' object has no attribute 'read' --?? niks gedaan ma tis weg
 
-search history zorg erook voor dat je de parameter kunt terug krijgen 
+fixed search popularity count & show
 
-fixed re-login crash
-
-auto clear bij verandering zoekopdracht <- client side
-
-layout van server side for get online users fix
-
-terug naar login na logout
-
-Fix Login
-
-List off all searches & paramater & user
+fixed user search " parameters
 
 """

@@ -10,23 +10,23 @@ import pickle
 import numpy as np
 import pandas as pd
 from tkinter import messagebox, ttk
-#fix relative path
+
+# fix relative path
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_ROOT)
 sys.path.insert(0, BASE_DIR)
 jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
 from server.multithreader import Movie_thread
-from server.moderator import users_online,user_message,search_popularity
+from server.moderator import users_online, user_message, search_popularity
 
 
 import json
 from pathlib import Path
 from data.movie import User
 
-#font
+# font
 LARGE_FONT = ("Verdana", 12)
-
 
 
 class ServerWindow(tk.Tk):
@@ -75,68 +75,74 @@ class OverviewOnlineUsers(tk.Frame):
         label1 = tk.Label(self, text="Search History")
         label1.pack(pady=3, padx=10)
 
-        #show table
+        # show table
         self.show_table()
 
-        
-        #combobox of online users
+        # combobox of online users
         self.show_cbo()
 
         label3 = tk.Label(self, text="First Click On Get Online Users Button")
-        label3.pack(pady=(2,1), padx=10)
+        label3.pack(pady=(2, 1), padx=10)
 
         btngetOnlineUsers = tk.Button(
-            self, text="Get Online Users", command=self.getOnlineUsers)
-        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self, text="Get Online Users", command=self.getOnlineUsers
+        )
+        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnShowUserInfo = tk.Button(
-            self, text="Show Info About Selected User", command=lambda: self.get_userinfo())
-        btnShowUserInfo.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self,
+            text="Show Info About Selected User",
+            command=lambda: self.get_userinfo(),
+        )
+        btnShowUserInfo.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnShowHistory = tk.Button(
-            self, text="Show Search History Of Selected User", command=lambda: self.search_history())
-        btnShowHistory.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self,
+            text="Show Search History Of Selected User",
+            command=lambda: self.search_history(),
+        )
+        btnShowHistory.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
-    
+        btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
+
     def show_cbo(self):
-        
-        
         label2 = tk.Label(self, text="Users")
-        label2.pack(pady=(2,1), padx=10)
+        label2.pack(pady=(2, 1), padx=10)
 
         # Create combobox
         self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
-        
-        self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
 
+        self.cbo_onlineUsers.pack(pady=(5, 5), padx=(10, 0), fill="x")
 
     def getOnlineUsers(self):
         self.cbo_onlineUsers.set("")
-        users= users_online().getUsers()
+        users = users_online().getUsers()
         print(users)
 
-        #inser users
+        # inser users
         self.cbo_onlineUsers["values"] = users
-        
 
     def get_userinfo(self):
-        #get all the users
+        # get all the users
         all_users = get_json_file_contents(jsonDb)
         # get the selected item of the treeview
-        selected_item  = str(self.cbo_onlineUsers.get())
-        # Check if selected an item before clicked on the button 
-        if len(selected_item)!=0:
-            selected_username=selected_item
+        selected_item = str(self.cbo_onlineUsers.get())
+        # Check if selected an item before clicked on the button
+        if len(selected_item) != 0:
+            selected_username = selected_item
             for u in all_users:
-                if u['username'] == selected_username:
-                    tk.messagebox.showinfo(f"Selected name {u['name']}",f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}")
+                if u["username"] == selected_username:
+                    tk.messagebox.showinfo(
+                        f"Selected name {u['name']}",
+                        f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}",
+                    )
 
         else:
             tk.messagebox.showinfo("get_userinfo", "select user before push the button")
+
     def show_table(self):
         try:
             # Show treeview
@@ -144,7 +150,7 @@ class OverviewOnlineUsers(tk.Frame):
 
             # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            scrolly.pack(side=RIGHT, ipady=150, pady=(0, 230))
             self.tk_table.configure(yscrollcommand=scrolly.set)
 
             self.tk_table["height"] = 17
@@ -152,7 +158,7 @@ class OverviewOnlineUsers(tk.Frame):
             self.tk_table["show"] = "headings"
 
             # add each colum in columns
-            columns = ["Searches","Parameter"]
+            columns = ["Searches", "Parameter"]
 
             # display columns
             self.tk_table["columns"] = columns
@@ -162,67 +168,58 @@ class OverviewOnlineUsers(tk.Frame):
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
 
-            self.tk_table.pack(fill="x",padx=(10,0))
-            
-        
+            self.tk_table.pack(fill="x", padx=(10, 0))
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("show searches of user", "Something has gone wrong...")
 
-
     def search_history(self):
-        if self.cbo_onlineUsers.get()=="":
-            tk.messagebox.showinfo("Info","You need to select a user first")
+        if self.cbo_onlineUsers.get() == "":
+            tk.messagebox.showinfo("Info", "You need to select a user first")
         else:
-            #clear the treeview before show data
+            # clear the treeview before show data
             for i in self.tk_table.get_children():
                 self.tk_table.delete(i)
             print("search history moet nog aangemaakt worden")
-            
-            #here insert table
+
+            # here insert table
             user = self.cbo_onlineUsers.get()
             print(f"toon zoekgeschiedenis van {user}")
             try:
                 all_searches = search_popularity().getSearches(user)
                 print(all_searches)
-                #Display rows
-                for each_rec in all_searches:
+                # Display rows
+                for r in all_searches:
                     self.tk_table.insert(
-                        "",
-                        tk.END,
-                        values=(each_rec["query"],each_rec["parameters"]),
+                        "", tk.END, values=(r["query"], r["parameters"]),
                     )
             except Exception as ex:
                 logging.error("Foutmelding: %s" % ex)
-                messagebox.showinfo("insert data popularity", "Something has gone wrong...")
-
-
+                messagebox.showinfo(
+                    "insert data popularity", "Something has gone wrong..."
+                )
 
 
 class OverviewUsers(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-   
+
         label = tk.Label(self, text="Overview Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
         self.showUsers()
 
         btnGet_userInfo = tk.Button(
-            self, text="Show info about selected user", command=self.get_userinfo)
-        btnGet_userInfo.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
-     
+            self, text="Show info about selected user", command=self.get_userinfo
+        )
+        btnGet_userInfo.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+        btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
-        
-
-        
-
-     
     def showUsers(self):
         try:
             # Show treeview
@@ -230,7 +227,7 @@ class OverviewUsers(tk.Frame):
 
             # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            scrolly.pack(side=RIGHT, ipady=150, pady=(0, 230))
             self.tk_table.configure(yscrollcommand=scrolly.set)
 
             self.tk_table["height"] = 17
@@ -252,29 +249,29 @@ class OverviewUsers(tk.Frame):
             # Display rows
             for each_rec in all_users:
                 self.tk_table.insert(
-                    "",
-                    tk.END,
-                    values=(each_rec["username"]),
+                    "", tk.END, values=(each_rec["username"]),
                 )
 
-            self.tk_table.pack(fill="x",padx=(10,0))
-            
-        
+            self.tk_table.pack(fill="x", padx=(10, 0))
+
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             messagebox.showinfo("show users", "Something has gone wrong...")
-        
+
     def get_userinfo(self):
-        #get all the users
+        # get all the users
         all_users = get_json_file_contents(jsonDb)
         # get the selected item of the treeview
-        selected_item  = self.tk_table.selection()[0]
-        # Check if selected an item before clicked on the button 
-        if len(selected_item)!=0:
-            selected_username=self.tk_table.item(selected_item)['values'][0]
+        selected_item = self.tk_table.selection()[0]
+        # Check if selected an item before clicked on the button
+        if len(selected_item) != 0:
+            selected_username = self.tk_table.item(selected_item)["values"][0]
             for u in all_users:
-                if u['username'] == selected_username:
-                    tk.messagebox.showinfo(f"Selected name {u['name']}",f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}")
+                if u["username"] == selected_username:
+                    tk.messagebox.showinfo(
+                        f"Selected name {u['name']}",
+                        f"Name: {u['name']}\nUsername: {u['username']}\nEmail: {u['email']}",
+                    )
 
         else:
             tk.messagebox.showinfo("get_userinfo", "select user before push the button")
@@ -283,42 +280,42 @@ class OverviewUsers(tk.Frame):
 class SendMessage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-    
+
         label = tk.Label(self, text="Send Message To Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
         label4 = tk.Label(self, text="MessageBox")
-        label4.pack(pady=(2,1), padx=10)
+        label4.pack(pady=(2, 1), padx=10)
 
         self.input_message()
-        
-        
 
         btnMessageToSend = tk.Button(
-            self, text="Send Message To All", command=self.sendMessageToAllUsers)
-        btnMessageToSend.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self, text="Send Message To All", command=self.sendMessageToAllUsers
+        )
+        btnMessageToSend.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         self.show_cbo()
 
         label3 = tk.Label(self, text="First Click On Get Online Users Button")
-        label3.pack(pady=(2,1), padx=10)
+        label3.pack(pady=(2, 1), padx=10)
 
         btngetOnlineUsers = tk.Button(
-            self, text="Get Online Users", command=self.getOnlineUsers)
-        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self, text="Get Online Users", command=self.getOnlineUsers
+        )
+        btngetOnlineUsers.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnMessageToSendUser = tk.Button(
-            self, text="Send Message To Selected User", command=self.sendMessageToUser)
-        btnMessageToSendUser.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+            self, text="Send Message To Selected User", command=self.sendMessageToUser
+        )
+        btnMessageToSendUser.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+        btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
-    
     def input_message(self):
-        #textarea aanmaken | scrollbar
+        # textarea aanmaken | scrollbar
         S = tk.Scrollbar(self)
         self.T = tk.Text(self, height=20, width=50)
         S.pack(side=RIGHT, fill="y")
@@ -327,61 +324,58 @@ class SendMessage(tk.Frame):
         self.T.config(yscrollcommand=S.set)
 
     def show_cbo(self):
-        
 
         label2 = tk.Label(self, text="Online users")
-        label2.pack(pady=(2,1), padx=10)
+        label2.pack(pady=(2, 1), padx=10)
 
-        #Create combobox
+        # Create combobox
         self.cbo_onlineUsers = ttk.Combobox(self, state="readonly", width=40)
-        self.cbo_onlineUsers.pack(pady=(5,5),padx=(10,0),fill="x")
+        self.cbo_onlineUsers.pack(pady=(5, 5), padx=(10, 0), fill="x")
 
     def getOnlineUsers(self):
         self.cbo_onlineUsers.set("")
-        users= users_online().getUsers()
+        users = users_online().getUsers()
 
-        #fill combobox
+        # fill combobox
         self.cbo_onlineUsers["values"] = users
-       
-        
-        
+
     def sendMessageToAllUsers(self):
-        #print van begin tot eind
-        message = self.T.get("1.0",tk.END)
+        # print van begin tot eind
+        message = self.T.get("1.0", tk.END)
         messageLen = len(message)
-        #if message is empty
+        # if message is empty
         if messageLen == 1:
-            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+            tk.messagebox.showinfo(f"Send message", f" Write something !!!")
             self.cbo_onlineUsers.set("")
         else:
-            #Clear the textbox
-            self.T.delete('1.0', tk.END)
+            # Clear the textbox
+            self.T.delete("1.0", tk.END)
             self.cbo_onlineUsers.set("")
-            tk.messagebox.showinfo(f"Send message",f" Message sended to users !")
+            tk.messagebox.showinfo(f"Send message", f" Message sent to users !")
             ## send the message to all users
             print(message)
             user_message().sendmessage(message)
-    
+
     def sendMessageToUser(self):
-        #print van begin tot eind
-        message = self.T.get("1.0",tk.END)
+        # print van begin tot eind
+        message = self.T.get("1.0", tk.END)
         messageLen = len(message)
         selected_user = str(self.cbo_onlineUsers.get())
-        #if message is empty
+        # if message is empty
         if messageLen == 1:
-            tk.messagebox.showinfo(f"Send message",f" Write something !!!")
+            tk.messagebox.showinfo(f"Send message", f" Write something !!!")
             self.cbo_onlineUsers.set("")
-            
+
         else:
             print(message)
-            tk.messagebox.showinfo(f"Send message",f" Message sended to {selected_user} !")
+            tk.messagebox.showinfo(
+                f"Send message", f" Message sended to {selected_user} !"
+            )
             self.cbo_onlineUsers.set("")
-            #clear the textbox
-            self.T.delete('1.0', tk.END)
+            # clear the textbox
+            self.T.delete("1.0", tk.END)
             ## send message to user
-            user_message().sendmessage(message,selected_user)
-
-
+            user_message().sendmessage(message, selected_user)
 
 
 class PopularityOfSearch(tk.Frame):
@@ -393,20 +387,17 @@ class PopularityOfSearch(tk.Frame):
         label = tk.Label(self, text="Overview Popularity Of Searches", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        #treeview
+        # treeview
         self.showPopularity()
 
-        btnShowData = tk.Button(
-            self, text="Show Popularity", command=self.insert_data
-        )
-        btnShowData.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+        btnShowData = tk.Button(self, text="Show Popularity", command=self.insert_data)
+        btnShowData.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
             self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
         )
-        btnHome.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
+        btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
-        
     def showPopularity(self):
         try:
             # Show treeview
@@ -414,7 +405,7 @@ class PopularityOfSearch(tk.Frame):
 
             # Scroll Vertical
             scrolly = ttk.Scrollbar(self, orient=VERTICAL, command=self.tk_table.yview)
-            scrolly.pack(side=RIGHT, ipady=150,pady=(0,230))
+            scrolly.pack(side=RIGHT, ipady=150, pady=(0, 230))
             self.tk_table.configure(yscrollcommand=scrolly.set)
 
             self.tk_table["height"] = 17
@@ -422,7 +413,7 @@ class PopularityOfSearch(tk.Frame):
             self.tk_table["show"] = "headings"
 
             # add each colum in columns
-            columns = ["Searches","Parameter","Times Requested"]
+            columns = ["Searches", "Times Requested"]  # ,"Parameter"
 
             # display columns
             self.tk_table["columns"] = columns
@@ -432,35 +423,32 @@ class PopularityOfSearch(tk.Frame):
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
 
-         
+            self.tk_table.pack(fill="x", padx=(10, 0))
 
-            self.tk_table.pack(fill="x",padx=(10,0))
-            
-        
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
-            messagebox.showinfo("show popularity searches", "Something has gone wrong...")
-    
+            messagebox.showinfo(
+                "show popularity searches", "Something has gone wrong..."
+            )
+
     def insert_data(self):
-        #clear the treeview before show data
+        # clear the treeview before show data
         for i in self.tk_table.get_children():
             self.tk_table.delete(i)
-        try: 
+        try:
             print("getting searches")
             all_searches = search_popularity().getSearches()
             print(all_searches)
-            #Display rows
-            for query in all_searches:
+            # Display rows
+            for r in all_searches:
                 self.tk_table.insert(
-                    "",
-                    tk.END,
-                    values=(query.keys()[0], query[query.keys()[1]],query[query.keys()[0]]), # not dynamic to format change but will have to do
+                    "", tk.END, values=(r["query"], r["amount"]),
                 )
         except Exception as ex:
             logging.error("Foutmelding: %s" % ex)
             print(ex)
             messagebox.showinfo("insert data popularity", "Something has gone wrong...")
-    
+
 
 class ServerLog(tk.Frame):
     def __init__(self, parent, controller):
@@ -527,7 +515,6 @@ class ServerLog(tk.Frame):
 
         # self.btnHome = Button(self, text="Back To Home",  command=lambda:controller.show_frame(HomePage))
         # self.btnHome.grid(row=4, column=0, columnspan=3, pady=(0, 5), padx=(5, 5), sticky=N + S + E + W)
-
 
     def init_window(self):
         # self.master.title("Server")

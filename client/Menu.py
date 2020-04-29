@@ -158,7 +158,7 @@ class pageSignIn(tk.Frame):
         try:
             # send BYGENRE to clienthandler
             pickle.dump("SIGNIN", my_writer_obj)
-            # selected value off combobox
+            # selected value of combobox
             username = str(self.entry_username.get())
             password = str(self.entry_password.get())
 
@@ -178,7 +178,7 @@ class pageSignIn(tk.Frame):
                 tk.messagebox.showinfo("SignIn", "Login refused")
                 self.clearEntry()
 
-        # Change width and high off window
+        # Change width and high of window
         # app.geometry("200x100")
 
         except Exception as ex:
@@ -264,7 +264,7 @@ class pageSignUp(tk.Frame):
             # send BYGENRE to clienthandler
             pickle.dump("SIGNUP", my_writer_obj)
 
-            # selected value off combobox
+            # selected value of combobox
             username = str(self.entry_username.get())
             password = str(self.entry_password.get())
             email = str(self.entry_email.get())
@@ -288,7 +288,7 @@ class pageSignUp(tk.Frame):
                 self.clearEntry()
             
 
-        # Change width and high off window
+        # Change width and high of window
         # app.geometry("200x100")
 
         except Exception as ex:
@@ -333,7 +333,7 @@ class HomePage(tk.Frame):
 
         btnGraphScore = tk.Button(
             self,
-            text="Graph Off Score",
+            text="Graph of Score",
             command=lambda: self.controller.show_frame(pageGraphScore),
         )
         btnGraphScore.pack(ipady=10, ipadx=150, pady=10,fill="x")
@@ -468,7 +468,7 @@ class pageByGenre(tk.Frame):
             # send BYGENRE to clienthandler
             pickle.dump("BY_GENRE", my_writer_obj)
 
-            # selected value off combobox
+            # selected value of combobox
             genre = str(self.cbo_genre.get())
 
             # Voef genre toe aan klasse
@@ -502,7 +502,7 @@ class pageByGenre(tk.Frame):
                     "", tk.END, values=list(search.result.values[each_rec])
                 )
 
-            # Change width and high off window
+            # Change width and high of window
             app.geometry("700x600")
 
         except Exception as ex:
@@ -615,7 +615,7 @@ class pageByCompany(tk.Frame):
             # send BYCOMPANY to clienthandler
             pickle.dump("BY_COMPANY", my_writer_obj)
 
-            # Get selected value off combobox
+            # Get selected value of combobox
             company = str(self.cbo_companie.get())
 
             # add to  klasse
@@ -651,7 +651,7 @@ class pageByCompany(tk.Frame):
                     "", tk.END, values=list(search.result.values[each_rec])
                 )
 
-            # Change width and high off window
+            # Change width and high of window
             app.geometry("700x600")
 
         except Exception as ex:
@@ -761,7 +761,7 @@ class pageByName(tk.Frame):
             # send BYNAME to clienthandler
             pickle.dump("BY_NAME", my_writer_obj)
 
-            # get selectec value off combobox
+            # get selectec value of combobox
             name = str(self.name.get())
 
             # Voeg name toe aan klasse
@@ -795,7 +795,7 @@ class pageByName(tk.Frame):
                     "", tk.END, values=list(search.result.values[each_rec])
                 )
 
-            # Change width and high off window
+            # Change width and high of window
             app.geometry("700x600")
 
         except Exception as ex:
@@ -965,7 +965,7 @@ class pageBetweenYears(tk.Frame):
                     "", tk.END, values=list(search.result.values[each_rec])
                 )
 
-            # Change width and high off window
+            # Change width and high of window
             app.geometry("700x600")
 
         except Exception as ex:
@@ -1086,7 +1086,7 @@ class pageGraphScore(tk.Frame):
         self.init_window()
     def init_window(self):
 
-        Title = tk.Label(self, text="Show Graph Off Score ", font=LARGE_FONT)
+        Title = tk.Label(self, text="Show Graph of Score ", font=LARGE_FONT)
         Title.pack()
         btnShowGraph = tk.Button(self, text="Show Graph", command=self.showGraph)
         btnShowGraph.pack(ipady=10, ipadx=150, pady=3,padx=(10,0),fill="x")
