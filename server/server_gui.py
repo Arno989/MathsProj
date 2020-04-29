@@ -22,7 +22,6 @@ from server.moderator import users_online,user_message,search_popularity
 
 import json
 from pathlib import Path
-from server.dbHandler import get_json_file_contents
 from data.movie import User
 
 #font
@@ -588,3 +587,8 @@ class ServerLog(tk.Frame):
             self.server.init_server()
             self.server.start()  # thread!
             self.btn_text.set("Stop server")
+
+
+def get_json_file_contents(path: str):
+    with open(path) as users_file:
+        return json.load(users_file)

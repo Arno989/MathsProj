@@ -1,24 +1,28 @@
-import threading
+import datetime
+import json
 import logging
-import pickle
-import pandas as pd
-import numpy as np
-import os
 import math
+import os
+import pickle
+import sys
+import threading
+from pathlib import Path
+
+import bcrypt  # u gotta "pip install bcrypt" bro
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
 from PIL import Image
-import sys
 
+from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
+from server.moderator import search_popularity, user_message, users_online
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-BASE_DIR = os.path.dirname(PROJECT_ROOT)
-sys.path.insert(0, BASE_DIR)
+sys.path.insert(0, os.path.dirname(PROJECT_ROOT))
 dataset = pd.read_csv(f"{PROJECT_ROOT}\\data\\movies.csv", encoding="ISO-8859-1")
+jsonDb = f"{PROJECT_ROOT}\\data\\users.json"
 
-from server.moderator import users_online, search_popularity, user_message
-from server.login import auth_user, add_user
-from data.movie import BetweenYears, ByCompany, ByGenre, ByName, User
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", 15)
@@ -279,3 +283,81 @@ class ClientHandler(threading.Thread):
         self.message_queue.put(f"CLH {self.id}> {message}")
         logging.info(f"CLH {self.id}> {message}")
         print(f"CLH {self.id}> {message}")
+
+#region Login and database
+#region dbHandler
+startUsers = [
+    User(name="yeet", username="yeet", password="hash", email="yeet"),
+    User(name="yeet2", username="yeet2", password="hash2", email="yeet2"),
+]
+
+
+def obj_dict(obj):
+    return obj.__dict__
+
+
+def create_file_if_not_exists(path: str):
+    if not Path(path).is_file():
+        with open(path, "w") as users_file:
+            json.dump([ob.__dict__ for ob in startUsers], users_file)
+
+
+def get_json_file_contents(path: str):
+    with open(path) as users_file:
+        return json.load(users_file)
+#endregion
+
+#region Encryption
+def hash_password(password: str) -> str:
+    encoded_password = password.encode("utf8")
+    cost_rounds = 12  # tegen de bruteforce jwz
+    random_salt = bcrypt.gensalt(cost_rounds)
+    hashed_password = bcrypt.hashpw(encoded_password, random_salt).decode(
+        "utf8", "strict"
+    )
+    return hashed_password
+
+
+def check_password(password: str, password_hash: str) -> bool:
+    encoded_password = password.encode("utf8")
+    encoded_password_hash = password_hash.encode("utf8")
+    password_matches = bcrypt.checkpw(encoded_password, encoded_password_hash)
+    return password_matches
+#endregion
+
+#region login
+def add_user(username: str, password: str, name: str, email: str):
+    create_file_if_not_exists(jsonDb)
+    is_duplicate_user = retrieve_user(username)
+    if is_duplicate_user != None:
+        print(f'Username "{username}" already exists.')
+    new_user = User(
+        username=username, password=hash_password(password), name=name, email=email
+    )
+    all_users = get_json_file_contents(jsonDb)
+    all_users.append(new_user.__dict__)
+    with open(jsonDb, "w") as users_file:
+        json.dump(all_users, users_file, indent=4)
+
+
+def retrieve_user(username: str):
+    all_users = get_json_file_contents(jsonDb)
+    if len(all_users) != 0:
+        for u in all_users:
+            if u['username'] == username:
+                return u
+        return None
+    else:
+        return None
+
+
+def auth_user(username: str, password: str):
+    user = retrieve_user(username)
+    password_hash = user['password']
+    if not user:
+        return False
+    if not check_password(password, password_hash):
+        return False
+    return True
+#endregion
+#endregion

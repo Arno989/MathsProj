@@ -21,7 +21,7 @@ from data.moderator import OnlineUsers
 
 
 class ServerHandler():
-    
+    pass
 
 #class GetOnlineUsers():
 #    onlineUsers = 10
