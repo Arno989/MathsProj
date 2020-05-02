@@ -287,5 +287,203 @@
         "user": "arno",
         "query": "GET_MESSAGES",
         "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Action"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "GRAPH_SCORE",
+        "parameters": null
+    },
+    {
+        "user": "jantje",
+        "query": "GRAPH_SCORE",
+        "parameters": null
+    },
+    {
+        "user": "jantje",
+        "query": "GRAPH_SCORE",
+        "parameters": null
+    },
+    {
+        "user": "jantje",
+        "query": "BY_BETWEEN_YEARS",
+        "parameters": [
+            1987,
+            1991
+        ]
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "aaff"
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "jante"
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "Stand by Me"
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "stand by me"
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "stand by"
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "stand"
+    },
+    {
+        "user": "jantje",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "jantje",
+        "query": "BY_NAME",
+        "parameters": "sf"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "sta"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "jaj"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "jan"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "p"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "s"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "c"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "x"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "pi"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "piieter"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Thriller"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Thriller"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Sci-fi"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_GENRE",
+        "parameters": "Animation"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "piieter"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "pie"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "tr"
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "t"
+    },
+    {
+        "user": "ouassim",
+        "query": "SIGNIN",
+        "parameters": null
+    },
+    {
+        "user": "ouassim",
+        "query": "BY_NAME",
+        "parameters": "f"
     }
 ]
