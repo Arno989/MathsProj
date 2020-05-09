@@ -67,8 +67,12 @@ class ServerWindow(tk.Tk):
 
 class OverviewOnlineUsers(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
 
+        self.init_window()
+
+    def init_window(self):
         label = tk.Label(self, text="Overview Online Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
@@ -104,7 +108,7 @@ class OverviewOnlineUsers(tk.Frame):
         btnShowHistory.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
+            self, text="Back To Home", command=lambda: self.controller.show_frame(ServerLog)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
@@ -163,7 +167,7 @@ class OverviewOnlineUsers(tk.Frame):
             # display columns
             self.tk_table["columns"] = columns
 
-            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            indexx = 1  
             for col in columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
@@ -203,7 +207,12 @@ class OverviewOnlineUsers(tk.Frame):
 
 class OverviewUsers(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+
+    def init_window(self):
 
         label = tk.Label(self, text="Overview Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
@@ -216,7 +225,7 @@ class OverviewUsers(tk.Frame):
         btnGet_userInfo.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
+            self, text="Back To Home", command=lambda: self.controller.show_frame(ServerLog)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
@@ -240,7 +249,7 @@ class OverviewUsers(tk.Frame):
             # display columns
             self.tk_table["columns"] = columns
 
-            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            indexx = 1  
             for col in columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
@@ -279,7 +288,12 @@ class OverviewUsers(tk.Frame):
 
 class SendMessage(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
+
+        self.init_window()
+
+    def init_window(self):
 
         label = tk.Label(self, text="Send Message To Users", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
@@ -310,7 +324,7 @@ class SendMessage(tk.Frame):
         btnMessageToSendUser.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
+            self, text="Back To Home", command=lambda: self.controller.show_frame(ServerLog)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
@@ -379,10 +393,14 @@ class SendMessage(tk.Frame):
 
 class PopularityOfSearch(tk.Frame):
     def __init__(self, parent, controller):
+        self.controller = controller
         tk.Frame.__init__(self, parent)
 
-        # per client een nieuwe tabel
+        self.init_window()
 
+    def init_window(self):
+
+        # per client een nieuwe tabel
         label = tk.Label(self, text="Overview Popularity Of Searches", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
@@ -393,7 +411,7 @@ class PopularityOfSearch(tk.Frame):
         btnShowData.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
         btnHome = tk.Button(
-            self, text="Back To Home", command=lambda: controller.show_frame(ServerLog)
+            self, text="Back To Home", command=lambda: self.controller.show_frame(ServerLog)
         )
         btnHome.pack(ipady=10, ipadx=150, pady=3, padx=(10, 0), fill="x")
 
@@ -417,7 +435,7 @@ class PopularityOfSearch(tk.Frame):
             # display columns
             self.tk_table["columns"] = columns
 
-            indexx = 1  # niet 0 omdat je de eerte kolom niet kunt gebruiken
+            indexx = 1
             for col in columns:
                 self.tk_table.heading(f"#{indexx}", text=col)
                 indexx += 1
@@ -512,12 +530,8 @@ class ServerLog(tk.Frame):
             sticky=N + S + E + W,
         )
 
-        # self.btnHome = Button(self, text="Back To Home",  command=lambda:controller.show_frame(HomePage))
-        # self.btnHome.grid(row=4, column=0, columnspan=3, pady=(0, 5), padx=(5, 5), sticky=N + S + E + W)
-
     def init_window(self):
-        # self.master.title("Server")
-        # self.pack(fill=BOTH, expand=1)
+      
 
         Label(self, text="Server log: ").grid(row=0)
         self.scrollbar = Scrollbar(self, orient=VERTICAL)

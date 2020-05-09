@@ -115,9 +115,9 @@ autoscroll bij server gui
 
 show messages clienthandler fout van opvangen van message
 
-online users list moet gecleared worden elke keer ze worden opgevraagd
+online users list moet gecleared worden elke keer ze worden opgevraagd ->> al gebeurd toch? 
 
-get online users runt op het moment dat het venster opgeroepen wordt
+get online users runt op het moment dat het venster opgeroepen wordt 
 
 
 # Bovenstaande items inserten in elk treeview ! <---------- ???

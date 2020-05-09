@@ -26,5 +26,12 @@
         "email": "Ouassim",
         "password": "$2b$12$I//VAUzumBheEvv4GzPFHOwLY8gV6GYPd4Z0LTGqGBTZIInRogIo.",
         "authenticated": null
+    },
+    {
+        "name": "jantje@hotmail.com",
+        "username": "jantje",
+        "email": "jan",
+        "password": "$2b$12$D0zinmapDQwBhBiEbBmFYuFiRl9U.woSDe7jHD1aR4z7IlsZd9OP6",
+        "authenticated": null
     }
 ]
