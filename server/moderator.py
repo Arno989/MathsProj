@@ -29,6 +29,17 @@ class users_online:
 
     def getUsers(self):
         return onlineUsers
+    
+    # def loginUser(self, username, socket):
+    #     print(f"adding {username} to online list")
+    #     onlineUsers.append({'username':username, 'socket':socket})
+    #     print(f"online users: {[d['username'] for d in onlineUsers]}")
+
+    # def logoutUser(self, username):
+    #     print(f"removing {username} from online list")
+    #     onlineUsers = [d for d in onlineUsers if d.get('username') != username]
+    #     print(f"online users: {[d['username'] for d in onlineUsers]}")
+
 
 
 class search_popularity:

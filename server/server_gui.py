@@ -353,29 +353,28 @@ class SendMessage(tk.Frame):
             self.cbo_onlineUsers.set("")
             tk.messagebox.showinfo(f"Send message", f" Message sent to users !")
             ## send the message to all users
-            print(message)
-            user_message().sendmessage(message)
+            ServerLog.server.send_broadcast(message)
 
-    def sendMessageToUser(self):
-        # print van begin tot eind
-        message = self.T.get("1.0", tk.END)
-        messageLen = len(message)
-        selected_user = str(self.cbo_onlineUsers.get())
-        # if message is empty
-        if messageLen == 1:
-            tk.messagebox.showinfo(f"Send message", f" Write something !!!")
-            self.cbo_onlineUsers.set("")
+    # def sendMessageToUser(self):
+    #     # print van begin tot eind
+    #     message = self.T.get("1.0", tk.END)
+    #     messageLen = len(message)
+    #     selected_user = str(self.cbo_onlineUsers.get())
+    #     # if message is empty
+    #     if messageLen == 1:
+    #         tk.messagebox.showinfo(f"Send message", f" Write something !!!")
+    #         self.cbo_onlineUsers.set("")
 
-        else:
-            print(message)
-            tk.messagebox.showinfo(
-                f"Send message", f" Message sended to {selected_user} !"
-            )
-            self.cbo_onlineUsers.set("")
-            # clear the textbox
-            self.T.delete("1.0", tk.END)
-            ## send message to user
-            user_message().sendmessage(message, selected_user)
+    #     else:
+    #         print(message)
+    #         tk.messagebox.showinfo(
+    #             f"Send message", f" Message sended to {selected_user} !"
+    #         )
+    #         self.cbo_onlineUsers.set("")
+    #         # clear the textbox
+    #         self.T.delete("1.0", tk.END)
+    #         ## send message to user
+    #         user_message().sendmessage(message, selected_user)
 
 
 class PopularityOfSearch(tk.Frame):

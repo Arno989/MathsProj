@@ -2,12 +2,14 @@ import logging
 import socket
 import threading
 import sys
+import pickle
 
 import pandas as pd
 import numpy as np
 
 from server.clienthandler import ClientHandler
 
+connections = []
 
 class Movie_thread(threading.Thread):
     def __init__(self, host, port, message_queue):
@@ -28,12 +30,22 @@ class Movie_thread(threading.Thread):
         self.serversocket.listen(5)
         self.connected = True
         self.print_gui_message("Started")
+        
+    def get_connections(self):
+        return connections
 
     def close_server_socket(self):
         # remove the socket object
         self.print_gui_message("Closing")
         self.serversocket.close()
         self.connected = False
+        
+    def send_broadcast(self, msg):
+        for c in connections:
+            writer_obj = self.c.makefile(mode="rwb")
+            pickle.dump('MSG', writer_obj)
+            pickle.dump(msg, writer_obj)
+            writer_obj.flush()
 
     # thread-klasse!
     def run(self):
@@ -45,6 +57,7 @@ class Movie_thread(threading.Thread):
 
                 # establish a connection
                 socket_to_client, addr = self.serversocket.accept()
+                connections.append(socket_to_client)
                 self.print_gui_message(f"Established connection with: {addr}")
 
                 # initiate thread
